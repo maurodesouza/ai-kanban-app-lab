@@ -50,7 +50,9 @@ description: "Task list template for feature implementation"
 
 - [ ] T001 Create project structure per implementation plan
 - [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T003 [P] Configure linting and formatting tools (Constitution: Clean code principles)
+- [ ] T004 [P] Setup performance budget enforcement (Constitution: Performance as requirement)
+- [ ] T005 [P] Configure accessibility testing automation (Constitution: Accessibility mandatory)
 
 ---
 
@@ -68,6 +70,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
+- [ ] T010 [P] Implement performance monitoring (Constitution: 100ms response budget)
+- [ ] T011 [P] Setup accessibility testing infrastructure (Constitution: Screen reader support)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -94,6 +98,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
 - [ ] T016 [US1] Add validation and error handling
 - [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T018 [US1] Verify mobile touch targets meet 44px minimum (Constitution: Mobile-first)
+- [ ] T019 [US1] Test primary action completion under 8 seconds (Constitution: Clarity)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -116,6 +122,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T021 [US2] Implement [Service] in src/services/[service].py
 - [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
 - [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T024 [US2] Verify accessibility compliance (Constitution: WCAG AA contrast)
+- [ ] T025 [US2] Performance testing for 60fps animations (Constitution: Performance)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -151,11 +159,14 @@ Examples of foundational tasks (adjust based on your project):
 **Purpose**: Improvements that affect multiple user stories
 
 - [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
+- [ ] TXXX Code cleanup and refactoring (Constitution: Clean code principles)
+- [ ] TXXX Performance optimization across all stories (Constitution: 100ms budget)
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Final accessibility audit (Constitution: Mandatory)
+- [ ] TXXX Mobile usability testing (Constitution: Mobile-first)
+- [ ] TXXX Performance budget compliance review (Constitution: Non-negotiable)
 
 ---
 

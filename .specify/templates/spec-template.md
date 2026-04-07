@@ -80,6 +80,7 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
+  Constitution compliance: Every feature must have clear, justifiable objective.
 -->
 
 ### Functional Requirements
@@ -90,10 +91,29 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
-*Example of marking unclear requirements:*
+### Mobile-First Requirements *(Constitution Principle II)*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **MOB-001**: Primary action MUST be tappable with minimum 44px targets
+- **MOB-002**: Interface MUST be optimized for single-hand usage
+- **MOB-003**: Content MUST be readable without zooming on mobile devices
+
+### Performance Requirements *(Constitution Principle IV)*
+
+- **PERF-001**: Interface MUST respond within 100ms to user actions
+- **PERF-002**: Animations MUST maintain 60fps on target devices
+- **PERF-003**: Content MUST be comprehensible within 8 seconds (Principle I)
+
+### Accessibility Requirements *(Constitution Principle V)*
+
+- **A11Y-001**: Contrast MUST meet WCAG AA standards (4.5:1 minimum)
+- **A11Y-002**: All functions MUST be accessible via keyboard navigation
+- **A11Y-003**: Screen reader MUST announce all important state changes
+
+### Content Requirements *(Constitution Content Rules)*
+
+- **CONT-001**: All text MUST have clear function: inform, guide, or convert
+- **CONT-002**: Error messages MUST guide users to resolution
+- **CONT-003**: Generic placeholder content is PROHIBITED
 
 ### Key Entities *(include if feature involves data)*
 
@@ -113,6 +133,13 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+
+### Constitution Compliance Outcomes
+
+- **CC-001**: Primary action completion time under 8 seconds (Principle I)
+- **CC-002**: Mobile usability score meets professional standards (Principle II & III)
+- **CC-003**: Performance budget compliance: 100ms response, 60fps animations (Principle IV)
+- **CC-004**: Accessibility audit passes WCAG AA requirements (Principle V)
 
 ## Assumptions
 

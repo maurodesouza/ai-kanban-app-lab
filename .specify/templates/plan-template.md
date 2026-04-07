@@ -31,7 +31,25 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### Mobile-First Compliance
+- [ ] Interface designed first for mobile (Principle II)
+- [ ] Touch targets meet 44px minimum (UX/UI Rules)
+- [ ] Performance budgets defined: 60fps, 100ms response (Principle IV)
+
+### Clarity & Simplicity
+- [ ] Single primary action per screen identified (Principle I)
+- [ ] Content comprehensible within 8 seconds (Principle I)
+- [ ] Every element justified, minimal complexity (Principle III)
+
+### Accessibility Requirements
+- [ ] Contrast ratios meet WCAG AA standards (Principle V)
+- [ ] Screen reader navigation planned (Principle V)
+- [ ] Keyboard navigation support planned (Principle V)
+
+### Technical Compliance
+- [ ] Dependencies minimal and justified (Technical Rules)
+- [ ] Clean code principles documented (Technical Rules)
+- [ ] Performance budget enforcement planned (Technical Rules)
 
 ## Project Structure
 
