@@ -1,10 +1,13 @@
 import { Events } from '@/types/events';
-import { Handles } from './handles';
+import { ModalHandleEvents, TaskHandleEvents } from './handles';
 
 type Callback = (args: any) => void;
 type Event = Events | keyof DocumentEventMap;
 
-class EventsHandle extends Handles {
+class EventsHandle {
+  modal = new ModalHandleEvents();
+  task = new TaskHandleEvents();
+
   on(event: Event, callback: Callback) {
     document.addEventListener(event, callback);
   }

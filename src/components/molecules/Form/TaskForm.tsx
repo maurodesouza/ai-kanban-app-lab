@@ -6,6 +6,7 @@ import { Text } from '@/components/atoms/text';
 import { taskFormSchema, type TaskFormData } from '@/utils/validation/task';
 import { events } from '@/events';
 import { TaskStatus } from '@/types/task';
+import { TaskHandleEvents } from '@/events/handles/task';
 
 function Root({ children }: { children: React.ReactNode }) {
   return <div className="space-y-4">{children}</div>;
@@ -147,15 +148,14 @@ function TaskFormComponent() {
       console.log('Creating task:', data);
 
       // Emit task creation event
-      const eventData = {
-        ...data,
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        order: 1, // Would be calculated based on existing tasks
-      };
+      TaskHandleEvents.create({
+        title: data.title,
+        description: data.description,
+        dueDate: data.dueDate,
+        status: data.status as TaskStatus,
+      });
 
-      // For now, just close the modal
+      // Close modal
       events.modal.close();
       
       // Reset form

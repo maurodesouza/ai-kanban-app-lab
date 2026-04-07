@@ -1,7 +1,4 @@
 import { ModalHandleEvents } from './modal';
+import { TaskHandleEvents } from './task';
 
-class Handles {
-  modal = new ModalHandleEvents();
-}
-
-export { Handles };
+export { ModalHandleEvents, TaskHandleEvents };
