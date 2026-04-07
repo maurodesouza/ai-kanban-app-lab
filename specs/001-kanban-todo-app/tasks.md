@@ -47,11 +47,11 @@
 
 **Independent Test Criteria**: User opens application and sees three empty columns with filter input and add button, properly styled for mobile.
 
-- [ ] T025 [US1] Create KanbanColumn component in src/components/organisms/Kanban/KanbanColumn.tsx
-- [ ] T026 [US1] Create KanbanBoard component in src/components/organisms/Kanban/KanbanBoard.tsx
-- [ ] T027 [US1] Create FilterInput component in src/components/molecules/Filter/FilterInput.tsx
-- [ ] T028 [US1] Create AddTaskButton component in src/components/atoms/Button/AddTaskButton.tsx
-- [ ] T029 [US1] Create main page layout in src/app/page.tsx with kanban board
+- [x] T025 [US1] Create KanbanColumn component in src/components/organisms/Kanban/KanbanColumn.tsx
+- [x] T026 [US1] Create KanbanBoard component in src/components/organisms/Kanban/KanbanBoard.tsx
+- [x] T027 [US1] Create FilterInput component in src/components/molecules/Filter/FilterInput.tsx
+- [x] T028 [US1] Create AddTaskButton component in src/components/atoms/Button/AddTaskButton.tsx
+- [x] T029 [US1] Create main page layout in src/app/page.tsx with kanban board
 - [ ] T030 [US1] Implement responsive design for mobile-first kanban board
 - [ ] T031 [US1] Add accessibility attributes (ARIA labels, keyboard navigation)
 - [ ] T032 [US1] Create empty state components for columns
