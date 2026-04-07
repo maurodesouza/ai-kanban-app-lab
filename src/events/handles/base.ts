@@ -1,34 +1,12 @@
-import type { AppEvent, EventHandler } from '@/types/events';
-import { eventBus } from '../index';
+import { Events } from '@/types/events';
 
-export abstract class BaseEventHandle {
-  protected eventBus = eventBus;
+class BaseEventHandle {
+  protected emit(event: Events, payload?: unknown) {  
+    console.info(`events[emit]: ${event}`, payload);
 
-  protected on<K extends AppEvent['type']>(
-    eventType: K,
-    handler: EventHandler<AppEvent & { type: K }>
-  ) {
-    this.eventBus.on(eventType, handler);
+    const customEvent = new CustomEvent(event, { detail: payload });
+    document.dispatchEvent(customEvent);
   }
-
-  protected off<K extends AppEvent['type']>(
-    eventType: K,
-    handler: EventHandler<AppEvent & { type: K }>
-  ) {
-    this.eventBus.off(eventType, handler);
-  }
-
-  protected emit(event: AppEvent) {
-    this.eventBus.emit(event);
-  }
-
-  protected once<K extends AppEvent['type']>(
-    eventType: K,
-    handler: EventHandler<AppEvent & { type: K }>
-  ) {
-    this.eventBus.once(eventType, handler);
-  }
-
-  abstract initialize(): void;
-  abstract destroy(): void;
 }
+
+export { BaseEventHandle };
