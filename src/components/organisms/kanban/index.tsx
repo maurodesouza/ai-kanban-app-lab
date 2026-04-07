@@ -151,7 +151,7 @@ function Column({ column }: { column: KanbanColumn }) {
 }
 
 function Filter() {
-    const { filter, setFilter } = useKanbanStore()
+    const { filter, setFilter, isLoading } = useKanbanStore()
     const [localFilter, setLocalFilter] = useState(filter)
     const debouncedFilter = useDebounce(localFilter, 300)
 
@@ -166,18 +166,39 @@ function Filter() {
     }, [filter])
 
     return (
-        <div className="w-full sm:w-auto sm:flex-shrink-0">
+        <div className="w-full sm:w-auto sm:flex-shrink-0 relative">
             <label htmlFor="task-filter" className="sr-only">
                 Filtrar tarefas
             </label>
-            <Field.Input 
-                id="task-filter"
-                value={localFilter} 
-                onChange={(event) => setLocalFilter(event.target.value)}
-                placeholder="Filtrar tarefas..."
-                className="w-full sm:w-64 lg:w-80 h-11 sm:h-12 text-sm sm:text-base"
-                aria-label="Filtrar tarefas por título ou descrição"
-            />
+            <div className="relative">
+                <Field.Input 
+                    id="task-filter"
+                    value={localFilter} 
+                    onChange={(event) => setLocalFilter(event.target.value)}
+                    placeholder="Filtrar tarefas... (Ctrl+K)"
+                    className="w-full sm:w-64 lg:w-80 h-11 sm:h-12 text-sm sm:text-base pr-10"
+                    aria-label="Filtrar tarefas por título ou descrição (Ctrl+K)"
+                    title="Filter tasks (Ctrl+K)"
+                    disabled={isLoading}
+                />
+                {isLoading && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="animate-spin h-4 w-4 border-2 border-tone-primary-500 border-t-transparent rounded-full" aria-hidden="true" />
+                    </div>
+                )}
+                {localFilter && !isLoading && (
+                    <button
+                        type="button"
+                        onClick={() => setLocalFilter('')}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-tone-contrast-500 hover:text-tone-contrast-700 transition-colors"
+                        aria-label="Clear filter"
+                    >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

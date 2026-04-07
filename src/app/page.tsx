@@ -10,9 +10,15 @@ import { Kanban } from '@/components/organisms/kanban';
 import { TaskModal } from '@/components/organisms/Task/TaskModal';
 import { TaskCard } from '@/components/molecules/Task/TaskCard';
 import { useState } from 'react';
+import { useKanbanStore } from '@/stores/kanban';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 
 export default function Home() {
   const [activeTask, setActiveTask] = useState<any>(null);
+  const { isLoading, error } = useKanbanStore();
+  
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts();
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -78,35 +84,54 @@ export default function Home() {
   };
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <Kanban.Root>
-        <Kanban.Header>
-          <Text.Heading as="h1" className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
-            Kanban Board
-          </Text.Heading>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-            <Kanban.Filter />
-            <Clickable.Button 
-              onClick={() => events.modal.open({ modal: ModalsEnum.TASK })}
-              className="w-full sm:w-auto min-h-[44px] sm:min-h-[48px] px-4 sm:px-6 text-sm sm:text-base"
-              aria-label="Adicionar nova tarefa"
-            >
-              <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
-              <span className="hidden sm:inline">Adicionar Task</span>
-              <span className="sm:hidden">Adicionar</span>
-            </Clickable.Button>
-          </div>
-        </Kanban.Header>
-        <Kanban.Columns render={({ column }) => <Kanban.Column column={column} />} />
-      </Kanban.Root>
-      <TaskModal.Component />
-      <DragOverlay>
-        {activeTask && (
-          <div className="transform rotate-3 shadow-2xl opacity-90">
-            <TaskCard.Root task={activeTask} />
-          </div>
-        )}
-      </DragOverlay>
-    </DndContext>
+    <div className="min-h-screen bg-background-base">
+      {/* Global loading indicator */}
+      {isLoading && (
+        <div className="fixed top-4 right-4 z-50 bg-tone-primary-500 text-white px-3 py-2 rounded-lg shadow-lg flex items-center gap-2">
+          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+          <span className="text-sm">Loading...</span>
+        </div>
+      )}
+
+      {/* Error display */}
+      {error && (
+        <div className="fixed top-4 right-4 z-50 bg-palette-danger text-white px-3 py-2 rounded-lg shadow-lg max-w-sm">
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
+
+      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <Kanban.Root>
+          <Kanban.Header>
+            <Text.Heading as="h1" className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
+              Kanban Board
+            </Text.Heading>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+              <Kanban.Filter />
+              <Clickable.Button 
+                onClick={() => events.modal.open({ modal: ModalsEnum.TASK })}
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-[48px] px-4 sm:px-6 text-sm sm:text-base"
+                aria-label="Adicionar nova tarefa (Ctrl+N)"
+                title="New task (Ctrl+N)"
+                disabled={isLoading}
+              >
+                <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+                <span className="hidden sm:inline">Adicionar Task</span>
+                <span className="sm:hidden">Adicionar</span>
+              </Clickable.Button>
+            </div>
+          </Kanban.Header>
+          <Kanban.Columns render={({ column }) => <Kanban.Column column={column} />} />
+        </Kanban.Root>
+        <TaskModal.Component />
+        <DragOverlay>
+          {activeTask && (
+            <div className="transform rotate-3 shadow-2xl opacity-90">
+              <TaskCard.Root task={activeTask} />
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
+    </div>
   );
 }

@@ -21,7 +21,7 @@ function Root({ task, className }: TaskCardProps) {
     <article 
       ref={setNodeRef}
       style={style}
-      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 transition-colors min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move ${isDragging ? 'opacity-50 shadow-lg' : ''} ${className || ''}`}
+      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 hover:shadow-md transition-all duration-200 min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move hover:scale-[1.02] active:scale-[0.98] ${isDragging ? 'opacity-50 shadow-xl rotate-2 scale-105' : ''} ${className || ''}`}
       aria-label={`Task: ${task.title}`}
       {...attributes}
       {...listeners}
