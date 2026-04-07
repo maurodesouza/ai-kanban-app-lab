@@ -9,20 +9,20 @@
 
 **Independent Test Criteria**: Project can be installed and development server starts successfully.
 
-- [ ] T001 Initialize Next.js 15+ project with TypeScript and app directory structure
-- [ ] T002 Install and configure TailwindCSS 4.x with CSS tokens system
-- [ ] T003 [P] Install core dependencies: @dnd-kit, react-hook-form, zod, clsx, tailwind-merge, tailwind-variants, react-twc
-- [ ] T004 [P] Install development dependencies: vitest, @testing-library/react, cypress
-- [ ] T005 Configure ESLint with Next.js preset and Prettier with project configuration
-- [ ] T006 Create EditorConfig with specified settings
-- [ ] T007 Set up project directory structure according to implementation plan
-- [ ] T008 Create global CSS with theme tokens and base styles in src/styles/globals.css
-- [ ] T009 [P] Create theme files: src/styles/themes/dark.css and src/styles/themes/light.css
-- [ ] T010 Create Tailwind utilities in src/utils/tailwind/index.ts with cn, twx, getThemeToken
-- [ ] T011 Set up basic TypeScript types in src/types/task.ts and src/types/events.ts
-- [ ] T012 Create event bus system in src/events/index.ts with on/off methods
-- [ ] T013 Create base event handler in src/events/handles/base.ts
-- [ ] T014 Configure Next.js layout.tsx with theme provider and event system mounting
+- [x] T001 Initialize Next.js 15+ project with TypeScript and app directory structure
+- [x] T002 Install and configure TailwindCSS 4.x with CSS tokens system
+- [x] T003 [P] Install core dependencies: @dnd-kit, react-hook-form, zod, clsx, tailwind-merge, tailwind-variants, react-twc
+- [x] T004 [P] Install development dependencies: vitest, @testing-library/react, cypress
+- [x] T005 Configure ESLint with Next.js preset and Prettier with project configuration
+- [x] T006 Create EditorConfig with specified settings
+- [x] T007 Set up project directory structure according to implementation plan
+- [x] T008 Create global CSS with theme tokens and base styles in src/styles/globals.css
+- [x] T009 [P] Create theme files: src/styles/themes/dark.css and src/styles/themes/light.css
+- [x] T010 Create Tailwind utilities in src/utils/tailwind/index.ts with cn, twx, getThemeToken
+- [x] T011 Set up basic TypeScript types in src/types/task.ts and src/types/events.ts
+- [x] T012 Create event bus system in src/events/index.ts with on/off methods
+- [x] T013 Create base event handler in src/events/handles/base.ts
+- [x] T014 Configure Next.js layout.tsx with theme provider and event system mounting
 
 ## Phase 2: Foundational Infrastructure
 
@@ -30,16 +30,16 @@
 
 **Independent Test Criteria**: Event system can emit and handle events, basic components render.
 
-- [ ] T015 Create event handles for modal operations in src/events/handles/modal.ts
-- [ ] T016 Create event handles for task operations in src/events/handles/task.ts
-- [ ] T017 Create event handles for filter operations in src/events/handles/filter.ts
-- [ ] T018 Create validation schemas with Zod in src/utils/validation/index.ts
-- [ ] T019 Create React hooks for task state management in src/hooks/use-tasks.ts
-- [ ] T020 Create React hooks for filter state management in src/hooks/use-filter.ts
-- [ ] T021 Create base UI components in src/components/atoms/ (Button, Input, Text)
-- [ ] T022 Create modal component structure in src/components/molecules/Modal/
-- [ ] T023 Create form group components in src/components/molecules/Form/
-- [ ] T024 Create card component base in src/components/molecules/Card/
+- [x] T015 Create event handles for modal operations in src/events/handles/modal.ts
+- [x] T016 Create event handles for task operations in src/events/handles/task.ts
+- [x] T017 Create event handles for filter operations in src/events/handles/filter.ts
+- [x] T018 Create validation schemas with Zod in src/utils/validation/index.ts
+- [x] T019 Create React hooks for task state management in src/hooks/use-tasks.ts
+- [x] T020 Create React hooks for filter state management in src/hooks/use-filter.ts
+- [x] T021 Create base UI components in src/components/atoms/ (Button, Input, Text)
+- [x] T022 Create modal component structure in src/components/molecules/Modal/
+- [x] T023 Create form group components in src/components/molecules/Form/
+- [x] T024 Create card component base in src/components/molecules/Card/
 
 ## Phase 3: User Story 1 - View Kanban Board
 
