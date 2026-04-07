@@ -52,11 +52,11 @@
 - [x] T027 [US1] Create FilterInput component in src/components/molecules/Filter/FilterInput.tsx
 - [x] T028 [US1] Create AddTaskButton component in src/components/atoms/Button/AddTaskButton.tsx
 - [x] T029 [US1] Create main page layout in src/app/page.tsx with kanban board
-- [ ] T030 [US1] Implement responsive design for mobile-first kanban board
-- [ ] T031 [US1] Add accessibility attributes (ARIA labels, keyboard navigation)
-- [ ] T032 [US1] Create empty state components for columns
-- [ ] T033 [US1] Implement column header components with proper styling
-- [ ] T034 [US1] Add visual feedback for hover and focus states
+- [x] T030 [US1] Implement responsive design for mobile-first kanban board
+- [x] T031 [US1] Add accessibility attributes (ARIA labels, keyboard navigation)
+- [x] T032 [US1] Create empty state components for columns
+- [x] T033 [US1] Implement column header components with proper styling
+- [x] T034 [US1] Add visual feedback for hover and focus states
 - [ ] T035 [US1] Test mobile responsiveness with horizontal scrolling
 - [ ] T036 [US1] Verify 44px minimum touch targets on mobile
 
