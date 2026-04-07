@@ -69,15 +69,15 @@
 - [x] T037 [US2] Create TaskModal component in src/components/organisms/Task/TaskModal.tsx
 - [x] T038 [US2] Create TaskForm component in src/components/molecules/Form/TaskForm.tsx
 - [ ] T039 [US2] Create TaskCard component in src/components/molecules/Task/TaskCard.tsx
-- [ ] T040 [US2] Implement form validation with React Hook Form and Zod
+- [x] T040 [US2] Implement form validation with React Hook Form and Zod
 - [ ] T041 [US2] Create task creation event handlers in src/components/handles/taskHandles.ts
 - [ ] T042 [US2] Create modal event handlers in src/components/handles/modalHandles.ts
 - [ ] T043 [US2] Implement task creation logic in src/hooks/use-tasks.ts
-- [ ] T044 [US2] Add form validation error display
+- [x] T044 [US2] Add form validation error display
 - [ ] T045 [US2] Implement modal focus management and keyboard navigation
 - [ ] T046 [US2] Add task display with title, description, and due date
 - [ ] T047 [US2] Implement proper form submission handling
-- [ ] T048 [US2] Add loading states and error handling
+- [x] T048 [US2] Add loading states and error handling
 - [ ] T049 [US2] Test form validation (required title, optional fields)
 - [ ] T050 [US2] Verify task appears in TODO column after creation
 

@@ -1,12 +1,19 @@
 import React from 'react';
+import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Field } from '@/components/atoms/field';
 import { Text } from '@/components/atoms/text';
+import { taskFormSchema, type TaskFormData } from '@/utils/validation/task';
+import { events } from '@/events';
+import { TaskStatus } from '@/types/task';
 
-function Root({ children, onSubmit }: { children: React.ReactNode; onSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
-  return <form onSubmit={onSubmit} className="space-y-4">{children}</form>;
+function Root({ children }: { children: React.ReactNode }) {
+  return <div className="space-y-4">{children}</div>;
 }
 
-function TitleField() {
+function TitleField({ error }: { error?: string }) {
+  const { register } = useFormContext<TaskFormData>();
+  
   return (
     <Field.Root>
       <Field.Label htmlFor="task-title" className="block text-sm font-medium text-foreground mb-2">
@@ -14,17 +21,24 @@ function TitleField() {
       </Field.Label>
       <Field.Input
         id="task-title"
-        name="title"
+        {...register('title')}
         type="text"
         placeholder="Digite o título da tarefa"
-        className="w-full"
-        required
+        className={`w-full ${error ? 'border-palette-danger' : ''}`}
+        aria-invalid={!!error}
       />
+      {error && (
+        <Text.Paragraph className="text-palette-danger text-xs mt-1" role="alert">
+          {error}
+        </Text.Paragraph>
+      )}
     </Field.Root>
   );
 }
 
-function DescriptionField() {
+function DescriptionField({ error }: { error?: string }) {
+  const { register } = useFormContext<TaskFormData>();
+  
   return (
     <Field.Root>
       <Field.Label htmlFor="task-description" className="block text-sm font-medium text-foreground mb-2">
@@ -32,16 +46,24 @@ function DescriptionField() {
       </Field.Label>
       <Field.Textarea
         id="task-description"
-        name="description"
+        {...register('description')}
         placeholder="Digite a descrição da tarefa (opcional)"
-        className="w-full min-h-[100px] resize-none"
+        className={`w-full min-h-[100px] resize-none ${error ? 'border-palette-danger' : ''}`}
         rows={4}
+        aria-invalid={!!error}
       />
+      {error && (
+        <Text.Paragraph className="text-palette-danger text-xs mt-1" role="alert">
+          {error}
+        </Text.Paragraph>
+      )}
     </Field.Root>
   );
 }
 
-function DueDateField() {
+function DueDateField({ error }: { error?: string }) {
+  const { register } = useFormContext<TaskFormData>();
+  
   return (
     <Field.Root>
       <Field.Label htmlFor="task-due-date" className="block text-sm font-medium text-foreground mb-2">
@@ -49,15 +71,23 @@ function DueDateField() {
       </Field.Label>
       <Field.Input
         id="task-due-date"
-        name="dueDate"
+        {...register('dueDate')}
         type="date"
-        className="w-full"
+        className={`w-full ${error ? 'border-palette-danger' : ''}`}
+        aria-invalid={!!error}
       />
+      {error && (
+        <Text.Paragraph className="text-palette-danger text-xs mt-1" role="alert">
+          {error}
+        </Text.Paragraph>
+      )}
     </Field.Root>
   );
 }
 
-function StatusField() {
+function StatusField({ error }: { error?: string }) {
+  const { register } = useFormContext<TaskFormData>();
+  
   return (
     <Field.Root>
       <Field.Label htmlFor="task-status" className="block text-sm font-medium text-foreground mb-2">
@@ -65,21 +95,26 @@ function StatusField() {
       </Field.Label>
       <Field.Select
         id="task-status"
-        name="status"
-        className="w-full h-11"
-        defaultValue="todo"
+        {...register('status')}
+        className={`w-full h-11 ${error ? 'border-palette-danger' : ''}`}
+        aria-invalid={!!error}
       >
         <option value="todo">TODO</option>
         <option value="in_progress">IN PROGRESS</option>
         <option value="done">DONE</option>
       </Field.Select>
+      {error && (
+        <Text.Paragraph className="text-palette-danger text-xs mt-1" role="alert">
+          {error}
+        </Text.Paragraph>
+      )}
     </Field.Root>
   );
 }
 
 function ErrorMessage({ message }: { message: string }) {
   return (
-    <div className="p-3 bg-palette-danger/10 border border-palette-danger/20 rounded-md">
+    <div className="p-3 bg-palette-danger/10 border border-palette-danger/20 rounded-md" role="alert">
       <Text.Paragraph className="text-palette-danger text-sm">
         {message}
       </Text.Paragraph>
@@ -89,74 +124,79 @@ function ErrorMessage({ message }: { message: string }) {
 
 function TaskFormComponent() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const methods = useForm<TaskFormData>({
+    resolver: zodResolver(taskFormSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      dueDate: '',
+      status: TaskStatus.TODO,
+    },
+  });
+
+  const { handleSubmit, reset, formState: { errors } } = methods;
+
+  const onSubmit = async (data: TaskFormData) => {
     setIsSubmitting(true);
-    setError(null);
-
-    const formData = new FormData(event.currentTarget);
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const dueDate = formData.get('dueDate') as string;
-    const status = formData.get('status') as string;
+    setSubmitError(null);
 
     try {
-      // Validation
-      if (!title.trim()) {
-        throw new Error('O título é obrigatório');
-      }
-
-      if (title.trim().length < 3) {
-        throw new Error('O título deve ter pelo menos 3 caracteres');
-      }
-
       // Create task logic would go here
-      console.log('Creating task:', { title, description, dueDate, status });
+      console.log('Creating task:', data);
 
-      // Reset form
-      event.currentTarget.reset();
+      // Emit task creation event
+      const eventData = {
+        ...data,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        order: 1, // Would be calculated based on existing tasks
+      };
+
+      // For now, just close the modal
+      events.modal.close();
       
-      // Close modal
-      import('@/events').then(({ events }) => {
-        events.modal.close();
-      });
+      // Reset form
+      reset();
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar tarefa');
+      setSubmitError(err instanceof Error ? err.message : 'Erro ao criar tarefa');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Root onSubmit={handleSubmit}>
-      {error && <ErrorMessage message={error} />}
-      
-      <TitleField />
-      <DescriptionField />
-      <DueDateField />
-      <StatusField />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {submitError && <ErrorMessage message={submitError} />}
+        
+        <TitleField error={errors.title?.message} />
+        <DescriptionField error={errors.description?.message} />
+        <DueDateField error={errors.dueDate?.message} />
+        <StatusField error={errors.status?.message} />
 
-      <div className="flex justify-end gap-3 pt-4">
-        <button
-          type="button"
-          onClick={() => import('@/events').then(({ events }) => events.modal.close())}
-          className="px-4 py-2 border border-tone-contrast-300 hover:bg-tone-contrast-100 transition-colors rounded-md"
-          disabled={isSubmitting}
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-palette-brand text-white hover:bg-palette-brand/90 transition-colors rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Criando...' : 'Criar Tarefa'}
-        </button>
-      </div>
-    </Root>
+        <div className="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            onClick={() => events.modal.close()}
+            className="px-4 py-2 border border-tone-contrast-300 hover:bg-tone-contrast-100 transition-colors rounded-md"
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-palette-brand text-white hover:bg-palette-brand/90 transition-colors rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Criando...' : 'Criar Tarefa'}
+          </button>
+        </div>
+      </form>
+    </FormProvider>
   );
 }
 
