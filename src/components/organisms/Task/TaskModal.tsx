@@ -6,6 +6,74 @@ import { Text } from '@/components/atoms/text';
 import { TaskForm } from '@/components/molecules/Form/TaskForm';
 
 function Root({ children, isOpen, onClose }: { children: React.ReactNode; isOpen: boolean; onClose: () => void }) {
+  const modalRef = React.useRef<HTMLDivElement>(null);
+  const previousFocusRef = React.useRef<HTMLElement | null>(null);
+
+  // Focus management
+  React.useEffect(() => {
+    if (isOpen) {
+      // Store previous focused element
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      
+      // Focus first focusable element after modal opens
+      setTimeout(() => {
+        const firstFocusable = modalRef.current?.querySelector(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        ) as HTMLElement;
+        
+        if (firstFocusable) {
+          firstFocusable.focus();
+        }
+      }, 100);
+    } else {
+      // Restore focus when modal closes
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+    }
+  }, [isOpen]);
+
+  // Keyboard navigation
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+      
+      // Trap focus within modal
+      if (event.key === 'Tab') {
+        const focusableElements = modalRef.current?.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        ) as NodeListOf<HTMLElement>;
+        
+        if (focusableElements.length === 0) return;
+        
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -17,8 +85,10 @@ function Root({ children, isOpen, onClose }: { children: React.ReactNode; isOpen
       onClick={onClose}
     >
       <div 
-        className="bg-background-support rounded-lg border border-tone-contrast-300 w-full max-w-md p-6"
+        ref={modalRef}
+        className="bg-background-support rounded-lg border border-tone-contrast-300 w-full max-w-md p-6 outline-none"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         {children}
       </div>
@@ -28,9 +98,9 @@ function Root({ children, isOpen, onClose }: { children: React.ReactNode; isOpen
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between mb-6">
+    <header className="flex items-center justify-between mb-6">
       {children}
-    </div>
+    </header>
   );
 }
 
@@ -47,9 +117,9 @@ function Close({ onClose }: { onClose: () => void }) {
     <Clickable.Button
       onClick={onClose}
       aria-label="Fechar modal"
-      className="p-2 hover:bg-tone-contrast-100 rounded-md transition-colors"
+      className="p-2 hover:bg-tone-contrast-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring-outer focus:ring-offset-2"
     >
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       </svg>
     </Clickable.Button>
@@ -75,11 +145,15 @@ function TaskModalComponent() {
     const handleModalOpen = (event: CustomEvent) => {
       if (event.detail.modal === ModalsEnum.TASK) {
         setIsOpen(true);
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
       }
     };
 
     const handleModalClose = () => {
       setIsOpen(false);
+      // Restore body scroll
+      document.body.style.overflow = '';
     };
 
     document.addEventListener('modal.open', handleModalOpen as EventListener);
@@ -88,6 +162,8 @@ function TaskModalComponent() {
     return () => {
       document.removeEventListener('modal.open', handleModalOpen as EventListener);
       document.removeEventListener('modal.close', handleModalClose);
+      // Clean up body scroll on unmount
+      document.body.style.overflow = '';
     };
   }, []);
 

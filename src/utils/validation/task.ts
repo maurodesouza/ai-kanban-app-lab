@@ -14,10 +14,12 @@ export const taskFormSchema = z.object({
     .or(z.literal(''))
     .refine((date) => {
       if (!date) return true;
-      const parsedDate = new Date(date);
+      const parsedDate = new Date(date + 'T00:00:00.000Z');
+      if (isNaN(parsedDate.getTime())) return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      return parsedDate >= today;
+      const todayUTC = new Date(today.toISOString().split('T')[0] + 'T00:00:00.000Z');
+      return parsedDate >= todayUTC;
     }, 'A data de vencimento não pode ser anterior a hoje'),
   status: z.enum(['todo', 'in_progress', 'done'], {
     errorMap: () => ({ message: 'Status inválido' })
