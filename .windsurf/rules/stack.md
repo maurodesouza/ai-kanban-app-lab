@@ -10,7 +10,7 @@ You must strictly use the following stack when generating or modifying code:
 - TypeScript (strict mode)
 - TailwindCSS (styling)
 - shadcn/ui (UI components)
-- Prisma (database ORM)
+- React Hook Form (form handling)
 - Zod (validation and schemas)
 
 Do not introduce alternative libraries unless explicitly requested.
@@ -31,7 +31,12 @@ Do not introduce alternative libraries unless explicitly requested.
 
 #### TailwindCSS
 - Use Tailwind for all styling
-- Do not create custom CSS files unless ضروری
+- Do not create custom CSS files
+- Use auxiliary libraries to work with tailwind, like: 
+  - clsx
+  - tailwind-merge
+  - tailwind-variants
+  - react-twc
 
 #### shadcn/ui
 - Use as the base for UI components
@@ -54,8 +59,6 @@ Do not introduce alternative libraries unless explicitly requested.
 ### Integration Rules
 
 - Forms → Zod + (React Hook Form if needed)
-- API → validate input with Zod before processing
-- Database → Prisma + validated data only
 
 ---
 
