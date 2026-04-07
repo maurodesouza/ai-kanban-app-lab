@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from '@/components/atoms/text';
 import { Task } from '@/types/task';
+import { useDragHandle } from '@/components/handles/dragHandles';
 
 interface TaskCardProps {
   task: Task;
@@ -8,12 +9,22 @@ interface TaskCardProps {
 }
 
 function Root({ task, className }: TaskCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    style,
+    isDragging,
+  } = useDragHandle(task.id, task.status);
+
   return (
     <article 
-      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 transition-colors min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 ${className || ''}`}
-      role="article"
-      tabIndex={0}
+      ref={setNodeRef}
+      style={style}
+      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 transition-colors min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move ${isDragging ? 'opacity-50 shadow-lg' : ''} ${className || ''}`}
       aria-label={`Task: ${task.title}`}
+      {...attributes}
+      {...listeners}
     >
       <div className="space-y-2">
         <Title task={task} />

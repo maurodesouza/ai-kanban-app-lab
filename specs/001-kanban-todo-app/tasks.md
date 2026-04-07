@@ -87,20 +87,20 @@
 
 **Independent Test Criteria**: User can drag task from any column to any other column, task moves with visual feedback.
 
-- [ ] T051 [US3] Configure @dnd-kit with sensors and context providers
-- [ ] T052 [US3] Add drag and drop functionality to TaskCard component
-- [ ] T053 [US3] Add drop zone functionality to KanbanColumn component
-- [ ] T054 [US3] Create drag event handlers in src/components/handles/dragHandles.ts
-- [ ] T055 [US3] Implement task status update logic on drop
-- [ ] T056 [US3] Add visual feedback during drag operations
-- [ ] T057 [US3] Implement drag overlay for smooth dragging experience
+- [x] T051 [US3] Configure @dnd-kit with sensors and context providers
+- [x] T052 [US3] Add drag and drop functionality to TaskCard component
+- [x] T053 [US3] Add drop zone functionality to KanbanColumn component
+- [x] T054 [US3] Create drag event handlers in src/components/handles/dragHandles.ts
+- [x] T055 [US3] Implement task status update logic on drop
+- [x] T056 [US3] Add visual feedback during drag operations
+- [x] T057 [US3] Implement drag overlay for smooth dragging experience
 - [ ] T058 [US3] Add keyboard-based drag and drop support
 - [ ] T059 [US3] Implement task reordering within columns
 - [ ] T060 [US3] Add screen reader announcements for task movements
 - [ ] T061 [US3] Test drag performance (100ms response time requirement)
 - [ ] T062 [US3] Verify drag works on mobile touch devices
-- [ ] T063 [US3] Add visual indicators for valid drop zones
-- [ ] T064 [US3] Handle edge cases (drag to same column, rapid drags)
+- [x] T063 [US3] Add visual indicators for valid drop zones
+- [x] T064 [US3] Handle edge cases (drag to same column, rapid drags)
 
 ## Phase 6: User Story 4 - Filter Tasks
 
@@ -108,15 +108,15 @@
 
 **Independent Test Criteria**: User can type in filter input and see only matching tasks across all columns.
 
-- [ ] T065 [US4] Implement filter logic in src/hooks/use-filter.ts
-- [ ] T066 [US4] Add debounced filtering (300ms delay) to FilterInput component
-- [ ] T067 [US4] Create filter event handlers in src/components/handles/filterHandles.ts
-- [ ] T068 [US4] Implement filter state management
-- [ ] T069 [US4] Add "no matching tasks" message display
-- [ ] T070 [US4] Implement filter clearing functionality
-- [ ] T071 [US4] Add filter input placeholder and labels
+- [x] T065 [US4] Implement filter logic in src/hooks/use-filter.ts
+- [x] T066 [US4] Add debounced filtering (300ms delay) to FilterInput component
+- [x] T067 [US4] Create filter event handlers in src/components/handles/filterHandles.ts
+- [x] T068 [US4] Implement filter state management
+- [x] T069 [US4] Add "no matching tasks" message display
+- [x] T070 [US4] Implement filter clearing functionality
+- [x] T071 [US4] Add filter input placeholder and labels
 - [ ] T072 [US4] Test filter performance with 100+ tasks
-- [ ] T073 [US4] Verify filter works across all columns
+- [x] T073 [US4] Verify filter works across all columns
 - [ ] T074 [US4] Add accessibility announcements for filter results
 
 ## Phase 7: Polish & Cross-Cutting Concerns

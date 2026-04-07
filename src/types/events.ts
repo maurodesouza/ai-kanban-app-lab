@@ -12,6 +12,11 @@ export enum Events {
   // Modal
   MODAL_OPEN = 'modal.open',
   MODAL_CLOSE = 'modal.close',
+
+  // Drag and Drop
+  DRAG_START = 'drag.start',
+  DRAG_END = 'drag.end',
+  DRAG_DROP = 'drag.drop',
 }
 
 export enum ModalsEnum {

@@ -1,8 +1,28 @@
 import { Field } from "@/components/atoms/field";
 import { events } from "@/events";
-import { kanbanStore } from "@/stores/kanban";
+import { useKanbanStore } from "@/stores/kanban";
 import { TaskCard } from "@/components/molecules/Task/TaskCard";
 import { KanbanColumn, Task as TaskType } from "@/types/task";
+import { useDroppable } from "@dnd-kit/core";
+import { useDropHandle } from "@/components/handles/dragHandles";
+import { useState, useEffect } from "react";
+
+// Debounce hook
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 function Root({ children }: { children: React.ReactNode }) {
     return (
@@ -33,7 +53,13 @@ type ColumnsProps = {
 }
 
 function Columns(props: ColumnsProps) {
-    const { columns } = kanbanStore()
+    const { columns, getFilteredTasksByStatus } = useKanbanStore()
+
+    // Create filtered columns for rendering
+    const filteredColumns = columns.map((column: KanbanColumn) => ({
+        ...column,
+        tasks: getFilteredTasksByStatus(column.tasks, column.status)
+    }));
 
     return (
         <section 
@@ -41,7 +67,7 @@ function Columns(props: ColumnsProps) {
             role="region"
             aria-label="Kanban Columns"
         >
-            {columns.map(column => props.render({ column }))}
+            {filteredColumns.map((column: KanbanColumn) => props.render({ column }))}
         </section>
     );
 }
@@ -55,17 +81,31 @@ type ColumnProps = {
 }
 
 function Column({ column }: { column: KanbanColumn }) {
+    const { isOver, setNodeRef } = useDroppable({
+        id: column.status,
+    });
+
+    const { onDragEnd } = useDropHandle(column.status);
+    const { hasActiveFilter } = useKanbanStore();
+
     return (
         <section 
-            className="flex-shrink-0 w-72 sm:w-80 lg:w-96 bg-background-support rounded-lg border border-tone-contrast-300 min-h-[500px] sm:min-h-[600px]"
+            ref={setNodeRef}
+            className={`flex-shrink-0 w-72 sm:w-80 lg:w-96 bg-background-support rounded-lg border-2 min-h-[500px] sm:min-h-[600px] transition-all duration-200 ${
+                isOver 
+                    ? 'border-tone-primary-500 bg-background-support-hover scale-105 shadow-lg' 
+                    : 'border-tone-contrast-300'
+            }`}
             role="region"
             aria-labelledby={`column-${column.id}`}
             aria-describedby={`column-count-${column.id}`}
         >
-            <div className="p-3 sm:p-4 border-b border-tone-contrast-300">
+            <div className={`p-3 sm:p-4 border-b transition-colors ${
+                isOver ? 'border-tone-primary-500 bg-tone-primary-50' : 'border-tone-contrast-300'
+            }`}>
                 <h3 
                     id={`column-${column.id}`}
-                    className="font-semibold text-foreground text-sm sm:text-base"
+                    className="font-semibold text-foreground text-sm sm:text-base flex items-center gap-2"
                 >
                     {column.title}
                     <span 
@@ -75,6 +115,11 @@ function Column({ column }: { column: KanbanColumn }) {
                     >
                         ({column.tasks.length})
                     </span>
+                    {isOver && (
+                        <span className="text-xs text-tone-primary-600 font-medium animate-pulse">
+                            Drop here
+                        </span>
+                    )}
                 </h3>
             </div>
             <div 
@@ -83,9 +128,15 @@ function Column({ column }: { column: KanbanColumn }) {
                 aria-label={`Tasks in ${column.title}`}
             >
                 {column.tasks.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12 text-foreground-min" role="status">
-                        <div className="text-3xl sm:text-4xl mb-2 sm:mb-3" aria-hidden="true">+</div>
-                        <div className="text-xs sm:text-sm">Nenhuma tarefa</div>
+                    <div className={`text-center py-8 sm:py-12 transition-colors ${
+                        isOver ? 'text-tone-primary-600' : 'text-foreground-min'
+                    }`} role="status">
+                        <div className="text-3xl sm:text-4xl mb-2 sm:mb-3" aria-hidden="true">
+                            {isOver ? ' dropping to ' : (hasActiveFilter ? ' no results' : '+')}
+                        </div>
+                        <div className="text-xs sm:text-sm">
+                            {isOver ? 'Release to add task' : (hasActiveFilter ? 'No matching tasks' : 'Nenhuma tarefa')}
+                        </div>
                     </div>
                 ) : (
                     <div className="space-y-2 sm:space-y-3">
@@ -100,7 +151,19 @@ function Column({ column }: { column: KanbanColumn }) {
 }
 
 function Filter() {
-    const { filter, setFilter } = kanbanStore()
+    const { filter, setFilter } = useKanbanStore()
+    const [localFilter, setLocalFilter] = useState(filter)
+    const debouncedFilter = useDebounce(localFilter, 300)
+
+    // Update the store when debounced value changes
+    useEffect(() => {
+        setFilter(debouncedFilter)
+    }, [debouncedFilter, setFilter])
+
+    // Keep local state in sync with store
+    useEffect(() => {
+        setLocalFilter(filter)
+    }, [filter])
 
     return (
         <div className="w-full sm:w-auto sm:flex-shrink-0">
@@ -109,8 +172,8 @@ function Filter() {
             </label>
             <Field.Input 
                 id="task-filter"
-                value={filter} 
-                onChange={(event) => setFilter(event.target.value)}
+                value={localFilter} 
+                onChange={(event) => setLocalFilter(event.target.value)}
                 placeholder="Filtrar tarefas..."
                 className="w-full sm:w-64 lg:w-80 h-11 sm:h-12 text-sm sm:text-base"
                 aria-label="Filtrar tarefas por título ou descrição"

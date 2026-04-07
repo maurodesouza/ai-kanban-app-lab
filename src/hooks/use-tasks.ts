@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Task, TaskStatus, KanbanColumn } from '@/types/task';
 import { TaskHandleEvents, type TaskCreateEvent } from '@/events/handles/task';
+import { Events } from '@/types/events';
 
 // Initial columns setup
 const initialColumns: KanbanColumn[] = [
@@ -203,18 +204,25 @@ export const useTasks = () => {
       deleteTask(event.detail.id);
     };
 
+    // Listen for drag drop events
+    const handleDragDrop = (event: CustomEvent<{ taskId: string; sourceStatus: string; targetStatus: string }>) => {
+      moveTask(event.detail.taskId, event.detail.targetStatus as TaskStatus);
+    };
+
     // Register event listeners
     document.addEventListener('task.create', handleTaskCreate as EventListener);
     document.addEventListener('task.update', handleTaskUpdate as EventListener);
     document.addEventListener('task.delete', handleTaskDelete as EventListener);
+    document.addEventListener(Events.DRAG_DROP, handleDragDrop as EventListener);
 
     // Cleanup
     return () => {
       document.removeEventListener('task.create', handleTaskCreate as EventListener);
       document.removeEventListener('task.update', handleTaskUpdate as EventListener);
       document.removeEventListener('task.delete', handleTaskDelete as EventListener);
+      document.removeEventListener(Events.DRAG_DROP, handleDragDrop as EventListener);
     };
-  }, [addTask, updateTask, deleteTask]);
+  }, [addTask, updateTask, deleteTask, moveTask]);
 
   return {
     tasks,
