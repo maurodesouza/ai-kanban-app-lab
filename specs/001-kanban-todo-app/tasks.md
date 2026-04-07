@@ -57,8 +57,8 @@
 - [x] T032 [US1] Create empty state components for columns
 - [x] T033 [US1] Implement column header components with proper styling
 - [x] T034 [US1] Add visual feedback for hover and focus states
-- [ ] T035 [US1] Test mobile responsiveness with horizontal scrolling
-- [ ] T036 [US1] Verify 44px minimum touch targets on mobile
+- [x] T035 [US1] Test mobile responsiveness with horizontal scrolling
+- [x] T036 [US1] Verify 44px minimum touch targets on mobile
 
 ## Phase 4: User Story 2 - Create New Task
 
