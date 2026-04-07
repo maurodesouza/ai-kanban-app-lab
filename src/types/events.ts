@@ -1,57 +1,17 @@
-export type BaseEvent = {
-  timestamp: string;
-};
+export enum Events {
+  KAMBAN_CREATE_TASK = 'kamban.task.create',
+  KAMBAN_UPDATE_TASK = 'kamban.task.update',
+  KAMBAN_DELETE_TASK = 'kamban.task.delete',
+  KAMBAN_MOVE_TASK = 'kamban.task.move',
+  KAMBAN_REORDER_TASKS = 'kamban.tasks.reorder',
+  KAMBAN_DUPLICATE_TASK = 'kamban.task.duplicate',
+  KAMBAN_CLEAR_TASKS = 'kamban.tasks.clear',
+  KAMBAN_MOVE_TASK_UP = 'kamban.task.move.up',
+  KAMBAN_MOVE_TASK_DOWN = 'kamban.task.move.down',
 
-export type TaskCreateEvent = BaseEvent & {
-  type: 'task:create';
-  data: {
-    title: string;
-    description?: string;
-    dueDate?: string;
-  };
-};
+  // Modal
 
-export type TaskUpdateEvent = BaseEvent & {
-  type: 'task:update';
-  taskId: string;
-  data: Partial<{
-    title: string;
-    description: string;
-    dueDate: string;
-    status: string;
-    order: number;
-  }>;
-};
+  MODAL_OPEN = 'modal.open',
+  MODAL_CLOSE = 'modal.close',
+}
 
-export type TaskDeleteEvent = BaseEvent & {
-  type: 'task:delete';
-  taskId: string;
-};
-
-export type ModalEvent = BaseEvent & {
-  type: 'modal:open' | 'modal:close';
-  modalType: 'task' | 'confirm';
-  data?: any;
-};
-
-export type FilterEvent = BaseEvent & {
-  type: 'filter:update';
-  query: string;
-};
-
-export type DragEvent = BaseEvent & {
-  type: 'drag:start' | 'drag:end' | 'drag:drop';
-  taskId: string;
-  sourceStatus: string;
-  targetStatus?: string;
-};
-
-export type AppEvent = 
-  | TaskCreateEvent
-  | TaskUpdateEvent
-  | TaskDeleteEvent
-  | ModalEvent
-  | FilterEvent
-  | DragEvent;
-
-export type EventHandler<T extends AppEvent = AppEvent> = (event: T) => void;
