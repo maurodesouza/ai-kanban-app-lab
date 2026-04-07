@@ -28,7 +28,8 @@
     "react-twc": "^1.4.0",
     "tailwind-merge": "^2.5.4",
     "tailwind-variants": "^0.3.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",

@@ -23,6 +23,12 @@ const inputVariants = tv({
 type InputProps = React.ComponentProps<"input"> &
   VariantProps<typeof inputVariants>;
 
+const Root = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
+  function Root(props, ref) {
+    return <div ref={ref} {...props} />;
+  }
+);
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   function Input(props, ref) {
     const { className, variant, size, ...rest } = props;
@@ -59,6 +65,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 );
 
 export const Field = {
+  Root,
   Input,
   Textarea,
 };
