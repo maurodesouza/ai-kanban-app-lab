@@ -64,8 +64,22 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   }
 );
 
+const Label = React.forwardRef<HTMLLabelElement, React.ComponentProps<"label">>(
+  function Label(props, ref) {
+    return <label ref={ref} {...props} />;
+  }
+);
+
+const Select = React.forwardRef<HTMLSelectElement, React.ComponentProps<"select">>(
+  function Select(props, ref) {
+    return <select ref={ref} {...props} />;
+  }
+);
+
 export const Field = {
   Root,
   Input,
   Textarea,
+  Label,
+  Select,
 };

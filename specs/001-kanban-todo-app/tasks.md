@@ -66,8 +66,8 @@
 
 **Independent Test Criteria**: User can click add button, open modal, fill form, submit, and see task in TODO column.
 
-- [ ] T037 [US2] Create TaskModal component in src/components/organisms/Task/TaskModal.tsx
-- [ ] T038 [US2] Create TaskForm component in src/components/molecules/Form/TaskForm.tsx
+- [x] T037 [US2] Create TaskModal component in src/components/organisms/Task/TaskModal.tsx
+- [x] T038 [US2] Create TaskForm component in src/components/molecules/Form/TaskForm.tsx
 - [ ] T039 [US2] Create TaskCard component in src/components/molecules/Task/TaskCard.tsx
 - [ ] T040 [US2] Implement form validation with React Hook Form and Zod
 - [ ] T041 [US2] Create task creation event handlers in src/components/handles/taskHandles.ts
