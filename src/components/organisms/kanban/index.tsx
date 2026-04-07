@@ -1,6 +1,7 @@
 import { Field } from "@/components/atoms/field";
 import { events } from "@/events";
 import { kanbanStore } from "@/stores/kanban";
+import { TaskCard } from "@/components/molecules/Task/TaskCard";
 import { KanbanColumn, Task as TaskType } from "@/types/task";
 
 function Root({ children }: { children: React.ReactNode }) {
@@ -89,18 +90,7 @@ function Column({ column }: { column: KanbanColumn }) {
                 ) : (
                     <div className="space-y-2 sm:space-y-3">
                         {column.tasks.map(task => (
-                            <article 
-                                key={task.id} 
-                                className="bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 transition-colors min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2"
-                                role="article"
-                                tabIndex={0}
-                                aria-label={`Task: ${task.title}`}
-                            >
-                                <div className="font-medium text-foreground text-sm sm:text-base">{task.title}</div>
-                                {task.description && (
-                                    <div className="text-xs sm:text-sm text-foreground-min mt-1 sm:mt-2 line-clamp-2">{task.description}</div>
-                                )}
-                            </article>
+                            <TaskCard.Root key={task.id} task={task} />
                         ))}
                     </div>
                 )}
@@ -110,7 +100,7 @@ function Column({ column }: { column: KanbanColumn }) {
 }
 
 function Filter() {
-    const { filter } = kanbanStore()
+    const { filter, setFilter } = kanbanStore()
 
     return (
         <div className="w-full sm:w-auto sm:flex-shrink-0">
@@ -120,7 +110,7 @@ function Filter() {
             <Field.Input 
                 id="task-filter"
                 value={filter} 
-                onChange={(event) => events.kamban.filter(event.target.value)}
+                onChange={(event) => setFilter(event.target.value)}
                 placeholder="Filtrar tarefas..."
                 className="w-full sm:w-64 lg:w-80 h-11 sm:h-12 text-sm sm:text-base"
                 aria-label="Filtrar tarefas por título ou descrição"

@@ -1,0 +1,105 @@
+import React from 'react';
+import { Text } from '@/components/atoms/text';
+import { Task } from '@/types/task';
+
+interface TaskCardProps {
+  task: Task;
+  className?: string;
+}
+
+function Root({ task, className }: TaskCardProps) {
+  return (
+    <article 
+      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 transition-colors min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 ${className || ''}`}
+      role="article"
+      tabIndex={0}
+      aria-label={`Task: ${task.title}`}
+    >
+      <div className="space-y-2">
+        <Title task={task} />
+        {task.description && <Description task={task} />}
+        {task.dueDate && <DueDate dueDate={task.dueDate} />}
+      </div>
+    </article>
+  );
+}
+
+function Title({ task }: { task: Task }) {
+  return (
+    <div className="font-medium text-foreground text-sm sm:text-base">
+      {task.title}
+    </div>
+  );
+}
+
+function Description({ task }: { task: Task }) {
+  return (
+    <div className="text-xs sm:text-sm text-foreground-min mt-1 sm:mt-2 line-clamp-2">
+      {task.description}
+    </div>
+  );
+}
+
+function DueDate({ dueDate }: { dueDate: string }) {
+  const date = new Date(dueDate);
+  const formattedDate = date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+  const isOverdue = date < new Date() && date.toDateString() !== new Date().toDateString();
+
+  return (
+    <div className="flex items-center gap-1 text-xs text-foreground-min mt-2">
+      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span className={isOverdue ? 'text-palette-danger' : ''}>
+        {formattedDate}
+      </span>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'todo':
+        return 'bg-gray-100 text-gray-800';
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'done':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'todo':
+        return 'TODO';
+      case 'in_progress':
+        return 'IN PROGRESS';
+      case 'done':
+        return 'DONE';
+      default:
+        return status.toUpperCase();
+    }
+  };
+
+  return (
+    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
+      {getStatusLabel(status)}
+    </span>
+  );
+}
+
+export const TaskCard = {
+  Root,
+  Title,
+  Description,
+  DueDate,
+  StatusBadge,
+};

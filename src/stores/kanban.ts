@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { Task, KanbanColumn, TaskStatus } from '@/types/task';
+import { useTasks } from '@/hooks/use-tasks';
 
 interface KanbanStore {
   tasks: Task[];
   columns: KanbanColumn[];
   filter: string;
+  setFilter: (query: string) => void;
 }
 
 const initialColumns: KanbanColumn[] = [
@@ -13,9 +15,25 @@ const initialColumns: KanbanColumn[] = [
   { id: 'done', title: 'DONE', status: TaskStatus.DONE, tasks: [] },
 ];
 
-export const kanbanStore = create<KanbanStore>(() => ({
+export const kanbanStore = create<KanbanStore>((set) => ({
   tasks: [],
   columns: initialColumns,
   filter: '',
+  setFilter: (query: string) => set({ filter: query }),
 }));
 
+// Hook to integrate use-tasks with Zustand
+export const useKanbanStore = () => {
+  const tasksData = useTasks();
+  
+  return {
+    ...tasksData,
+    // Zustand-like interface
+    tasks: tasksData.tasks,
+    columns: tasksData.columns,
+    filter: kanbanStore.getState().filter,
+    setFilter: (query: string) => {
+      kanbanStore.setState({ filter: query });
+    },
+  };
+};
