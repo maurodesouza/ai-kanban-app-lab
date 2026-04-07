@@ -10,8 +10,12 @@ export enum Events {
   KAMBAN_MOVE_TASK_DOWN = 'kamban.task.move.down',
 
   // Modal
-
   MODAL_OPEN = 'modal.open',
   MODAL_CLOSE = 'modal.close',
+}
+
+export enum ModalsEnum {
+  TASK = 'task',
+  FILTER = 'filter',
 }
 

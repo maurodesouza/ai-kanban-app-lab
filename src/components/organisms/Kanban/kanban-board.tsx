@@ -25,16 +25,8 @@ const Root = twx.div`
   flex flex-col h-full
 `;
 
-const Header = twx.div`
-  flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border-b border-tone-contrast-300
-`;
-
 const Title = twx.h1`
   text-2xl font-bold text-foreground
-`;
-
-const Controls = twx.div`
-  flex items-center gap-2
 `;
 
 const Columns = twx.div`
@@ -54,13 +46,8 @@ function KanbanBoardComponent({
   ...props 
 }: KanbanBoardProps) {
   return (
-    <Root className={className}>
-      <Header>
-        <Title>Kanban Board</Title>
-        <Controls>
-          {children}
-        </Controls>
-      </Header>
+    <Root className={className} {...props}>
+      {children}
       <Columns className={kanbanBoardVariants({ responsive })}>
         {columns.map((column) => (
           <KanbanColumn.Component
@@ -78,9 +65,7 @@ function KanbanBoardComponent({
 
 export const KanbanBoard = {
   Root,
-  Header,
   Title,
-  Controls,
   Columns,
   Component: KanbanBoardComponent,
 };
