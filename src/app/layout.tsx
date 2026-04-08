@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { DndContext, TouchSensor, MouseSensor, useSensor, useSensors } from '@dnd-kit/core'
 import '@/styles/globals.css'
+import '@/styles/theme.css'
 
 function DndProviderWrapper({ children }: { children: React.ReactNode }) {
   const sensors = useSensors(
