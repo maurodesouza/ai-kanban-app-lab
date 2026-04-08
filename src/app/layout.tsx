@@ -1,29 +1,7 @@
 import type { Metadata } from 'next'
-import { DndContext, TouchSensor, MouseSensor, useSensor, useSensors } from '@dnd-kit/core'
 import '@/styles/globals.css'
 import '@/styles/theme.css'
-
-function DndProviderWrapper({ children }: { children: React.ReactNode }) {
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 200,
-        tolerance: 8,
-      },
-    })
-  )
-
-  return (
-    <DndContext sensors={sensors}>
-      {children}
-    </DndContext>
-  )
-}
+import { DndProviderWrapper } from './_components/DndProviderWrapper'
 
 export const metadata: Metadata = {
   title: 'Kanban Todo App',
