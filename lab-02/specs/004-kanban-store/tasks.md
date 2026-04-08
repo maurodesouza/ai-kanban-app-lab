@@ -29,10 +29,10 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create src/types directory structure per implementation plan
-- [ ] T002 Create src/stores/kanban directory structure per implementation plan
-- [ ] T003 [P] Add valtio dependency to package.json
-- [ ] T004 [P] Verify TypeScript configuration supports type definitions
+- [x] T001 Create src/types directory structure per implementation plan
+- [x] T002 Create src/stores/kanban directory structure per implementation plan
+- [x] T003 [P] Add valtio dependency to package.json
+- [x] T004 [P] Verify TypeScript configuration supports type definitions
 
 ---
 
@@ -42,9 +42,9 @@ description: "Task list template for feature implementation"
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Enable valtio unstable_op globally in project
-- [ ] T006 [P] Verify src/types/ directory exists and is accessible
-- [ ] T007 [P] Verify src/stores/kanban/ directory exists and is accessible
+- [x] T005 Enable valtio unstable_op globally in project
+- [x] T006 [P] Verify src/types/ directory exists and is accessible
+- [x] T007 [P] Verify src/stores/kanban/ directory exists and is accessible
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -58,15 +58,15 @@ description: "Task list template for feature implementation"
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Create KanbanTask type in src/types/kanban.ts
-- [ ] T009 [US1] Create KanbanColumn type in src/types/kanban.ts
-- [ ] T010 [US1] Create Kanban type in src/types/kanban.ts
-- [ ] T011 [US1] Export all kanban types from src/types/kanban.ts
-- [ ] T012 [US1] Create createKanbanStore function in src/stores/kanban/index.ts
-- [ ] T013 [US1] Implement valtio proxy state in createKanbanStore
-- [ ] T014 [US1] Implement compute$columnIdsWithTasks function
-- [ ] T015 [US1] Implement subscribe pattern for computed properties
-- [ ] T016 [US1] Export createKanbanStore from src/stores/kanban/index.ts
+- [x] T008 [US1] Create KanbanTask type in src/types/kanban.ts
+- [x] T009 [US1] Create KanbanColumn type in src/types/kanban.ts
+- [x] T010 [US1] Create Kanban type in src/types/kanban.ts
+- [x] T011 [US1] Export all kanban types from src/types/kanban.ts
+- [x] T012 [US1] Create createKanbanStore function in src/stores/kanban/index.ts
+- [x] T013 [US1] Implement valtio proxy state in createKanbanStore
+- [x] T014 [US1] Implement compute$columnIdsWithTasks function
+- [x] T015 [US1] Implement subscribe pattern for computed properties
+- [x] T016 [US1] Export createKanbanStore from src/stores/kanban/index.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -94,12 +94,12 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T022 Verify kanban types can be imported successfully
-- [ ] T023 Verify createKanbanStore can be imported successfully
-- [ ] T024 Test basic store functionality with sample data
-- [ ] T025 Verify computed properties update correctly
-- [ ] T026 Ensure compliance with user requirements (valtio, exact types)
-- [ ] T027 Clean up any temporary test files
+- [x] T022 Verify kanban types can be imported successfully
+- [x] T023 Verify createKanbanStore can be imported successfully
+- [x] T024 Test basic store functionality with sample data
+- [x] T025 Verify computed properties update correctly
+- [x] T026 Ensure compliance with user requirements (valtio, exact types)
+- [x] T027 Clean up any temporary test files
 
 ---
 
