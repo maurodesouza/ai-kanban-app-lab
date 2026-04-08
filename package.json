@@ -15,7 +15,10 @@
     "test:e2e": "cypress open",
     "test:coverage": "vitest --coverage",
     "performance:check": "node scripts/performance-budget.js",
-    "performance:ci": "npm run build && node scripts/performance-budget.js --ci"
+    "performance:ci": "npm run build && node scripts/performance-budget.js --ci",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:staging": "./scripts/deploy.sh --env staging",
+    "deploy:production": "./scripts/deploy.sh --env production"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
