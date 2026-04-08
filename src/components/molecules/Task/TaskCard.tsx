@@ -3,6 +3,7 @@ import { Text } from '@/components/atoms/text';
 import { Task } from '@/types/task';
 import { useSortable } from '@dnd-kit/sortable';
 import { useDragHandle } from '@/components/handles/dragHandles';
+import { useKeyboardDragDrop } from '@/hooks/use-keyboard-drag-drop';
 
 interface TaskCardProps {
   task: Task;
@@ -10,6 +11,8 @@ interface TaskCardProps {
 }
 
 function Root({ task, className }: TaskCardProps) {
+  const { state, startKeyboardDrag } = useKeyboardDragDrop();
+  
   const {
     attributes,
     listeners,
@@ -31,12 +34,26 @@ function Root({ task, className }: TaskCardProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Space or Enter to start keyboard drag
+    if ((event.key === ' ' || event.key === 'Enter') && !state.isActive) {
+      event.preventDefault();
+      startKeyboardDrag(task.id);
+    }
+  };
+
+  const isSelected = state.selectedTaskId === task.id;
+  const isTargetColumn = state.targetColumn === task.status;
+
   return (
     <article 
       ref={setNodeRef}
       style={style}
-      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 hover:shadow-md transition-all duration-200 min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move hover:scale-[1.02] active:scale-[0.98] ${isDragging ? 'shadow-xl rotate-2 scale-105' : ''} ${className || ''}`}
+      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 hover:shadow-md transition-all duration-200 min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move hover:scale-[1.02] active:scale-[0.98] ${isDragging ? 'shadow-xl rotate-2 scale-105' : ''} ${isSelected ? 'ring-2 ring-ring-outer ring-offset-2' : ''} ${isTargetColumn && state.isActive ? 'ring-2 ring-tone-primary-500 ring-offset-2' : ''} ${className || ''}`}
       aria-label={`Task: ${task.title}`}
+      data-task-id={task.id}
+      data-task-status={task.status}
+      onKeyDown={handleKeyDown}
       {...attributes}
       {...listeners}
     >
@@ -45,6 +62,11 @@ function Root({ task, className }: TaskCardProps) {
         {task.description && <Description task={task} />}
         {task.dueDate && <DueDate dueDate={task.dueDate} />}
       </div>
+      {isSelected && (
+        <div className="absolute top-0 right-0 bg-tone-primary-500 text-white text-xs px-2 py-1 rounded-bl-md">
+          Keyboard Drag Active
+        </div>
+      )}
     </article>
   );
 }

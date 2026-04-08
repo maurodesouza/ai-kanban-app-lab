@@ -12,16 +12,19 @@ import { TaskModal } from '@/components/organisms/Task/TaskModal';
 import { TaskCard } from '@/components/molecules/Task/TaskCard';
 import { PerformanceTest } from '@/components/organisms/PerformanceTest';
 import { DragPerformanceTest } from '@/components/organisms/DragPerformanceTest';
+import { AccessibilityTest } from '@/components/organisms/AccessibilityTest';
 import { useState } from 'react';
 import { useKanbanStore } from '@/stores/kanban';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { useKeyboardDragDrop } from '@/hooks/use-keyboard-drag-drop';
 
 export default function Home() {
   const [activeTask, setActiveTask] = useState<any>(null);
   const { isLoading, error, tasks, updateTask } = useKanbanStore();
   
-  // Enable keyboard shortcuts
+  // Enable keyboard shortcuts and drag drop
   useKeyboardShortcuts();
+  useKeyboardDragDrop();
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -204,6 +207,9 @@ export default function Home() {
         <PerformanceTest />
         <DragPerformanceTest />
       </div>
+
+      {/* Accessibility Test Component (for development) */}
+      <AccessibilityTest.Root />
     </div>
   );
 }

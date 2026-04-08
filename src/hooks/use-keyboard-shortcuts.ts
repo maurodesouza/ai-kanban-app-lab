@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { events } from '@/events';
 import { ModalsEnum } from '@/types/events';
+import { keyboardDragShortcuts } from './use-keyboard-drag-drop';
 
 export function useKeyboardShortcuts() {
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -54,4 +55,5 @@ export const keyboardShortcuts = {
   'Ctrl/Cmd + K': 'Focus filter',
   'Escape': 'Close modal',
   'Ctrl/Cmd + /': 'Show shortcuts',
+  ...keyboardDragShortcuts,
 };
