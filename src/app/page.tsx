@@ -34,6 +34,11 @@ export default function Home() {
     
     if (!over) {
       setActiveTask(null);
+      // Announce drag cancelled
+      const dragAnnouncements = document.getElementById('drag-announcements');
+      if (dragAnnouncements) {
+        dragAnnouncements.textContent = 'Drag cancelled';
+      }
       return;
     }
     
@@ -53,6 +58,11 @@ export default function Home() {
     // Prevent dropping to same column
     if (sourceStatus === targetStatus) {
       setActiveTask(null);
+      // Announce same column drop
+      const dragAnnouncements = document.getElementById('drag-announcements');
+      if (dragAnnouncements) {
+        dragAnnouncements.textContent = 'Task moved to same column';
+      }
       return;
     }
     
@@ -76,8 +86,26 @@ export default function Home() {
         sourceStatus,
         targetStatus,
       });
+
+      // Announce successful move
+      const dragAnnouncements = document.getElementById('drag-announcements');
+      if (dragAnnouncements) {
+        const statusNames = {
+          'todo': 'TODO',
+          'in_progress': 'IN PROGRESS', 
+          'done': 'DONE'
+        };
+        const sourceName = statusNames[sourceStatus as keyof typeof statusNames];
+        const targetName = statusNames[targetStatus as keyof typeof statusNames];
+        dragAnnouncements.textContent = `Task moved from ${sourceName} to ${targetName}`;
+      }
     } catch (error) {
       console.error('Error during drag drop:', error);
+      // Announce error
+      const dragAnnouncements = document.getElementById('drag-announcements');
+      if (dragAnnouncements) {
+        dragAnnouncements.textContent = 'Error moving task';
+      }
     }
     
     setActiveTask(null);
@@ -85,6 +113,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background-base">
+      {/* Accessibility live regions */}
+      <div 
+        id="filter-announcements" 
+        className="sr-only" 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+      />
+      <div 
+        id="drag-announcements" 
+        className="sr-only" 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+      />
+
       {/* Global loading indicator */}
       {isLoading && (
         <div className="fixed top-4 right-4 z-50 bg-tone-primary-500 text-white px-3 py-2 rounded-lg shadow-lg flex items-center gap-2">

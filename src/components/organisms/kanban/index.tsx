@@ -5,7 +5,7 @@ import { TaskCard } from "@/components/molecules/Task/TaskCard";
 import { KanbanColumn, Task as TaskType } from "@/types/task";
 import { useDroppable } from "@dnd-kit/core";
 import { useDropHandle } from "@/components/handles/dragHandles";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 
 // Debounce hook
 function useDebounce(value: string, delay: number) {
@@ -150,7 +150,7 @@ function Column({ column }: { column: KanbanColumn }) {
     );
 }
 
-function Filter() {
+const Filter = forwardRef<HTMLInputElement>((props, ref) => {
     const { filter, setFilter, isLoading } = useKanbanStore()
     const [localFilter, setLocalFilter] = useState(filter)
     const debouncedFilter = useDebounce(localFilter, 300)
@@ -172,6 +172,7 @@ function Filter() {
             </label>
             <div className="relative">
                 <Field.Input 
+                    ref={ref}
                     id="task-filter"
                     value={localFilter} 
                     onChange={(event) => setLocalFilter(event.target.value)}
@@ -201,7 +202,7 @@ function Filter() {
             </div>
         </div>
     );
-}
+});
 
 const Kanban = {
     Root,

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Task } from '@/types/task';
 
 export interface FilterCriteria {
@@ -57,6 +57,21 @@ export const useFilter = () => {
       query: filter.query,
     };
   }, [filterTasks, filter.query]);
+
+  // Accessibility announcements for filter results
+  useEffect(() => {
+    if (filter.active) {
+      const announcement = filter.query.trim() 
+        ? `Filter applied: ${filter.query}`
+        : 'Filter cleared';
+      
+      // Create a live region for announcements
+      const liveRegion = document.getElementById('filter-announcements');
+      if (liveRegion) {
+        liveRegion.textContent = announcement;
+      }
+    }
+  }, [filter.query, filter.active]);
 
   return {
     filter,

@@ -117,7 +117,7 @@
 - [x] T071 [US4] Add filter input placeholder and labels
 - [ ] T072 [US4] Test filter performance with 100+ tasks
 - [x] T073 [US4] Verify filter works across all columns
-- [ ] T074 [US4] Add accessibility announcements for filter results
+- [x] T074 [US4] Add accessibility announcements for filter results
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
@@ -132,7 +132,7 @@
 - [ ] T079 Implement theme switching (light/dark mode)
 - [ ] T080 Add comprehensive accessibility testing and fixes
 - [ ] T081 Optimize bundle size with code splitting
-- [ ] T082 Add proper focus management throughout application
+- [x] T082 Add proper focus management throughout application
 - [x] T083 Implement keyboard shortcuts for power users
 - [ ] T084 Add visual polish and final styling touches
 - [ ] T085 Create comprehensive unit tests for components
