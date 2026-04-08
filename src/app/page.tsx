@@ -13,10 +13,13 @@ import { TaskCard } from '@/components/molecules/Task/TaskCard';
 import { PerformanceTest } from '@/components/organisms/PerformanceTest';
 import { DragPerformanceTest } from '@/components/organisms/DragPerformanceTest';
 import { AccessibilityTest } from '@/components/organisms/AccessibilityTest';
+import { PerformanceDashboard } from '@/components/organisms/PerformanceDashboard';
+import { AccessibilityAuditDashboard } from '@/components/organisms/AccessibilityAuditDashboard';
 import { useState } from 'react';
 import { useKanbanStore } from '@/stores/kanban';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import { useKeyboardDragDrop } from '@/hooks/use-keyboard-drag-drop';
+import { usePerformanceMonitoring } from '@/hooks/use-performance-monitoring';
 
 export default function Home() {
   const [activeTask, setActiveTask] = useState<any>(null);
@@ -25,6 +28,9 @@ export default function Home() {
   // Enable keyboard shortcuts and drag drop
   useKeyboardShortcuts();
   useKeyboardDragDrop();
+  
+  // Performance monitoring
+  const { measureOperation } = usePerformanceMonitoring();
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -207,6 +213,12 @@ export default function Home() {
         <PerformanceTest />
         <DragPerformanceTest />
       </div>
+
+      {/* Performance Dashboard (for development) */}
+      <PerformanceDashboard />
+
+      {/* Accessibility Audit Dashboard (for development) */}
+      <AccessibilityAuditDashboard />
 
       {/* Accessibility Test Component (for development) */}
       <AccessibilityTest.Root />

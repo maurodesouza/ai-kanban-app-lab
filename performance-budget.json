@@ -1,0 +1,60 @@
+{
+  "budget": {
+    "threshold": 70,
+    "bundleSize": 250,
+    "LCP": 2500,
+    "FID": 100,
+    "CLS": 0.1,
+    "dragResponseTime": 100,
+    "filterResponseTime": 16,
+    "renderTime": 100,
+    "memoryUsage": 50,
+    "fps": 60
+  },
+  "warnings": {
+    "bundleSize": 200,
+    "LCP": 1800,
+    "FID": 50,
+    "CLS": 0.05,
+    "dragResponseTime": 50,
+    "filterResponseTime": 8,
+    "renderTime": 50,
+    "memoryUsage": 30,
+    "fps": 55
+  },
+  "critical": {
+    "bundleSize": 300,
+    "LCP": 4000,
+    "FID": 300,
+    "CLS": 0.25,
+    "dragResponseTime": 200,
+    "filterResponseTime": 33,
+    "renderTime": 200,
+    "memoryUsage": 100,
+    "fps": 30
+  },
+  "rules": {
+    "enforceInCI": true,
+    "failBuildOnCritical": true,
+    "warnOnWarnings": true,
+    "trackTrends": true,
+    "reportToAnalytics": false
+  },
+  "exclusions": [
+    "node_modules/**",
+    "*.test.*",
+    "*.spec.*",
+    "coverage/**",
+    ".next/**"
+  ],
+  "bundles": {
+    "chunks": {
+      "maxSize": 50,
+      "maxChunks": 10
+    },
+    "vendors": {
+      "maxSize": 100,
+      "separate": ["react", "react-dom", "@dnd-kit"]
+    }
+  }
+}

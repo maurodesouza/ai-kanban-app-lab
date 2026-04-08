@@ -13,7 +13,9 @@
     "test": "vitest",
     "test:integration": "vitest --config vitest.integration.config.ts",
     "test:e2e": "cypress open",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "performance:check": "node scripts/performance-budget.js",
+    "performance:ci": "npm run build && node scripts/performance-budget.js --ci"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
