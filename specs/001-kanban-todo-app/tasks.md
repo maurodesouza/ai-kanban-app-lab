@@ -97,8 +97,8 @@
 - [ ] T058 [US3] Add keyboard-based drag and drop support
 - [x] T059 [US3] Implement task reordering within columns
 - [x] T060 [US3] Add screen reader announcements for task movements
-- [ ] T061 [US3] Test drag performance (100ms response time requirement)
-- [ ] T062 [US3] Verify drag works on mobile touch devices
+- [x] T061 [US3] Test drag performance (100ms response time requirement)
+- [x] T062 [US3] Verify drag works on mobile touch devices
 - [x] T063 [US3] Add visual indicators for valid drop zones
 - [x] T064 [US3] Handle edge cases (drag to same column, rapid drags)
 
@@ -115,7 +115,7 @@
 - [x] T069 [US4] Add "no matching tasks" message display
 - [x] T070 [US4] Implement filter clearing functionality
 - [x] T071 [US4] Add filter input placeholder and labels
-- [ ] T072 [US4] Test filter performance with 100+ tasks
+- [x] T072 [US4] Test filter performance with 100+ tasks
 - [x] T073 [US4] Verify filter works across all columns
 - [x] T074 [US4] Add accessibility announcements for filter results
 

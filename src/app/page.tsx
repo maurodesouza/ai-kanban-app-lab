@@ -10,6 +10,8 @@ import { Text } from '@/components/atoms/text';
 import { Kanban } from '@/components/organisms/kanban';
 import { TaskModal } from '@/components/organisms/Task/TaskModal';
 import { TaskCard } from '@/components/molecules/Task/TaskCard';
+import { PerformanceTest } from '@/components/organisms/PerformanceTest';
+import { DragPerformanceTest } from '@/components/organisms/DragPerformanceTest';
 import { useState } from 'react';
 import { useKanbanStore } from '@/stores/kanban';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
@@ -196,6 +198,12 @@ export default function Home() {
           )}
         </DragOverlay>
       </DndContext>
+      
+      {/* Performance Test Components (for development) */}
+      <div className="fixed bottom-4 left-4 z-40 space-y-3">
+        <PerformanceTest />
+        <DragPerformanceTest />
+      </div>
     </div>
   );
 }
