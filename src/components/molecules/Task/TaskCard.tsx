@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from '@/components/atoms/text';
 import { Task } from '@/types/task';
+import { useSortable } from '@dnd-kit/sortable';
 import { useDragHandle } from '@/components/handles/dragHandles';
 
 interface TaskCardProps {
@@ -13,15 +14,28 @@ function Root({ task, className }: TaskCardProps) {
     attributes,
     listeners,
     setNodeRef,
-    style,
+    transform,
+    transition,
     isDragging,
-  } = useDragHandle(task.id, task.status);
+  } = useSortable({ 
+    id: task.id,
+    data: {
+      taskId: task.id,
+      sourceStatus: task.status,
+    }
+  });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   return (
     <article 
       ref={setNodeRef}
       style={style}
-      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 hover:shadow-md transition-all duration-200 min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move hover:scale-[1.02] active:scale-[0.98] ${isDragging ? 'opacity-50 shadow-xl rotate-2 scale-105' : ''} ${className || ''}`}
+      className={`bg-background-base rounded p-3 sm:p-4 border border-tone-contrast-200 hover:border-tone-contrast-300 hover:shadow-md transition-all duration-200 min-h-[44px] sm:min-h-[48px] focus-within:ring-2 focus-within:ring-ring-outer focus-within:ring-offset-2 cursor-move hover:scale-[1.02] active:scale-[0.98] ${isDragging ? 'shadow-xl rotate-2 scale-105' : ''} ${className || ''}`}
       aria-label={`Task: ${task.title}`}
       {...attributes}
       {...listeners}

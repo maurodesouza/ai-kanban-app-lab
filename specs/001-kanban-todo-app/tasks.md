@@ -95,8 +95,8 @@
 - [x] T056 [US3] Add visual feedback during drag operations
 - [x] T057 [US3] Implement drag overlay for smooth dragging experience
 - [ ] T058 [US3] Add keyboard-based drag and drop support
-- [ ] T059 [US3] Implement task reordering within columns
-- [ ] T060 [US3] Add screen reader announcements for task movements
+- [x] T059 [US3] Implement task reordering within columns
+- [x] T060 [US3] Add screen reader announcements for task movements
 - [ ] T061 [US3] Test drag performance (100ms response time requirement)
 - [ ] T062 [US3] Verify drag works on mobile touch devices
 - [x] T063 [US3] Add visual indicators for valid drop zones
@@ -134,7 +134,7 @@
 - [ ] T081 Optimize bundle size with code splitting
 - [x] T082 Add proper focus management throughout application
 - [x] T083 Implement keyboard shortcuts for power users
-- [ ] T084 Add visual polish and final styling touches
+- [x] T084 Add visual polish and final styling touches
 - [ ] T085 Create comprehensive unit tests for components
 - [ ] T086 Create integration tests for user workflows
 - [ ] T087 Create E2E tests with Cypress for all user stories

@@ -6,6 +6,7 @@ import { KanbanColumn, Task as TaskType } from "@/types/task";
 import { useDroppable } from "@dnd-kit/core";
 import { useDropHandle } from "@/components/handles/dragHandles";
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 // Debounce hook
 function useDebounce(value: string, delay: number) {
@@ -88,62 +89,96 @@ function Column({ column }: { column: KanbanColumn }) {
     const { onDragEnd } = useDropHandle(column.status);
     const { hasActiveFilter } = useKanbanStore();
 
+    const getColumnGradient = (status: string) => {
+        switch (status) {
+            case 'todo':
+                return 'from-gray-50/50 to-gray-100/50';
+            case 'in_progress':
+                return 'from-blue-50/50 to-blue-100/50';
+            case 'done':
+                return 'from-green-50/50 to-green-100/50';
+            default:
+                return 'from-gray-50/50 to-gray-100/50';
+        }
+    };
+
+    const getColumnBorderColor = (status: string) => {
+        switch (status) {
+            case 'todo':
+                return 'border-gray-200';
+            case 'in_progress':
+                return 'border-blue-200';
+            case 'done':
+                return 'border-green-200';
+            default:
+                return 'border-gray-200';
+        }
+    };
+
     return (
         <section 
             ref={setNodeRef}
-            className={`flex-shrink-0 w-72 sm:w-80 lg:w-96 bg-background-support rounded-lg border-2 min-h-[500px] sm:min-h-[600px] transition-all duration-200 ${
+            className={`flex-shrink-0 w-72 sm:w-80 lg:w-96 bg-gradient-to-br ${getColumnGradient(column.status)} rounded-xl border-2 ${getColumnBorderColor(column.status)} min-h-[500px] sm:min-h-[600px] transition-all duration-300 backdrop-blur-sm shadow-lg hover:shadow-xl ${
                 isOver 
-                    ? 'border-tone-primary-500 bg-background-support-hover scale-105 shadow-lg' 
-                    : 'border-tone-contrast-300'
+                    ? 'border-tone-primary-400 bg-gradient-to-br from-tone-primary-50 to-tone-primary-100 scale-105 shadow-2xl ring-2 ring-tone-primary-200' 
+                    : ''
             }`}
             role="region"
             aria-labelledby={`column-${column.id}`}
             aria-describedby={`column-count-${column.id}`}
         >
-            <div className={`p-3 sm:p-4 border-b transition-colors ${
-                isOver ? 'border-tone-primary-500 bg-tone-primary-50' : 'border-tone-contrast-300'
+            <div className={`p-4 sm:p-5 border-b transition-all duration-200 ${
+                isOver 
+                    ? 'border-tone-primary-300 bg-gradient-to-r from-tone-primary-100/50 to-transparent' 
+                    : 'border-gray-200 bg-white/50'
             }`}>
                 <h3 
                     id={`column-${column.id}`}
-                    className="font-semibold text-foreground text-sm sm:text-base flex items-center gap-2"
+                    className="font-bold text-foreground text-base sm:text-lg flex items-center gap-2"
                 >
                     {column.title}
                     <span 
                         id={`column-count-${column.id}`}
-                        className="ml-2 text-xs sm:text-sm text-foreground-min"
+                        className="ml-auto text-xs sm:text-sm font-medium px-2 py-1 bg-white/70 rounded-full text-foreground-min"
                         aria-label={`${column.tasks.length} tasks in ${column.title}`}
                     >
-                        ({column.tasks.length})
+                        {column.tasks.length}
                     </span>
                     {isOver && (
-                        <span className="text-xs text-tone-primary-600 font-medium animate-pulse">
+                        <span className="text-xs text-tone-primary-600 font-medium animate-pulse flex items-center gap-1">
+                            <div className="w-2 h-2 bg-tone-primary-500 rounded-full animate-pulse" />
                             Drop here
                         </span>
                     )}
                 </h3>
             </div>
             <div 
-                className="p-3 sm:p-4 min-h-[400px] sm:min-h-[500px] overflow-y-auto"
+                className="p-4 sm:p-5 min-h-[400px] sm:min-h-[500px] overflow-y-auto"
                 role="list"
                 aria-label={`Tasks in ${column.title}`}
             >
                 {column.tasks.length === 0 ? (
-                    <div className={`text-center py-8 sm:py-12 transition-colors ${
-                        isOver ? 'text-tone-primary-600' : 'text-foreground-min'
+                    <div className={`text-center py-12 sm:py-16 transition-all duration-200 rounded-lg ${
+                        isOver ? 'text-tone-primary-600 bg-gradient-to-br from-tone-primary-50/50 to-transparent' : 'text-foreground-min'
                     }`} role="status">
-                        <div className="text-3xl sm:text-4xl mb-2 sm:mb-3" aria-hidden="true">
-                            {isOver ? ' dropping to ' : (hasActiveFilter ? ' no results' : '+')}
+                        <div className="text-4xl sm:text-5xl mb-4 sm:mb-5" aria-hidden="true">
+                            {isOver ? ' dropping to ' : '+'}
                         </div>
-                        <div className="text-xs sm:text-sm">
+                        <div className="text-sm sm:text-base font-medium">
                             {isOver ? 'Release to add task' : (hasActiveFilter ? 'No matching tasks' : 'Nenhuma tarefa')}
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-2 sm:space-y-3">
-                        {column.tasks.map(task => (
-                            <TaskCard.Root key={task.id} task={task} />
-                        ))}
-                    </div>
+                    <SortableContext 
+                        items={column.tasks.map((task: TaskType) => task.id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        <div className="space-y-3 sm:space-y-4">
+                            {column.tasks.map((task: TaskType) => (
+                                <TaskCard.Root key={task.id} task={task} />
+                            ))}
+                        </div>
+                    </SortableContext>
                 )}
             </div>
         </section>
