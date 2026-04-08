@@ -86,7 +86,7 @@ function Root({ children, isOpen, onClose }: { children: React.ReactNode; isOpen
     >
       <div 
         ref={modalRef}
-        className="bg-background-support rounded-lg border border-tone-contrast-300 w-full max-w-md p-6 outline-none"
+        className="bg-background-support rounded-lg border border-tone-contrast-300 w-full p-6 outline-none"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
