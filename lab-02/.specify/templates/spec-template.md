@@ -80,6 +80,8 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
+  CRITICAL: Requirements must be exact and minimal. No "nice-to-have" features,
+  no extensibility, no configuration options unless explicitly needed.
 -->
 
 ### Functional Requirements
@@ -94,6 +96,9 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+**IMPORTANT**: Do not include requirements for performance optimization, extensive error handling,
+logging beyond basic needs, configuration options, or extensibility unless explicitly required.
 
 ### Key Entities *(include if feature involves data)*
 

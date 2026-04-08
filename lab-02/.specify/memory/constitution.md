@@ -1,50 +1,68 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+- Version change: None (initial creation)
+- Modified principles: None (initial creation)
+- Added sections: Core Principles, Implementation Constraints, Development Workflow, Governance
+- Removed sections: None (initial creation)
+- Templates requiring updates: 
+  - .specify/templates/plan-template.md (Constitution Check section) - Updated
+  - .specify/templates/tasks-template.md (Testing guidance) - Updated  
+  - .specify/templates/spec-template.md (Requirements section) - Updated
+- Follow-up TODOs: None
+-->
+
+# Spec-Driven Development Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Specification First
+All implementations MUST be driven by explicit specifications. Specifications MUST define exact requirements, user stories, and acceptance criteria. No implementation may begin without a completed specification. No features may be added beyond specification scope.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Minimal Implementation
+Implementations MUST be the simplest possible solution that satisfies the specification. Single-layer solutions are preferred. Abstractions are forbidden unless absolutely necessary for the core requirement. Each component MUST have exactly one responsibility.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. No Architectural Patterns
+Architectural patterns (DDD, Clean Architecture, layered systems, microservices, etc.) are explicitly forbidden. Direct implementations are required. No design patterns may be introduced unless explicitly required by the specification.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Strict Scope Compliance
+Implementations MUST NOT include features, improvements, optimizations, or assumptions beyond the given specification. No "future-proofing", no extensibility, no configuration options unless specified. Exact compliance is mandatory.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Optional Testing Only
+Testing is optional unless explicitly required by the specification. When required, tests must focus only on core functionality validation. No performance testing, benchmarking, stress testing, or edge case expansion is permitted. Test coverage must be minimal.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Implementation Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Forbidden Practices
+- Adding features not in specification
+- Introducing architectural patterns or abstractions
+- Performance optimization or benchmarking
+- Extensive testing beyond basic functionality
+- Code comments beyond what is necessary for clarity
+- Configuration options or extensibility
+- Error handling beyond basic requirements
+- Logging beyond basic operational needs
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Required Practices
+- Direct implementation of specification requirements
+- Single-responsibility components
+- Straightforward, readable code
+- Minimal dependencies
+- Simple data structures
+- Direct API surfaces
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+
+### Specification Phase
+Specification must be completed and approved before any implementation. Specification must include exact requirements, user stories with priorities, and measurable acceptance criteria.
+
+### Implementation Phase
+Implementation must follow specification exactly. No deviations allowed. Each user story must be implemented independently and be testable on its own.
+
+### Validation Phase
+Implementation must be validated against specification requirements only. No additional validation criteria may be introduced.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices. Amendments require explicit documentation and version increment. All implementations must be verified for constitution compliance before acceptance. Complexity must be explicitly justified and documented.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-04-08 | **Last Amended**: 2025-04-08

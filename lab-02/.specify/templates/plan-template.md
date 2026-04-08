@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Specification exists and is complete before implementation
+- Implementation plan follows minimal, single-layer approach
+- No architectural patterns introduced unless explicitly required
+- Scope limited to exact specification requirements
+- Testing only if explicitly required by specification
 
 ## Project Structure
 
