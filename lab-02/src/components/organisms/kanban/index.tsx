@@ -151,7 +151,7 @@ function Tasks(props: TasksProps) {
   );
 }
 
-const TaskContainer = twx.div`bg-background-support rounded-md border border-ring-inner cursor-pointer transition-all hover:brightness-110`;
+const TaskContainer = twx.div`bg-background-support rounded-md border border-ring-inner cursor-move transition-all hover:brightness-110`;
 
 const TaskContent = twx.div`py-xxs px-xs`;
 
@@ -208,6 +208,80 @@ function DeleteButton(props: { taskId: string }) {
 
 const TaskFooter = TaskActionsContainer;
 
+function TaskDraggable(props: { taskId: string; children: React.ReactNode }) {
+  const { taskId } = props;
+  const { $$storeId: storeId, tasks } = useKanban();
+
+  const task = tasks[taskId];
+
+  function handleDragStart(event: React.DragEvent) {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', taskId);
+    event.dataTransfer.setData('fromColumnId', task.columnId);
+
+    // Emit drag start event
+    events.kanban.dragStart({
+      storeId,
+      taskId,
+      fromColumnId: task.columnId,
+    });
+  }
+
+  function handleDragEnd() {
+    // This will be handled by the drop zone
+  }
+
+  return (
+    <TaskContainer
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      {props.children}
+    </TaskContainer>
+  );
+}
+
+function DropZone(props: { columnId: string; children: React.ReactNode }) {
+  const { columnId } = props;
+  const { $$storeId: storeId } = useKanban();
+
+  function handleDragOver(event: React.DragEvent) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }
+
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+
+    const taskId = event.dataTransfer.getData('text/plain');
+    const fromColumnId = event.dataTransfer.getData('fromColumnId');
+
+    if (!fromColumnId) {
+      console.error('No fromColumnId found in drag data');
+      return;
+    }
+
+    // Emit drag end event
+    events.kanban.dragEnd({
+      storeId,
+      taskId,
+      fromColumnId,
+      toColumnId: columnId,
+    });
+  }
+
+  return (
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      className="min-h-[100px] w-full"
+    >
+      {props.children}
+    </div>
+  );
+}
+
 function TaskTitle(props: React.PropsWithChildren) {
   return <Text.Paragraph>{props.children}</Text.Paragraph>;
 }
@@ -229,12 +303,14 @@ export const Kanban = {
     Title: ColumnTitle,
     Content: ColumnContent,
     Divider: ColumnDivider,
+    DropZone,
   },
   Task: {
     Container: TaskContainer,
     Content: TaskContent,
     Footer: TaskFooter,
     Title: TaskTitle,
+    Draggable: TaskDraggable,
     EditButton,
     DeleteButton,
   },

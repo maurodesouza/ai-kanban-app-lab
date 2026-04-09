@@ -14,22 +14,24 @@ function KanbanBoard() {
 
             <Kanban.Column.Divider />
 
-            <Kanban.Column.Content>
-              <Kanban.Tasks
-                columnId={column.id}
-                render={task => (
-                  <Kanban.Task.Container>
-                    <Kanban.Task.Content>
-                      <Kanban.Task.Title>{task.title}</Kanban.Task.Title>
-                    </Kanban.Task.Content>
-                    <Kanban.Task.Footer>
-                      <Kanban.Task.DeleteButton taskId={task.id} />
-                      <Kanban.Task.EditButton taskId={task.id} />
-                    </Kanban.Task.Footer>
-                  </Kanban.Task.Container>
-                )}
-              />
-            </Kanban.Column.Content>
+            <Kanban.Column.DropZone columnId={column.id}>
+              <Kanban.Column.Content>
+                <Kanban.Tasks
+                  columnId={column.id}
+                  render={task => (
+                    <Kanban.Task.Draggable taskId={task.id}>
+                      <Kanban.Task.Content>
+                        <Kanban.Task.Title>{task.title}</Kanban.Task.Title>
+                      </Kanban.Task.Content>
+                      <Kanban.Task.Footer>
+                        <Kanban.Task.DeleteButton taskId={task.id} />
+                        <Kanban.Task.EditButton taskId={task.id} />
+                      </Kanban.Task.Footer>
+                    </Kanban.Task.Draggable>
+                  )}
+                />
+              </Kanban.Column.Content>
+            </Kanban.Column.DropZone>
           </Kanban.Column.Container>
         )}
       />

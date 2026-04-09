@@ -23,6 +23,20 @@ export type FilterEventPayload = {
   filter: string;
 };
 
+export type DragStartEventPayload = {
+  storeId: string;
+  taskId: string;
+  fromColumnId: string;
+};
+
+export type DragEndEventPayload = {
+  storeId: string;
+  taskId: string;
+  fromColumnId: string;
+  toColumnId: string;
+  toIndex?: number;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   addTask(payload: AddTaskEventPayload) {
     this.emit(Events.KANBAN_TASK_ADD, payload);
@@ -38,6 +52,14 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   filter(payload: FilterEventPayload) {
     this.emit(Events.KANBAN_FILTER, payload);
+  }
+
+  dragStart(payload: DragStartEventPayload) {
+    this.emit(Events.KANBAN_DRAG_START, payload);
+  }
+
+  dragEnd(payload: DragEndEventPayload) {
+    this.emit(Events.KANBAN_DRAG_END, payload);
   }
 }
 
