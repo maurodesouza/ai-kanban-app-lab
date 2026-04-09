@@ -8,7 +8,7 @@ type KanbanStoreState = Kanban & {
   $columnIdsWithTasks: Record<string, Record<string, KankanTask>>;
 };
 
-export const kanbanStores = new Map()
+export const kanbanStores = new Map<string, KanbanStoreState>()
 
 export const createKanbanStore = () => {
 
