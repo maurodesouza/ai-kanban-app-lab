@@ -9,11 +9,12 @@ import { Clickable } from '@/components/atoms/clickable';
 import { Dialog } from '@/components/atoms/dialog';
 import { SelectComponent } from '@/components/atoms/select';
 
-import { taskFormSchema, TaskFormValues } from './schema';
-import type { KankanTask, KanbanColumn } from '@/types/kanban';
-import { kanbanStores } from '@/stores/kanban';
 import { events } from '@/events';
 import { random } from '@/utils/random';
+import { kanbanStores } from '@/stores/kanban';
+import type { KankanTask, KanbanColumn } from '@/types/kanban';
+
+import { taskFormSchema, TaskFormValues } from './schema';
 
 export type TaskModalProps = {
   kanbanStoreId: string;
@@ -91,79 +92,75 @@ export function TaskModal(props: TaskModalProps) {
         <Dialog.Title>{isEditMode ? 'Edit Task' : 'Create Task'}</Dialog.Title>
       </Dialog.Header>
 
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div>
-          <Field.Container>
-            <Field.Label>Title *</Field.Label>
-            <Field.Input
-              {...form.register('title')}
-              placeholder="Enter task title"
-            />
-            {form.formState.errors.title && (
-              <Field.Error>{form.formState.errors.title.message}</Field.Error>
-            )}
-          </Field.Container>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-md"
+      >
+        <Field.Container>
+          <Field.Label>Title *</Field.Label>
+          <Field.Input
+            {...form.register('title')}
+            placeholder="Enter task title"
+          />
+          {form.formState.errors.title && (
+            <Field.Error>{form.formState.errors.title.message}</Field.Error>
+          )}
+        </Field.Container>
 
-          <Field.Container>
-            <Field.Label>Description</Field.Label>
-            <Field.Textarea
-              {...form.register('description')}
-              placeholder="Enter task description"
-              rows={3}
-            />
-            {form.formState.errors.description && (
-              <Field.Error>
-                {form.formState.errors.description.message}
-              </Field.Error>
-            )}
-          </Field.Container>
+        <Field.Container>
+          <Field.Label>Description</Field.Label>
+          <Field.Textarea
+            {...form.register('description')}
+            placeholder="Enter task description"
+            rows={3}
+          />
+          {form.formState.errors.description && (
+            <Field.Error>
+              {form.formState.errors.description.message}
+            </Field.Error>
+          )}
+        </Field.Container>
 
-          <Field.Container>
-            <Field.Label>Due Date</Field.Label>
-            <Field.Input {...form.register('dueDate')} type="date" />
-            {form.formState.errors.dueDate && (
-              <Field.Error>{form.formState.errors.dueDate.message}</Field.Error>
-            )}
-          </Field.Container>
+        <Field.Container>
+          <Field.Label>Due Date</Field.Label>
+          <Field.Input {...form.register('dueDate')} type="date" />
+          {form.formState.errors.dueDate && (
+            <Field.Error>{form.formState.errors.dueDate.message}</Field.Error>
+          )}
+        </Field.Container>
 
-          <Field.Container>
-            <Field.Label>Column *</Field.Label>
-            <SelectComponent.Root
-              value={form.control._formValues.columnId}
-              onValueChange={value => form.setValue('columnId', value)}
-            >
-              <SelectComponent.Trigger>
-                <SelectComponent.Value placeholder="Select a column" />
-              </SelectComponent.Trigger>
-              <SelectComponent.Content>
-                <SelectComponent.Group>
-                  {columnOptions.map(option => (
-                    <SelectComponent.Item
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label}
-                    </SelectComponent.Item>
-                  ))}
-                </SelectComponent.Group>
-              </SelectComponent.Content>
-            </SelectComponent.Root>
-            {form.formState.errors.columnId && (
-              <Field.Error>
-                {form.formState.errors.columnId.message}
-              </Field.Error>
-            )}
-          </Field.Container>
-        </div>
+        <Field.Container>
+          <Field.Label>Column *</Field.Label>
+          <SelectComponent.Root
+            value={form.control._formValues.columnId}
+            onValueChange={value => form.setValue('columnId', value)}
+          >
+            <SelectComponent.Trigger>
+              <SelectComponent.Value placeholder="Select a column" />
+            </SelectComponent.Trigger>
+            <SelectComponent.Content>
+              <SelectComponent.Group>
+                {columnOptions.map(option => (
+                  <SelectComponent.Item key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectComponent.Item>
+                ))}
+              </SelectComponent.Group>
+            </SelectComponent.Content>
+          </SelectComponent.Root>
+          {form.formState.errors.columnId && (
+            <Field.Error>{form.formState.errors.columnId.message}</Field.Error>
+          )}
+        </Field.Container>
 
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+        <Dialog.Footer>
           <Clickable.Button type="button" onClick={onCancel} variant="outline">
             Cancel
           </Clickable.Button>
-          <Clickable.Button type="submit">
+          <Clickable.Button type="submit" tone="brand">
             {isEditMode ? 'Update Task' : 'Create Task'}
           </Clickable.Button>
-        </div>
+        </Dialog.Footer>
       </form>
     </Dialog.Content>
   );

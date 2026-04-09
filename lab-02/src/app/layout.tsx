@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="theme-dark min-h-full flex flex-col">
+      <body className="theme-dark base-1 tone palette-brand h-screen flex flex-col bg-background-base">
         <KanbanHandler />
         <Modal />
         {children}
