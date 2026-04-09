@@ -3,7 +3,6 @@ import "@/styles/global.css";
 
 
 import { Modal } from "@/components/molecules/modal";
-import { ModalHandler } from "@/components/handles/modal";
 import { KanbanHandler } from "@/components/handles/kanban";
 
 
@@ -21,7 +20,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-full flex flex-col">
         <KanbanHandler />
-        <ModalHandler />
         <Modal />
         {children}
       </body>

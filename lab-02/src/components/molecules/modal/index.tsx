@@ -1,24 +1,42 @@
 'use client';
 
-import { useSnapshot } from 'valtio';
+import { useState, useEffect } from 'react';
 
 import { Dialog } from '@/components/atoms/dialog';
 import { FlexibleRender } from '@/components/helpers/flexible-render';
 
 import { events } from '@/events';
-import { modalStore } from '@/stores/modal';
+import { Events } from '@/types/events';
+import type { Renderable } from '@/types/helpers';
 
 export function Modal() {
-  const modalState = useSnapshot(modalStore);
+  const [modal, setModal] = useState<Renderable>();
 
-  console.log('modalState', modalState)
+  function handleModalShow(event: CustomEvent<Renderable>) {
+    setModal(event.detail);
+  }
+
+  function handleModalHide() {
+    setModal(undefined);
+  }
+
+  useEffect(() => {
+
+    events.on(Events.MODAL_SHOW, handleModalShow);
+    events.on(Events.MODAL_HIDE, handleModalHide);
+
+    return () => {
+      events.off(Events.MODAL_SHOW, handleModalShow);
+      events.off(Events.MODAL_HIDE, handleModalHide);
+    };
+  }, []);
 
   return (
     <Dialog.Root 
-      open={!!modalState.modal} 
-      onOpenChange={events.modal.hide}
+      open={!!modal} 
+      onOpenChange={(open) => !open && events.modal.hide()}
     >
-      <FlexibleRender render={modalState.modal} />
+      <FlexibleRender render={modal} />
     </Dialog.Root>
   );
 }
