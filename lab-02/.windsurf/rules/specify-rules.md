@@ -10,6 +10,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-08
 - CustomEvent API (built-in), existing event architecture, existing kanban types (007-kanban-events)
 - React (for components), existing event architecture, existing stores (008-event-handlers)
 - N/A (component-based) (008-event-handlers)
+- TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form (009-base-components)
+- N/A (UI components only) (009-base-components)
 
 - (002-tailwind-utils)
 
@@ -29,9 +31,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 009-base-components: Added TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form
 - 008-event-handlers: Added React (for components), existing event architecture, existing stores
 - 007-kanban-events: Added CustomEvent API (built-in), existing event architecture, existing kanban types
-- 006-modal-events: Added CustomEvent API (built-in), existing event architecture
 
 
 <!-- MANUAL ADDITIONS START -->
