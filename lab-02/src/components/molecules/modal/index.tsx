@@ -6,7 +6,7 @@ import { Dialog } from '@/components/atoms/dialog';
 import { FlexibleRender } from '@/components/helpers/flexible-render';
 
 import { events } from '@/events';
-import { modalStore } from '@/store/modal';
+import { modalStore } from '@/stores/modal';
 
 export function Modal() {
   const modalState = useSnapshot(modalStore);
