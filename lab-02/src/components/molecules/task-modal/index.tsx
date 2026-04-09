@@ -41,9 +41,10 @@ export function TaskModal(props: TaskModalProps) {
 
     const taskData = {
       id: `task-${random.id()}`,
+      createdAt: new Date().toISOString(),
+      ...task,
       ...data,
       kanbanId: kanbanStore.id,
-      createdAt: task?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       description: data.description || '',
       dueDate: data.dueDate || '',

@@ -51,10 +51,12 @@ function KanbanHandler() {
 
   function handleTaskEdit(event: CustomEvent<EditTaskEventPayload>) {
     const payload = event.detail;
+
     console.log('Kanban task edit event received:', payload);
 
     // Find the kanban store by storeId
     const kanbanStore = kanbanStores.get(payload.storeId);
+
     if (!kanbanStore) {
       console.error(`Kanban store with storeId ${payload.storeId} not found`);
       return;
