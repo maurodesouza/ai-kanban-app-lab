@@ -4,11 +4,13 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
 import { Text } from '@/components/atoms/text';
+import { Field } from '@/components/atoms/field';
 import type { Kanban as KanbanType, KanbanColumn, KankanTask } from '@/types/kanban';
 
 import { twx } from '@/utils/tailwind';
 import { random } from '@/utils/random';
-import { Field } from '@/components/atoms/field';
+import { events } from '@/events';
+import { debounce } from '@/utils/debounce';
 
 // Initial state with random IDs
 const kanbanId = random.id();
@@ -71,9 +73,26 @@ const Header = twx.div`flex items-center justify-between mb-lg`;
 const Content = twx.div`flex gap-lg overflow-x-auto`;
 
 function Filter() {
+  const debouncedFilter = useMemo(() => 
+    debounce((filterValue: unknown) => {
+      events.kanban.filter({
+        id: kanbanId,
+        filter: filterValue as string
+      });
+    }, 300), []
+  );
+
+  function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    debouncedFilter(value);
+  };
+
   return (
     <div className="flex gap-sm">
-      <Field.Input placeholder="Search tasks..." />
+      <Field.Input 
+        placeholder="Search tasks..." 
+        onChange={handleFilterChange}
+      />
     </div>
   );
 }

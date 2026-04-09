@@ -18,6 +18,11 @@ export type DeleteTaskEventPayload = {
   data: string
 };
 
+export type FilterEventPayload = {
+  id: string
+  filter: string
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   addTask(args: AddTaskEventPayload) {
     this.emit(Events.KANBAN_TASK_ADD, args);
@@ -29,6 +34,10 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   deleteTask(args: DeleteTaskEventPayload) {
     this.emit(Events.KANBAN_TASK_DELETE, args);
+  }
+
+  filter(args: FilterEventPayload) {
+    this.emit(Events.KANBAN_FILTER, args);
   }
 }
 

@@ -5,5 +5,6 @@ export enum Events {
   KANBAN_TASK_ADD = 'kanban.task.add',
   KANBAN_TASK_EDIT = 'kanban.task.edit',
   KANBAN_TASK_DELETE = 'kanban.task.delete',
+  KANBAN_FILTER = 'kanban.filter',
 
 }

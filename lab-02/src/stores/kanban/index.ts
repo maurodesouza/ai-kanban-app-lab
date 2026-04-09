@@ -6,6 +6,7 @@ import { random } from "@/utils/random";
 
 type KanbanStoreState = Kanban & {
   $columnIdsWithTasks: Record<string, Record<string, KankanTask>>;
+  filter: string;
 };
 
 export const kanbanStores = new Map<string, KanbanStoreState>()
@@ -17,11 +18,13 @@ export const createKanbanStore = () => {
     title: "",
     columns: {},
     tasks: {},
-    $columnIdsWithTasks: {}
+    $columnIdsWithTasks: {},
+    filter: ""
   });
 
   function compute$columnIdsWithTasks() {
     const columnIdsWithTasks: Record<string, Record<string, KankanTask>> = {};
+    const filterText = state.filter.toLowerCase().trim();
     
     for (const columnId in state.columns) {
       columnIdsWithTasks[columnId] = {};
@@ -30,7 +33,12 @@ export const createKanbanStore = () => {
       for (const taskId of column.tasksId) {
         const task = state.tasks[taskId];
         if (task) {
-          columnIdsWithTasks[columnId][taskId] = task;
+          // Apply filter: check if task title or description contains filter text
+          if (!filterText || 
+              task.title.toLowerCase().includes(filterText) ||
+              task.description.toLowerCase().includes(filterText)) {
+            columnIdsWithTasks[columnId][taskId] = task;
+          }
         }
       }
     }
@@ -41,7 +49,7 @@ export const createKanbanStore = () => {
   subscribe(state, (ops) => {
     for (const op of ops) {
       const path = Array.isArray(op[1]) ? op[1][0] : op[1];
-      if (typeof path === 'string' && ["columns", "tasks"].includes(path)) {
+      if (typeof path === 'string' && ["columns", "tasks", "filter"].includes(path)) {
         compute$columnIdsWithTasks();
         break;
       }

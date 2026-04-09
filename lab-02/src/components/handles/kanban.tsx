@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import { events } from '@/events';
 import { Events } from '@/types/events';
-import type { AddTaskEventPayload, EditTaskEventPayload, DeleteTaskEventPayload } from '@/events/handles/kanban';
+import type { AddTaskEventPayload, EditTaskEventPayload, DeleteTaskEventPayload, FilterEventPayload } from '@/events/handles/kanban';
 import { kanbanStores } from '@/stores/kanban';
 
 function KanbanHandler() {
@@ -107,15 +107,31 @@ function KanbanHandler() {
     delete kanbanStore.tasks[args.data];
   }
 
+  function handleFilter(args: FilterEventPayload) {
+    console.log('Kanban filter event received:', args);
+    
+    // Find the kanban store by id
+    const kanbanStore = kanbanStores.get(args.id);
+    if (!kanbanStore) {
+      console.error(`Kanban store with id ${args.id} not found`);
+      return;
+    }
+
+    // Update filter in store
+    kanbanStore.filter = args.filter;
+  }
+
   useEffect(() => {
     events.on(Events.KANBAN_TASK_ADD, handleTaskAdd);
     events.on(Events.KANBAN_TASK_EDIT, handleTaskEdit);
     events.on(Events.KANBAN_TASK_DELETE, handleTaskDelete);
+    events.on(Events.KANBAN_FILTER, handleFilter);
     
     return () => {
       events.off(Events.KANBAN_TASK_ADD, handleTaskAdd);
       events.off(Events.KANBAN_TASK_EDIT, handleTaskEdit);
       events.off(Events.KANBAN_TASK_DELETE, handleTaskDelete);
+      events.off(Events.KANBAN_FILTER, handleFilter);
     };
   }, []);
 
