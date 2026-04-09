@@ -29,13 +29,13 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Install required dependencies (react-hook-form, @hookform/resolvers, zod)
-- [ ] T002 Create task modal component directory in src/components/molecules/task-modal/
-- [ ] T003 [P] Verify existing dialog component is accessible in src/components/atoms/dialog/
-- [ ] T004 [P] Verify existing field component is accessible in src/components/atoms/field/
-- [ ] T005 [P] Verify existing clickable component is accessible in src/components/atoms/clickable/
-- [ ] T006 [P] Verify event system is working (events.modal.show/hide, events.kanban.addTask/editTask)
-- [ ] T007 [P] Verify kanban stores are accessible and contain column data
+- [x] T001 Install required dependencies (react-hook-form, @hookform/resolvers, zod)
+- [x] T002 Create task modal component directory in src/components/molecules/task-modal/
+- [x] T003 [P] Verify existing dialog component is accessible in src/components/atoms/dialog/
+- [x] T004 [P] Verify existing field component is accessible in src/components/atoms/field/
+- [x] T005 [P] Verify existing clickable component is accessible in src/components/atoms/clickable/
+- [x] T006 [P] Verify event system is working (events.modal.show/hide, events.kanban.addTask/editTask)
+- [x] T007 [P] Verify kanban stores are accessible and contain column data
 
 ---
 
@@ -45,10 +45,10 @@ description: "Task list template for feature implementation"
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T008 Create Zod validation schema in src/components/molecules/task-modal/schema.ts
-- [ ] T009 Define TypeScript interfaces for TaskModalProps and TaskFormValues
-- [ ] T010 Create form validation resolver using zodResolver
-- [ ] T011 [P] Verify all imports and dependencies are working correctly
+- [x] T008 Create Zod validation schema in src/components/molecules/task-modal/schema.ts
+- [x] T009 Define TypeScript interfaces for TaskModalProps and TaskFormValues
+- [x] T010 Create form validation resolver using zodResolver
+- [x] T011 [P] Verify all imports and dependencies are working correctly
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -62,13 +62,13 @@ description: "Task list template for feature implementation"
 
 ### Implementation for User Story 1
 
-- [ ] T012 [US1] Create main TaskModal component in src/components/molecules/task-modal/index.tsx
-- [ ] T013 [US1] Implement form setup with react-hook-form and default values
-- [ ] T014 [US1] Add kanban store integration for column options
-- [ ] T015 [US1] Implement form fields (title, description, due date, column selection)
-- [ ] T016 [US1] Add Dialog component integration (Content, Header, Title, Body, Footer)
-- [ ] T017 [US1] Implement form submission logic with events.kanban.addTask
-- [ ] T018 [US1] Add modal close functionality with events.modal.hide
+- [x] T012 [US1] Create main TaskModal component in src/components/molecules/task-modal/index.tsx
+- [x] T013 [US1] Implement form setup with react-hook-form and default values
+- [x] T014 [US1] Add kanban store integration for column options
+- [x] T015 [US1] Implement form fields (title, description, due date, column selection)
+- [x] T016 [US1] Add Dialog component integration (Content, Header, Title, Body, Footer)
+- [x] T017 [US1] Implement form submission logic with events.kanban.addTask
+- [x] T018 [US1] Add modal close functionality with events.modal.hide
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -82,12 +82,12 @@ description: "Task list template for feature implementation"
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Add real-time validation using Zod schema
-- [ ] T020 [US2] Implement validation error display for title field
-- [ ] T021 [US2] Implement validation error display for due date field
-- [ ] T022 [US2] Add validation for required column selection
-- [ ] T023 [US2] Prevent form submission with invalid data
-- [ ] T024 [US2] Test form validation with various invalid inputs
+- [x] T019 [US2] Add real-time validation using Zod schema
+- [x] T020 [US2] Implement validation error display for title field
+- [x] T021 [US2] Implement validation error display for due date field
+- [x] T022 [US2] Add validation for required column selection
+- [x] T023 [US2] Prevent form submission with invalid data
+- [x] T024 [US2] Test form validation with various invalid inputs
 
 **Checkpoint**: At this point, User Story 2 should be fully functional and testable independently
 
@@ -101,12 +101,12 @@ description: "Task list template for feature implementation"
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Add cancel button with events.modal.hide functionality
-- [ ] T026 [US3] Implement edit mode detection based on task parameter
-- [ ] T027 [US3] Add form default values for edit mode (populate from task data)
-- [ ] T028 [US3] Implement edit mode submission with events.kanban.editTask
-- [ ] T029 [US3] Add modal title switching between "Create Task" and "Edit Task"
-- [ ] T030 [US3] Test both create and edit modes functionality
+- [x] T025 [US3] Add cancel button with events.modal.hide functionality
+- [x] T026 [US3] Implement edit mode detection based on task parameter
+- [x] T027 [US3] Add form default values for edit mode (populate from task data)
+- [x] T028 [US3] Implement edit mode submission with events.kanban.editTask
+- [x] T029 [US3] Add modal title switching between "Create Task" and "Edit Task"
+- [x] T030 [US3] Test both create and edit modes functionality
 
 **Checkpoint**: At this point, User Story 3 should be fully functional and testable independently
 
