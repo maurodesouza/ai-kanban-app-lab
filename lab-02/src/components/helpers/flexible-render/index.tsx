@@ -2,11 +2,7 @@ import React from 'react';
 import { Renderable } from '@/types/helpers';
 
 type FlexibleRenderProps = {
-  render?: Renderable | {
-    type: string | ((props: unknown) => React.ReactNode) | object;
-    props: unknown;
-    key: string | null;
-  } | null;
+  render?: Renderable
 };
 
 export function FlexibleRender(props: FlexibleRenderProps) {
