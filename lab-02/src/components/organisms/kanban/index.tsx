@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
 import { Text } from '@/components/atoms/text';
@@ -12,7 +18,11 @@ import { twx } from '@/utils/tailwind';
 import { events } from '@/events';
 import { debounce } from '@/utils/debounce';
 import { TaskModal } from '@/components/molecules/task-modal';
-import { createKanbanStore, KanbanStoreState, removeKanbanStore } from '@/stores/kanban';
+import {
+  createKanbanStore,
+  KanbanStoreState,
+  removeKanbanStore,
+} from '@/stores/kanban';
 
 const KanbanContext = createContext<KanbanStoreState | null>(null);
 
@@ -31,7 +41,7 @@ function KanbanProvider(props: React.PropsWithChildren) {
       {props.children}
     </KanbanContext.Provider>
   );
-};
+}
 
 function useKanban() {
   const state = useContext(KanbanContext);
@@ -39,8 +49,7 @@ function useKanban() {
     throw new Error('useKanban must be used within a KanbanProvider');
   }
   return useSnapshot(state);
-};
-
+}
 
 function Title() {
   const { title } = useKanban();
@@ -54,24 +63,26 @@ const Content = twx.div`flex gap-lg overflow-x-auto`;
 function Filter() {
   const { $$storeId } = useKanban();
 
-  const debouncedFilter = useMemo(() => 
-    debounce((filterValue: unknown) => {
-      events.kanban.filter({
-        storeId: $$storeId,
-        filter: filterValue as string
-      });
-    }, 300), [$$storeId]
+  const debouncedFilter = useMemo(
+    () =>
+      debounce((filterValue: unknown) => {
+        events.kanban.filter({
+          storeId: $$storeId,
+          filter: filterValue as string,
+        });
+      }, 300),
+    [$$storeId]
   );
 
   function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     debouncedFilter(value);
-  };
+  }
 
   return (
     <div className="flex gap-sm">
-      <Field.Input 
-        placeholder="Search tasks..." 
+      <Field.Input
+        placeholder="Search tasks..."
         onChange={handleFilterChange}
       />
     </div>
@@ -82,16 +93,10 @@ function AddTaskButton() {
   const { $$storeId } = useKanban();
 
   function handleAddTask() {
-    events.modal.show(
-      () => <TaskModal kanbanStoreId={$$storeId} />
-    );
-  };
+    events.modal.show(() => <TaskModal kanbanStoreId={$$storeId} />);
+  }
 
-  return (
-    <Clickable.Button onClick={handleAddTask}>
-      Add Task
-    </Clickable.Button>
-  );
+  return <Clickable.Button onClick={handleAddTask}>Add Task</Clickable.Button>;
 }
 
 function ColumnTitle(props: React.PropsWithChildren) {
@@ -108,13 +113,11 @@ type ColumnsProps = {
 
 function Columns(props: ColumnsProps) {
   const { columns } = useKanban();
-  
+
   return (
     <>
       {Object.values(columns).map(column => (
-        <div key={column.id}>
-          {props.render(column as KanbanColumn)}
-        </div>
+        <div key={column.id}>{props.render(column as KanbanColumn)}</div>
       ))}
     </>
   );
@@ -127,19 +130,19 @@ type TasksProps = {
 
 function Tasks(props: TasksProps) {
   const { tasks } = useKanban();
-  
-  const columnTasks = Object.values(tasks).filter(task => task.columnId === props.columnId);
-  
+
+  const columnTasks = Object.values(tasks).filter(
+    task => task.columnId === props.columnId
+  );
+
   return (
     <>
       {columnTasks.map(task => (
-        <div key={task.id}>
-          {props.render(task)}
-        </div>
+        <div key={task.id}>{props.render(task)}</div>
       ))}
     </>
   );
-};
+}
 
 const TaskContainer = twx.div`base-1 bg-background-support rounded-md p-sm border border-ring-inner cursor-pointer transition-all hover:brightness-110`;
 
@@ -161,10 +164,10 @@ export const Kanban = {
     Container: ColumnContainer,
     Header: ColumnHeader,
     Title: ColumnTitle,
-    Content: ColumnContent
+    Content: ColumnContent,
   },
   Task: {
     Container: TaskContainer,
-    Title: TaskTitle
-  }
+    Title: TaskTitle,
+  },
 };

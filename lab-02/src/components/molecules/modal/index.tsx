@@ -21,7 +21,6 @@ export function Modal() {
   }
 
   useEffect(() => {
-
     events.on(Events.MODAL_SHOW, handleModalShow);
     events.on(Events.MODAL_HIDE, handleModalHide);
 
@@ -32,9 +31,9 @@ export function Modal() {
   }, []);
 
   return (
-    <Dialog.Root 
-      open={!!modal} 
-      onOpenChange={(open) => !open && events.modal.hide()}
+    <Dialog.Root
+      open={!!modal}
+      onOpenChange={open => !open && events.modal.hide()}
     >
       <FlexibleRender render={modal} />
     </Dialog.Root>

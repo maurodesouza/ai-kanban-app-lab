@@ -18,24 +18,24 @@ import { taskFormSchema, TaskFormValues } from './schema';
 export type TaskModalProps = {
   kanbanStoreId: string;
   task?: KankanTask;
-}
+};
 
 export function TaskModal(props: TaskModalProps) {
-  const { kanbanStoreId, task } = props
+  const { kanbanStoreId, task } = props;
 
   const kanbanStore = kanbanStores.get(kanbanStoreId);
-  
+
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
       title: task?.title || '',
       description: task?.description || '',
       dueDate: task?.dueDate || '',
-      columnId: task?.columnId || ''
-    }
+      columnId: task?.columnId || '',
+    },
   });
 
-    function onSubmit(data: TaskFormValues) {
+  function onSubmit(data: TaskFormValues) {
     if (!kanbanStore) return;
 
     const taskData = {
@@ -45,14 +45,14 @@ export function TaskModal(props: TaskModalProps) {
       createdAt: task?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       description: data.description || '',
-      dueDate: data.dueDate || ''
+      dueDate: data.dueDate || '',
     };
 
-    const action = task ? "editTask" : "addTask";
+    const action = task ? 'editTask' : 'addTask';
 
     events.kanban[action]({
       storeId: kanbanStoreId,
-      data: taskData
+      data: taskData,
     });
 
     events.modal.hide();
@@ -62,10 +62,9 @@ export function TaskModal(props: TaskModalProps) {
     events.modal.hide();
   }
 
-
   useEffect(() => {
     if (!kanbanStore || task) return;
-    
+
     const firstColumn = Object.values(kanbanStore.columns)[0];
 
     if (!firstColumn) return;
@@ -73,16 +72,15 @@ export function TaskModal(props: TaskModalProps) {
     form.setValue('columnId', firstColumn.id);
   }, [kanbanStore, task, form]);
 
-
   if (!kanbanStore) {
     events.modal.hide();
-    
+
     return null;
   }
 
-  const columnOptions = Object.values(kanbanStore.columns).map((column) => ({
+  const columnOptions = Object.values(kanbanStore.columns).map(column => ({
     value: (column as KanbanColumn).id,
-    label: (column as KanbanColumn).title
+    label: (column as KanbanColumn).title,
   }));
 
   const isEditMode = !!task;
@@ -90,9 +88,7 @@ export function TaskModal(props: TaskModalProps) {
   return (
     <Dialog.Content>
       <Dialog.Header>
-        <Dialog.Title>
-          {isEditMode ? 'Edit Task' : 'Create Task'}
-        </Dialog.Title>
+        <Dialog.Title>{isEditMode ? 'Edit Task' : 'Create Task'}</Dialog.Title>
       </Dialog.Header>
 
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -104,9 +100,7 @@ export function TaskModal(props: TaskModalProps) {
               placeholder="Enter task title"
             />
             {form.formState.errors.title && (
-              <Field.Error>
-                {form.formState.errors.title.message}
-              </Field.Error>
+              <Field.Error>{form.formState.errors.title.message}</Field.Error>
             )}
           </Field.Container>
 
@@ -126,14 +120,9 @@ export function TaskModal(props: TaskModalProps) {
 
           <Field.Container>
             <Field.Label>Due Date</Field.Label>
-            <Field.Input
-              {...form.register('dueDate')}
-              type="date"
-            />
+            <Field.Input {...form.register('dueDate')} type="date" />
             {form.formState.errors.dueDate && (
-              <Field.Error>
-                {form.formState.errors.dueDate.message}
-              </Field.Error>
+              <Field.Error>{form.formState.errors.dueDate.message}</Field.Error>
             )}
           </Field.Container>
 
@@ -158,11 +147,7 @@ export function TaskModal(props: TaskModalProps) {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
-          <Clickable.Button
-            type="button"
-            onClick={onCancel}
-            variant="outline"
-          >
+          <Clickable.Button type="button" onClick={onCancel} variant="outline">
             Cancel
           </Clickable.Button>
           <Clickable.Button type="submit">

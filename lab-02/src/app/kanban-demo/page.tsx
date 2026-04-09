@@ -13,7 +13,7 @@ export default function KanbanDemo() {
 
         <Kanban.Content>
           <Kanban.Columns
-            render={(column) => {
+            render={column => {
               return (
                 <Kanban.Column.Container>
                   <Kanban.Column.Header>
@@ -21,20 +21,21 @@ export default function KanbanDemo() {
                   </Kanban.Column.Header>
 
                   <Kanban.Column.Content>
-                    <Kanban.Tasks 
-                      columnId={column.id} 
+                    <Kanban.Tasks
+                      columnId={column.id}
                       render={task => {
                         return (
                           <Kanban.Task.Container>
                             <Kanban.Task.Title>{task.title}</Kanban.Task.Title>
                           </Kanban.Task.Container>
-                        )
-                      }}/>
+                        );
+                      }}
+                    />
                   </Kanban.Column.Content>
                 </Kanban.Column.Container>
-              )
-            }
-          }/>
+              );
+            }}
+          />
         </Kanban.Content>
       </Kanban.Container>
     </Kanban.Provider>

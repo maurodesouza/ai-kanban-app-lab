@@ -1,8 +1,8 @@
-import { proxy, subscribe } from "valtio";
-import "./valtio-config"; // Enable globally
+import { proxy, subscribe } from 'valtio';
+import './valtio-config'; // Enable globally
 
-import type { KankanTask, Kanban } from "@/types/kanban";
-import { random } from "@/utils/random";
+import type { KankanTask, Kanban } from '@/types/kanban';
+import { random } from '@/utils/random';
 
 export type KanbanStoreState = Kanban & {
   $columnIdsWithTasks: Record<string, Record<string, KankanTask>>;
@@ -18,7 +18,7 @@ const doneColumnId = random.id();
 const initialKanbanState: KanbanStoreState = {
   id: kanbanId,
   title: 'AI Todo App',
-  filter: "",
+  filter: '',
   tasks: {},
 
   columns: {
@@ -26,70 +26,73 @@ const initialKanbanState: KanbanStoreState = {
       id: todoColumnId,
       kanbanId: kanbanId,
       title: 'To Do',
-      tasksId: []
+      tasksId: [],
     },
     [progressColumnId]: {
       id: progressColumnId,
       kanbanId: kanbanId,
       title: 'In Progress',
-      tasksId: []
+      tasksId: [],
     },
     [doneColumnId]: {
       id: doneColumnId,
       kanbanId: kanbanId,
       title: 'Done',
-      tasksId: []
-    }
+      tasksId: [],
+    },
   },
 
   $columnIdsWithTasks: {},
-  $$storeId: "",
+  $$storeId: '',
 };
 
-
-export const kanbanStores = new Map<string, KanbanStoreState>()
+export const kanbanStores = new Map<string, KanbanStoreState>();
 
 export const removeKanbanStore = (storeId: string) => {
   kanbanStores.delete(storeId);
 };
 
 export const createKanbanStore = () => {
-
-  const storeId = random.id()
+  const storeId = random.id();
 
   const state = proxy<KanbanStoreState>({
     ...initialKanbanState,
-    $$storeId: storeId
+    $$storeId: storeId,
   });
 
   function compute$columnIdsWithTasks() {
     const columnIdsWithTasks: Record<string, Record<string, KankanTask>> = {};
     const filterText = state.filter.toLowerCase().trim();
-    
+
     for (const columnId in state.columns) {
       columnIdsWithTasks[columnId] = {};
       const column = state.columns[columnId];
-      
+
       for (const taskId of column.tasksId) {
         const task = state.tasks[taskId];
         if (task) {
           // Apply filter: check if task title or description contains filter text
-          if (!filterText || 
-              task.title.toLowerCase().includes(filterText) ||
-              task.description.toLowerCase().includes(filterText)) {
+          if (
+            !filterText ||
+            task.title.toLowerCase().includes(filterText) ||
+            task.description.toLowerCase().includes(filterText)
+          ) {
             columnIdsWithTasks[columnId][taskId] = task;
           }
         }
       }
     }
-    
+
     state.$columnIdsWithTasks = columnIdsWithTasks;
   }
 
-  subscribe(state, (ops) => {
+  subscribe(state, ops => {
     for (const op of ops) {
       const path = Array.isArray(op[1]) ? op[1][0] : op[1];
-      if (typeof path === 'string' && ["columns", "tasks", "filter"].includes(path)) {
+      if (
+        typeof path === 'string' &&
+        ['columns', 'tasks', 'filter'].includes(path)
+      ) {
         compute$columnIdsWithTasks();
         break;
       }
@@ -98,7 +101,7 @@ export const createKanbanStore = () => {
 
   compute$columnIdsWithTasks();
 
-  kanbanStores.set(storeId, state)
+  kanbanStores.set(storeId, state);
 
   return state;
 };
