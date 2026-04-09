@@ -23,7 +23,7 @@ import {
   KanbanStoreState,
   removeKanbanStore,
 } from '@/stores/kanban';
-import { Plus } from 'lucide-react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
 
 const KanbanContext = createContext<KanbanStoreState | null>(null);
 
@@ -151,7 +151,62 @@ function Tasks(props: TasksProps) {
   );
 }
 
-const TaskContainer = twx.div`bg-background-support rounded-md p-sm border border-ring-inner cursor-pointer transition-all hover:brightness-110`;
+const TaskContainer = twx.div`bg-background-support rounded-md border border-ring-inner cursor-pointer transition-all hover:brightness-110`;
+
+const TaskContent = twx.div`py-xxs px-xs`;
+
+const TaskActionsContainer = twx.div`flex gap-xs justify-end py-xxs px-xs border-t border-ring-inner`;
+
+function EditButton(props: { taskId: string }) {
+  const { taskId } = props;
+  const { $$storeId: storeId, tasks } = useKanban();
+
+  const task = tasks[taskId];
+
+  function handleEdit() {
+    if (!task) return;
+
+    events.modal.show(() => <TaskModal kanbanStoreId={storeId} task={task} />);
+  }
+
+  return (
+    <Clickable.Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      tone="brand"
+      onClick={handleEdit}
+    >
+      <Edit className="size-4" />
+    </Clickable.Button>
+  );
+}
+
+function DeleteButton(props: { taskId: string }) {
+  const { taskId } = props;
+  const { $$storeId: storeId } = useKanban();
+
+  function handleDelete() {
+    events.kanban.deleteTask({
+      storeId,
+      data: taskId,
+    });
+  }
+
+  return (
+    <Clickable.Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      tone="danger"
+      onClick={handleDelete}
+    >
+      <Trash2 className="size-4" />
+    </Clickable.Button>
+  );
+}
+
+const TaskFooter = TaskActionsContainer;
 
 function TaskTitle(props: React.PropsWithChildren) {
   return <Text.Paragraph>{props.children}</Text.Paragraph>;
@@ -159,6 +214,7 @@ function TaskTitle(props: React.PropsWithChildren) {
 
 export const Kanban = {
   Provider: KanbanProvider,
+  useKanban,
   Container,
   Header,
   Content,
@@ -176,6 +232,10 @@ export const Kanban = {
   },
   Task: {
     Container: TaskContainer,
+    Content: TaskContent,
+    Footer: TaskFooter,
     Title: TaskTitle,
+    EditButton,
+    DeleteButton,
   },
 };
