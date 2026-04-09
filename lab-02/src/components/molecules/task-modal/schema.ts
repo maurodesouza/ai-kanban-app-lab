@@ -11,12 +11,26 @@ export const taskFormSchema = z.object({
     .optional(),
   dueDate: z
     .string()
-    .datetime('Invalid date format')
+    .optional()
     .refine(
-      date => new Date(date) > new Date(),
-      'Due date must be in the future'
+      date => {
+        if (!date) return true; // Campo opcional, vazio é válido
+        const parsedDate = new Date(date);
+        return !isNaN(parsedDate.getTime());
+      },
+      {
+        message: 'Invalid date format',
+      }
     )
-    .optional(),
+    .refine(
+      date => {
+        if (!date) return true; // Campo opcional, vazio é válido
+        return new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)); // Permitir hoje e datas futuras
+      },
+      {
+        message: 'Due date must be today or in the future',
+      }
+    ),
   columnId: z.string().min(1, 'Column is required'),
 });
 
