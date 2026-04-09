@@ -5,15 +5,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Field } from '@/components/atoms/field';
-import { Dialog } from '@/components/atoms/dialog';
 import { Clickable } from '@/components/atoms/clickable';
-
-import { events } from '@/events';
-import { random } from '@/utils/random';
-import { kanbanStores } from '@/stores/kanban';
-import type { KanbanColumn, KankanTask } from '@/types/kanban';
+import { Dialog } from '@/components/atoms/dialog';
+import { SelectComponent } from '@/components/atoms/select';
 
 import { taskFormSchema, TaskFormValues } from './schema';
+import type { KankanTask, KanbanColumn } from '@/types/kanban';
+import { kanbanStores } from '@/stores/kanban';
+import { events } from '@/events';
+import { random } from '@/utils/random';
 
 export type TaskModalProps = {
   kanbanStoreId: string;
@@ -128,16 +128,26 @@ export function TaskModal(props: TaskModalProps) {
 
           <Field.Container>
             <Field.Label>Column *</Field.Label>
-            <select
-              {...form.register('columnId')}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            <SelectComponent.Root
+              value={form.control._formValues.columnId}
+              onValueChange={value => form.setValue('columnId', value)}
             >
-              {columnOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              <SelectComponent.Trigger>
+                <SelectComponent.Value placeholder="Select a column" />
+              </SelectComponent.Trigger>
+              <SelectComponent.Content>
+                <SelectComponent.Group>
+                  {columnOptions.map(option => (
+                    <SelectComponent.Item
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </SelectComponent.Item>
+                  ))}
+                </SelectComponent.Group>
+              </SelectComponent.Content>
+            </SelectComponent.Root>
             {form.formState.errors.columnId && (
               <Field.Error>
                 {form.formState.errors.columnId.message}
