@@ -46,9 +46,11 @@ function KanbanProvider(props: React.PropsWithChildren) {
 
 function useKanban() {
   const state = useContext(KanbanContext);
+
   if (!state) {
     throw new Error('useKanban must be used within a KanbanProvider');
   }
+
   return useSnapshot(state);
 }
 
@@ -136,11 +138,9 @@ type TasksProps = {
 };
 
 function Tasks(props: TasksProps) {
-  const { tasks } = useKanban();
+  const { $columnIdsWithTasks } = useKanban();
 
-  const columnTasks = Object.values(tasks).filter(
-    task => task.columnId === props.columnId
-  );
+  const columnTasks = Object.values($columnIdsWithTasks[props.columnId] || {});
 
   return (
     <>

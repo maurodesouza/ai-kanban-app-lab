@@ -75,7 +75,8 @@ export const createKanbanStore = () => {
           if (
             !filterText ||
             task.title.toLowerCase().includes(filterText) ||
-            task.description.toLowerCase().includes(filterText)
+            (task.description &&
+              task.description.toLowerCase().includes(filterText))
           ) {
             columnIdsWithTasks[columnId][taskId] = task;
           }
@@ -83,7 +84,11 @@ export const createKanbanStore = () => {
       }
     }
 
-    state.$columnIdsWithTasks = columnIdsWithTasks;
+    Object.keys(state.$columnIdsWithTasks).forEach(key => {
+      delete state.$columnIdsWithTasks[key];
+    });
+
+    Object.assign(state.$columnIdsWithTasks, columnIdsWithTasks);
   }
 
   subscribe(state, ops => {
