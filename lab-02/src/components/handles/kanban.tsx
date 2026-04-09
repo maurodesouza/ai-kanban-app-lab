@@ -12,10 +12,10 @@ function KanbanHandler() {
   function handleTaskAdd(args: AddTaskEventPayload) {
     console.log('Kanban task add event received:', args);
     
-    // Find the kanban store by id
-    const kanbanStore = kanbanStores.get(args.id);
+    // Find the kanban store by storeId
+    const kanbanStore = kanbanStores.get(args.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with id ${args.id} not found`);
+      console.error(`Kanban store with storeId ${args.storeId} not found`);
       return;
     }
 
@@ -39,10 +39,10 @@ function KanbanHandler() {
   function handleTaskEdit(args: EditTaskEventPayload) {
     console.log('Kanban task edit event received:', args);
     
-    // Find the kanban store by id
-    const kanbanStore = kanbanStores.get(args.id);
+    // Find the kanban store by storeId
+    const kanbanStore = kanbanStores.get(args.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with id ${args.id} not found`);
+      console.error(`Kanban store with storeId ${args.storeId} not found`);
       return;
     }
 
@@ -80,10 +80,10 @@ function KanbanHandler() {
   function handleTaskDelete(args: DeleteTaskEventPayload) {
     console.log('Kanban task delete event received:', args);
     
-    // Find the kanban store by id
-    const kanbanStore = kanbanStores.get(args.id);
+    // Find the kanban store by storeId
+    const kanbanStore = kanbanStores.get(args.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with id ${args.id} not found`);
+      console.error(`Kanban store with storeId ${args.storeId} not found`);
       return;
     }
 
@@ -110,10 +110,10 @@ function KanbanHandler() {
   function handleFilter(args: FilterEventPayload) {
     console.log('Kanban filter event received:', args);
     
-    // Find the kanban store by id
-    const kanbanStore = kanbanStores.get(args.id);
+    // Find the kanban store by storeId
+    const kanbanStore = kanbanStores.get(args.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with id ${args.id} not found`);
+      console.error(`Kanban store with storeId ${args.storeId} not found`);
       return;
     }
 

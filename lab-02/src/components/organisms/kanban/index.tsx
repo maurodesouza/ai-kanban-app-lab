@@ -1,55 +1,31 @@
 'use client';
 
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
 import { Text } from '@/components/atoms/text';
 import { Field } from '@/components/atoms/field';
 import { Clickable } from '@/components/atoms/clickable';
-import type { Kanban as KanbanType, KanbanColumn, KankanTask } from '@/types/kanban';
+import type { KanbanColumn, KankanTask } from '@/types/kanban';
 
 import { twx } from '@/utils/tailwind';
-import { random } from '@/utils/random';
 import { events } from '@/events';
 import { debounce } from '@/utils/debounce';
 import { TaskModal } from '@/components/molecules/task-modal';
+import { createKanbanStore, KanbanStoreState, removeKanbanStore } from '@/stores/kanban';
 
-// Initial state with random IDs
-const kanbanId = random.id();
-const todoColumnId = random.id();
-const progressColumnId = random.id();
-const doneColumnId = random.id();
-
-const initialKanbanState: KanbanType = {
-  id: kanbanId,
-  title: 'AI Todo App',
-  columns: {
-    [todoColumnId]: {
-      id: todoColumnId,
-      kanbanId: kanbanId,
-      title: 'To Do',
-      tasksId: []
-    },
-    [progressColumnId]: {
-      id: progressColumnId,
-      kanbanId: kanbanId,
-      title: 'In Progress',
-      tasksId: []
-    },
-    [doneColumnId]: {
-      id: doneColumnId,
-      kanbanId: kanbanId,
-      title: 'Done',
-      tasksId: []
-    }
-  },
-  tasks: {}
-};
-
-const KanbanContext = createContext<KanbanType | null>(null);
+const KanbanContext = createContext<KanbanStoreState | null>(null);
 
 function KanbanProvider(props: React.PropsWithChildren) {
-  const state = useMemo(() => proxy(initialKanbanState), []);
+  const [state] = useState(() => proxy(createKanbanStore()));
+
+  useEffect(() => {
+    // Cleanup: remove store when component unmounts
+    return () => {
+      removeKanbanStore(state.$$storeId);
+    };
+  }, [state.$$storeId]);
+
   return (
     <KanbanContext.Provider value={state}>
       {props.children}
@@ -76,13 +52,15 @@ const Header = twx.div`flex items-center justify-between mb-lg`;
 const Content = twx.div`flex gap-lg overflow-x-auto`;
 
 function Filter() {
+  const { $$storeId } = useKanban();
+
   const debouncedFilter = useMemo(() => 
     debounce((filterValue: unknown) => {
       events.kanban.filter({
-        id: kanbanId,
+        storeId: $$storeId,
         filter: filterValue as string
       });
-    }, 300), []
+    }, 300), [$$storeId]
   );
 
   function handleFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -101,9 +79,11 @@ function Filter() {
 }
 
 function AddTaskButton() {
+  const { $$storeId } = useKanban();
+
   function handleAddTask() {
     events.modal.show(
-      <TaskModal kanbanId={kanbanId} />
+      () => <TaskModal kanbanStoreId={$$storeId} />
     );
   };
 

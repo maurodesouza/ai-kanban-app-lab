@@ -4,22 +4,22 @@ import { BaseEventHandle } from './base';
 import type { KankanTask } from '@/types/kanban';
 
 export type AddTaskEventPayload = {
-  id: string
+  storeId: string
   data: KankanTask
 };
 
 export type EditTaskEventPayload = {
-  id: string
+  storeId: string
   data: KankanTask
 };
 
 export type DeleteTaskEventPayload = {
-  id: string
+  storeId: string
   data: string
 };
 
 export type FilterEventPayload = {
-  id: string
+  storeId: string
   filter: string
 };
 

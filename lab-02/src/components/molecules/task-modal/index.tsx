@@ -16,12 +16,14 @@ import type { KanbanColumn, KankanTask } from '@/types/kanban';
 import { taskFormSchema, TaskFormValues } from './schema';
 
 export type TaskModalProps = {
-  kanbanId: string;
+  kanbanStoreId: string;
   task?: KankanTask;
 }
 
-export function TaskModal({ kanbanId, task }: TaskModalProps) {
-  const kanbanStore = kanbanStores.get(kanbanId);
+export function TaskModal(props: TaskModalProps) {
+  const { kanbanStoreId, task } = props
+
+  const kanbanStore = kanbanStores.get(kanbanStoreId);
   
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskFormSchema),
@@ -39,7 +41,7 @@ export function TaskModal({ kanbanId, task }: TaskModalProps) {
     const taskData = {
       id: `task-${random.id()}`,
       ...data,
-      kanbanId,
+      kanbanId: kanbanStore.id,
       createdAt: task?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       description: data.description || '',
@@ -49,7 +51,7 @@ export function TaskModal({ kanbanId, task }: TaskModalProps) {
     const action = task ? "editTask" : "addTask";
 
     events.kanban[action]({
-      id: kanbanId,
+      storeId: kanbanStoreId,
       data: taskData
     });
 

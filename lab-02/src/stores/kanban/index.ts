@@ -4,22 +4,62 @@ import "./valtio-config"; // Enable globally
 import type { KankanTask, Kanban } from "@/types/kanban";
 import { random } from "@/utils/random";
 
-type KanbanStoreState = Kanban & {
+export type KanbanStoreState = Kanban & {
   $columnIdsWithTasks: Record<string, Record<string, KankanTask>>;
   filter: string;
+  $$storeId: string;
 };
+
+const kanbanId = random.id();
+const todoColumnId = random.id();
+const progressColumnId = random.id();
+const doneColumnId = random.id();
+
+const initialKanbanState: KanbanStoreState = {
+  id: kanbanId,
+  title: 'AI Todo App',
+  filter: "",
+  tasks: {},
+
+  columns: {
+    [todoColumnId]: {
+      id: todoColumnId,
+      kanbanId: kanbanId,
+      title: 'To Do',
+      tasksId: []
+    },
+    [progressColumnId]: {
+      id: progressColumnId,
+      kanbanId: kanbanId,
+      title: 'In Progress',
+      tasksId: []
+    },
+    [doneColumnId]: {
+      id: doneColumnId,
+      kanbanId: kanbanId,
+      title: 'Done',
+      tasksId: []
+    }
+  },
+
+  $columnIdsWithTasks: {},
+  $$storeId: "",
+};
+
 
 export const kanbanStores = new Map<string, KanbanStoreState>()
 
+export const removeKanbanStore = (storeId: string) => {
+  kanbanStores.delete(storeId);
+};
+
 export const createKanbanStore = () => {
 
+  const storeId = random.id()
+
   const state = proxy<KanbanStoreState>({
-    id: "",
-    title: "",
-    columns: {},
-    tasks: {},
-    $columnIdsWithTasks: {},
-    filter: ""
+    ...initialKanbanState,
+    $$storeId: storeId
   });
 
   function compute$columnIdsWithTasks() {
@@ -58,8 +98,7 @@ export const createKanbanStore = () => {
 
   compute$columnIdsWithTasks();
 
-  const id = random.id()
-  kanbanStores.set(id, state)
+  kanbanStores.set(storeId, state)
 
   return state;
 };
