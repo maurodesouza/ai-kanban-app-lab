@@ -6,8 +6,7 @@ import { Events } from '@/types/events';
 import type { Renderable } from '@/types/helpers';
 
 function ModalHandler() {
-  // Event handlers for modal events
-  function handleModalShow(args: unknown) {
+  function handleModalShow(args: Renderable) {
     console.log('Modal show event received:', args);
     // TODO: Update modal store with new modal content
   }

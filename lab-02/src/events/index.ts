@@ -1,7 +1,8 @@
 import { Events } from '@/types/events';
 import { Handles } from './handles';
 
-type Callback = <T>(args: T) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Callback = (args: any) => void;
 type Event = Events | keyof DocumentEventMap;
 
 class EventsHandle extends Handles {
