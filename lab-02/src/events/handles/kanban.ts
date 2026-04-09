@@ -24,20 +24,20 @@ export type FilterEventPayload = {
 };
 
 class KanbanHandleEvents extends BaseEventHandle {
-  addTask(args: AddTaskEventPayload) {
-    this.emit(Events.KANBAN_TASK_ADD, args);
+  addTask(payload: AddTaskEventPayload) {
+    this.emit(Events.KANBAN_TASK_ADD, payload);
   }
 
-  editTask(args: EditTaskEventPayload) {
-    this.emit(Events.KANBAN_TASK_EDIT, args);
+  editTask(payload: EditTaskEventPayload) {
+    this.emit(Events.KANBAN_TASK_EDIT, payload);
   }
 
-  deleteTask(args: DeleteTaskEventPayload) {
-    this.emit(Events.KANBAN_TASK_DELETE, args);
+  deleteTask(payload: DeleteTaskEventPayload) {
+    this.emit(Events.KANBAN_TASK_DELETE, payload);
   }
 
-  filter(args: FilterEventPayload) {
-    this.emit(Events.KANBAN_FILTER, args);
+  filter(payload: FilterEventPayload) {
+    this.emit(Events.KANBAN_FILTER, payload);
   }
 }
 
