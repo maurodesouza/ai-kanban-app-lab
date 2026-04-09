@@ -9,116 +9,116 @@ import { kanbanStores } from '@/stores/kanban';
 
 function KanbanHandler() {
   // Event handlers for kanban events
-  function handleTaskAdd(args: AddTaskEventPayload) {
-    console.log('Kanban task add event received:', args);
+  function handleTaskAdd(payload: AddTaskEventPayload) {
+    console.log('Kanban task add event received:', payload);
     
     // Find the kanban store by storeId
-    const kanbanStore = kanbanStores.get(args.storeId);
+    const kanbanStore = kanbanStores.get(payload.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with storeId ${args.storeId} not found`);
+      console.error(`Kanban store with storeId ${payload.storeId} not found`);
       return;
     }
 
     // Add the new task to the store
-    kanbanStore.tasks[args.data.id] = args.data;
+    kanbanStore.tasks[payload.data.id] = payload.data;
     
     // If the task has a columnId, add it to that column
-    if (args.data.columnId) {
-      if (!kanbanStore.columns[args.data.columnId]) {
-        console.error(`Column ${args.data.columnId} not found in kanban store`);
+    if (payload.data.columnId) {
+      if (!kanbanStore.columns[payload.data.columnId]) {
+        console.error(`Column ${payload.data.columnId} not found in kanban store`);
         return;
       }
       
       // Add task to column if not already there
-      if (!kanbanStore.columns[args.data.columnId].tasksId.includes(args.data.id)) {
-        kanbanStore.columns[args.data.columnId].tasksId.push(args.data.id);
+      if (!kanbanStore.columns[payload.data.columnId].tasksId.includes(payload.data.id)) {
+        kanbanStore.columns[payload.data.columnId].tasksId.push(payload.data.id);
       }
     }
   }
 
-  function handleTaskEdit(args: EditTaskEventPayload) {
-    console.log('Kanban task edit event received:', args);
+  function handleTaskEdit(payload: EditTaskEventPayload) {
+    console.log('Kanban task edit event received:', payload);
     
     // Find the kanban store by storeId
-    const kanbanStore = kanbanStores.get(args.storeId);
+    const kanbanStore = kanbanStores.get(payload.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with storeId ${args.storeId} not found`);
+      console.error(`Kanban store with storeId ${payload.storeId} not found`);
       return;
     }
 
     // Get the existing task
-    const existingTask = kanbanStore.tasks[args.data.id];
+    const existingTask = kanbanStore.tasks[payload.data.id];
     if (!existingTask) {
-      console.error(`Task ${args.data.id} not found in kanban store`);
+      console.error(`Task ${payload.data.id} not found in kanban store`);
       return;
     }
 
     // Update the task
-    kanbanStore.tasks[args.data.id] = { ...existingTask, ...args.data };
+    kanbanStore.tasks[payload.data.id] = { ...existingTask, ...payload.data };
 
     // Handle column change if needed
-    if (args.data.columnId && args.data.columnId !== existingTask.columnId) {
+    if (payload.data.columnId && payload.data.columnId !== existingTask.columnId) {
       // Remove from old column
       if (existingTask.columnId && kanbanStore.columns[existingTask.columnId]) {
         const oldColumnTasks = kanbanStore.columns[existingTask.columnId].tasksId;
-        const taskIndex = oldColumnTasks.indexOf(args.data.id);
+        const taskIndex = oldColumnTasks.indexOf(payload.data.id);
         if (taskIndex > -1) {
           oldColumnTasks.splice(taskIndex, 1);
         }
       }
 
       // Add to new column
-      if (kanbanStore.columns[args.data.columnId]) {
-        const newColumnTasks = kanbanStore.columns[args.data.columnId].tasksId;
-        if (!newColumnTasks.includes(args.data.id)) {
-          newColumnTasks.push(args.data.id);
+      if (kanbanStore.columns[payload.data.columnId]) {
+        const newColumnTasks = kanbanStore.columns[payload.data.columnId].tasksId;
+        if (!newColumnTasks.includes(payload.data.id)) {
+          newColumnTasks.push(payload.data.id);
         }
       }
     }
   }
 
-  function handleTaskDelete(args: DeleteTaskEventPayload) {
-    console.log('Kanban task delete event received:', args);
+  function handleTaskDelete(payload: DeleteTaskEventPayload) {
+    console.log('Kanban task delete event received:', payload);
     
     // Find the kanban store by storeId
-    const kanbanStore = kanbanStores.get(args.storeId);
+    const kanbanStore = kanbanStores.get(payload.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with storeId ${args.storeId} not found`);
+      console.error(`Kanban store with storeId ${payload.storeId} not found`);
       return;
     }
 
     // Get the task to be deleted
-    const taskToDelete = kanbanStore.tasks[args.data];
+    const taskToDelete = kanbanStore.tasks[payload.data];
     if (!taskToDelete) {
-      console.error(`Task ${args.data} not found in kanban store`);
+      console.error(`Task ${payload.data} not found in kanban store`);
       return;
     }
 
     // Remove task from its column
     if (taskToDelete.columnId && kanbanStore.columns[taskToDelete.columnId]) {
       const columnTasks = kanbanStore.columns[taskToDelete.columnId].tasksId;
-      const taskIndex = columnTasks.indexOf(args.data);
+      const taskIndex = columnTasks.indexOf(payload.data);
       if (taskIndex > -1) {
         columnTasks.splice(taskIndex, 1);
       }
     }
 
     // Remove task from store
-    delete kanbanStore.tasks[args.data];
+    delete kanbanStore.tasks[payload.data];
   }
 
-  function handleFilter(args: FilterEventPayload) {
-    console.log('Kanban filter event received:', args);
+  function handleFilter(payload: FilterEventPayload) {
+    console.log('Kanban filter event received:', payload);
     
     // Find the kanban store by storeId
-    const kanbanStore = kanbanStores.get(args.storeId);
+    const kanbanStore = kanbanStores.get(payload.storeId);
     if (!kanbanStore) {
-      console.error(`Kanban store with storeId ${args.storeId} not found`);
+      console.error(`Kanban store with storeId ${payload.storeId} not found`);
       return;
     }
 
     // Update filter in store
-    kanbanStore.filter = args.filter;
+    kanbanStore.filter = payload.filter;
   }
 
   useEffect(() => {
