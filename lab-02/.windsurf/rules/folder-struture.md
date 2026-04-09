@@ -59,7 +59,6 @@ Global components must follow Atomic Design:
 ```
 components/atoms/button/
   index.tsx
-  types.ts (optional)
   helpers.ts (optional)
 ```
 
