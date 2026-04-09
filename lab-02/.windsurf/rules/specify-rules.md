@@ -16,6 +16,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-09
 - In-memory state via Valtio proxy (010-kanban-components)
 - TypeScript with React 18+ + Next.js (App Router), Valtio for state management, TailwindCSS for styling (011-kanban-homepage)
 - Client-side state with Valtio proxy (011-kanban-homepage)
+- TypeScript with React 18+ + Next.js (App Router), Valtio for state management, Radix UI for dialog (012-modal-event-driven)
+- Client-side state with Valtio proxy in modal store (012-modal-event-driven)
 
 - (002-tailwind-utils)
 
@@ -35,9 +37,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 012-modal-event-driven: Added TypeScript with React 18+ + Next.js (App Router), Valtio for state management, Radix UI for dialog
 - 011-kanban-homepage: Added TypeScript with React 18+ + Next.js (App Router), Valtio for state management, TailwindCSS for styling
 - 010-kanban-components: Added TypeScript with React 18+ + Valtio for state management, Next.js for framework
-- 009-base-components: Added TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form
 
 
 <!-- MANUAL ADDITIONS START -->
