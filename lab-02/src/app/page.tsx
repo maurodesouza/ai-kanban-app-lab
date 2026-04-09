@@ -7,8 +7,11 @@ export default function Home() {
     <Kanban.Provider>
       <Kanban.Container>
         <Kanban.Header>
-          <Kanban.Title>AI Todo App</Kanban.Title>
-          <Kanban.Filter />
+          <Kanban.Title />
+          <div className="flex gap-sm">
+            <Kanban.Filter />
+            <Kanban.AddTaskButton />
+          </div>
         </Kanban.Header>
         <Kanban.Content>
           <Kanban.Columns 
