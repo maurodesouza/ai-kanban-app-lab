@@ -1,6 +1,6 @@
 # lab-02 Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-04-08
+Auto-generated from all feature plans. Last updated: 2026-04-09
 
 ## Active Technologies
 - In-memory state management (valtio proxy) (004-kanban-store)
@@ -12,6 +12,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-08
 - N/A (component-based) (008-event-handlers)
 - TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form (009-base-components)
 - N/A (UI components only) (009-base-components)
+- TypeScript with React 18+ + Valtio for state management, Next.js for framework (010-kanban-components)
+- In-memory state via Valtio proxy (010-kanban-components)
 
 - (002-tailwind-utils)
 
@@ -31,9 +33,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 010-kanban-components: Added TypeScript with React 18+ + Valtio for state management, Next.js for framework
 - 009-base-components: Added TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form
 - 008-event-handlers: Added React (for components), existing event architecture, existing stores
-- 007-kanban-events: Added CustomEvent API (built-in), existing event architecture, existing kanban types
 
 
 <!-- MANUAL ADDITIONS START -->
