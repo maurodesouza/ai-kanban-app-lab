@@ -1,13 +1,17 @@
 import { proxy, subscribe } from "valtio";
 import "./valtio-config"; // Enable globally
 
-import type { KankanTask, KanbanColumn, Kanban } from "@/types/kanban";
+import type { KankanTask, Kanban } from "@/types/kanban";
+import { random } from "@/utils/random";
 
 type KanbanStoreState = Kanban & {
   $columnIdsWithTasks: Record<string, Record<string, KankanTask>>;
 };
 
+export const kanbanStores = new Map()
+
 export const createKanbanStore = () => {
+
   const state = proxy<KanbanStoreState>({
     id: "",
     title: "",
@@ -45,6 +49,9 @@ export const createKanbanStore = () => {
   });
 
   compute$columnIdsWithTasks();
+
+  const id = random.id()
+  kanbanStores.set(id, state)
 
   return state;
 };
