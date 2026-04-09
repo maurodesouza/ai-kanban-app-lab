@@ -18,6 +18,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-09
 - Client-side state with Valtio proxy (011-kanban-homepage)
 - TypeScript with React 18+ + Next.js (App Router), Valtio for state management, Radix UI for dialog (012-modal-event-driven)
 - Client-side state with Valtio proxy in modal store (012-modal-event-driven)
+- TypeScript with React 18+ + Next.js (App Router), React Hook Form, Zod, Valtio for state management, Radix UI for dialog (013-task-creation-modal)
+- Client-side state with Valtio proxy in kanban stores (013-task-creation-modal)
 
 - (002-tailwind-utils)
 
@@ -37,9 +39,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 013-task-creation-modal: Added TypeScript with React 18+ + Next.js (App Router), React Hook Form, Zod, Valtio for state management, Radix UI for dialog
 - 012-modal-event-driven: Added TypeScript with React 18+ + Next.js (App Router), Valtio for state management, Radix UI for dialog
 - 011-kanban-homepage: Added TypeScript with React 18+ + Next.js (App Router), Valtio for state management, TailwindCSS for styling
-- 010-kanban-components: Added TypeScript with React 18+ + Valtio for state management, Next.js for framework
 
 
 <!-- MANUAL ADDITIONS START -->
