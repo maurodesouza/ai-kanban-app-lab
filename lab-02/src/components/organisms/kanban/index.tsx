@@ -66,8 +66,9 @@ function useKanban() {
 };
 
 
-function Title(props: React.PropsWithChildren) {
-  return <Text.Heading hierarchy="h1">{props.children}</Text.Heading>;
+function Title() {
+  const { title } = useKanban();
+  return <Text.Heading hierarchy="h1">{title}</Text.Heading>;
 }
 
 const Container = twx.div`base-2 bg-background-base min-h-screen p-lg`;
@@ -100,7 +101,7 @@ function Filter() {
 }
 
 function AddTaskButton() {
-  function handleAddTask()  {
+  function handleAddTask() {
     events.modal.show(
       <TaskModal kanbanId={kanbanId} />
     );
