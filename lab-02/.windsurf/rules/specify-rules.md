@@ -8,6 +8,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-08
 - CustomEvent API (built-in), existing event architecture (006-modal-events)
 - In-memory event listeners (no persistence required) (006-modal-events)
 - CustomEvent API (built-in), existing event architecture, existing kanban types (007-kanban-events)
+- React (for components), existing event architecture, existing stores (008-event-handlers)
+- N/A (component-based) (008-event-handlers)
 
 - (002-tailwind-utils)
 
@@ -27,9 +29,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 008-event-handlers: Added React (for components), existing event architecture, existing stores
 - 007-kanban-events: Added CustomEvent API (built-in), existing event architecture, existing kanban types
 - 006-modal-events: Added CustomEvent API (built-in), existing event architecture
-- 005-modal-store: Added valtio (already installed from previous feature)
 
 
 <!-- MANUAL ADDITIONS START -->
