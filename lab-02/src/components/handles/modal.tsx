@@ -4,16 +4,21 @@ import { useEffect } from 'react';
 import { events } from '@/events';
 import { Events } from '@/types/events';
 import type { Renderable } from '@/types/helpers';
+import { modalStore } from '@/stores/modal';
 
 function ModalHandler() {
   function handleModalShow(args: Renderable) {
     console.log('Modal show event received:', args);
-    // TODO: Update modal store with new modal content
+    
+    // Update modal store with new modal content
+    modalStore.modal = args;
   }
 
   function handleModalHide() {
     console.log('Modal hide event received');
-    // TODO: Update modal store to hide modal
+    
+    // Update modal store to hide modal
+    modalStore.modal = undefined;
   }
 
   useEffect(() => {
