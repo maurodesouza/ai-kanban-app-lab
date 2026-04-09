@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/global.css";
+import { KanbanHandler } from "@/components/handles/kanban";
+import { ModalHandler } from "@/components/handles/modal";
 
 
 export const metadata: Metadata = {
@@ -14,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <KanbanHandler />
+        <ModalHandler />
+        {children}
+      </body>
     </html>
   );
 }
