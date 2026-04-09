@@ -5,12 +5,14 @@ import { proxy, useSnapshot } from 'valtio';
 
 import { Text } from '@/components/atoms/text';
 import { Field } from '@/components/atoms/field';
+import { Clickable } from '@/components/atoms/clickable';
 import type { Kanban as KanbanType, KanbanColumn, KankanTask } from '@/types/kanban';
 
 import { twx } from '@/utils/tailwind';
 import { random } from '@/utils/random';
 import { events } from '@/events';
 import { debounce } from '@/utils/debounce';
+import { TaskModal } from '@/components/molecules/task-modal';
 
 // Initial state with random IDs
 const kanbanId = random.id();
@@ -97,6 +99,20 @@ function Filter() {
   );
 }
 
+function AddTaskButton() {
+  function handleAddTask()  {
+    events.modal.show(
+      <TaskModal kanbanId={kanbanId} />
+    );
+  };
+
+  return (
+    <Clickable.Button onClick={handleAddTask}>
+      Add Task
+    </Clickable.Button>
+  );
+}
+
 function ColumnTitle(props: React.PropsWithChildren) {
   return <Text.Heading hierarchy="h3">{props.children}</Text.Heading>;
 }
@@ -158,6 +174,7 @@ export const Kanban = {
   Columns,
   Title,
   Filter,
+  AddTaskButton,
   Tasks,
   Column: {
     Container: ColumnContainer,
