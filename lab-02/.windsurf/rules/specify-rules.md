@@ -14,6 +14,8 @@ Auto-generated from all feature plans. Last updated: 2026-04-09
 - N/A (UI components only) (009-base-components)
 - TypeScript with React 18+ + Valtio for state management, Next.js for framework (010-kanban-components)
 - In-memory state via Valtio proxy (010-kanban-components)
+- TypeScript with React 18+ + Next.js (App Router), Valtio for state management, TailwindCSS for styling (011-kanban-homepage)
+- Client-side state with Valtio proxy (011-kanban-homepage)
 
 - (002-tailwind-utils)
 
@@ -33,9 +35,9 @@ tests/
 : Follow standard conventions
 
 ## Recent Changes
+- 011-kanban-homepage: Added TypeScript with React 18+ + Next.js (App Router), Valtio for state management, TailwindCSS for styling
 - 010-kanban-components: Added TypeScript with React 18+ + Valtio for state management, Next.js for framework
 - 009-base-components: Added TypeScript with React (Next.js App Router) + TailwindCSS v4, tailwind-variants, shadcn/ui, React Hook Form
-- 008-event-handlers: Added React (for components), existing event architecture, existing stores
 
 
 <!-- MANUAL ADDITIONS START -->
