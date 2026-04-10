@@ -17,6 +17,39 @@ function doSomething() {}
 
 ---
 
+### Early Return (Mandatory)
+
+- Always use early return to avoid nested conditions
+- Do not use else when it can be avoided
+- Exit the function as soon as a condition is not met
+
+**Bad:**
+
+```js
+function process(data: string | null) {
+  if (data) {
+    return data.toUpperCase();
+  } else {
+    return null;
+  }
+}
+```
+
+**Good:**
+
+```js
+function process(data: string | null) {
+  if (!data) return;
+
+  return data.toUpperCase();
+}
+```
+
+- Prefer flat and readable control flow
+- Avoid deep nesting at all costs
+
+---
+
 ### Arguments Structure
 
 * If the function has **only one argument**, pass it directly
