@@ -84,6 +84,11 @@ function TaskModal({
     <Dialog.Content>
       <Dialog.Header>
         <Dialog.Title>{isEditing ? 'Edit Task' : 'Create Task'}</Dialog.Title>
+        <Dialog.Description>
+          {isEditing
+            ? 'Edit the task details below. Update the title, description, due date, or column.'
+            : 'Create a new task by filling in the details below. All required fields must be completed.'}
+        </Dialog.Description>
       </Dialog.Header>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
