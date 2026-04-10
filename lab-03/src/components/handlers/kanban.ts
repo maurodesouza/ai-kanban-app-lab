@@ -43,6 +43,13 @@ function KanbanHandler() {
     if (column) {
       column.tasksId.push(newTask.id);
     }
+
+    // Show success notification
+    events.notification.success({
+      message: 'Task created successfully!',
+      description: `"${newTask.title}" has been added to ${column?.title || 'column'}`,
+      duration: 3000,
+    });
   }
 
   function onUpdateTask(event: CustomEvent<UpdateTaskPayload>) {
@@ -52,8 +59,16 @@ function KanbanHandler() {
     if (!store || !store.tasks[taskId]) return;
 
     const task = store.tasks[taskId];
+    const oldTitle = task.title;
     Object.assign(task, data);
     task.updatedAt = new Date().toISOString();
+
+    // Show success notification
+    events.notification.success({
+      message: 'Task updated successfully!',
+      description: `"${oldTitle}" has been updated`,
+      duration: 3000,
+    });
   }
 
   function onDeleteTask(event: CustomEvent<DeleteTaskPayload>) {
@@ -63,6 +78,7 @@ function KanbanHandler() {
     if (!store || !store.tasks[taskId]) return;
 
     const task = store.tasks[taskId];
+    const taskTitle = task.title;
 
     // Remove task ID from column
     const column = store.columns[task.columnId];
@@ -72,6 +88,13 @@ function KanbanHandler() {
 
     // Remove task from store
     delete store.tasks[taskId];
+
+    // Show success notification
+    events.notification.info({
+      message: 'Task deleted',
+      description: `"${taskTitle}" has been removed`,
+      duration: 3000,
+    });
   }
 
   function onMoveTask(event: CustomEvent<MoveTaskPayload>) {
@@ -104,6 +127,13 @@ function KanbanHandler() {
     // Update task column reference
     task.columnId = toColumnId;
     task.updatedAt = new Date().toISOString();
+
+    // Show success notification
+    events.notification.success({
+      message: 'Task moved!',
+      description: `"${task.title}" moved to ${toColumn.title}`,
+      duration: 2000,
+    });
   }
 
   useEffect(() => {
