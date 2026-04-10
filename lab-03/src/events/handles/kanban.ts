@@ -10,7 +10,7 @@ export type CreateTaskPayload = {
 export type UpdateTaskPayload = {
   storeId: string;
   taskId: string;
-  data: Partial<Pick<Task, 'title' | 'description' | 'dueDate'>>;
+  data: Partial<Pick<Task, 'title' | 'description' | 'dueDate' | 'columnId'>>;
 };
 
 export type DeleteTaskPayload = {

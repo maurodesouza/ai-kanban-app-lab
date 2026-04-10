@@ -58,6 +58,7 @@ function TaskModal({
           title: data.title,
           description: data.description,
           dueDate: data.dueDate,
+          columnId: data.columnId,
         },
       });
     } else {
