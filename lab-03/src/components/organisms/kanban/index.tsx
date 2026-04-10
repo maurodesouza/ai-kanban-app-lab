@@ -255,7 +255,7 @@ function AddTaskAction({ columnId, children }: AddTaskActionProps) {
   }
 
   return (
-    <Clickable.Button tone="brand" onClick={onClick}>
+    <Clickable.Button tone="brand" size="full" onClick={onClick}>
       <Plus className="w-4 h-4" />
       {children || 'Add Task'}
     </Clickable.Button>

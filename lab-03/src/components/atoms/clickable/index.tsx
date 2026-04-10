@@ -38,6 +38,7 @@ const buttonVariants = tv({
     },
     size: {
       icon: 'size-8 justify-center',
+      full: 'px-md py-xs w-full justify-center',
       default: 'px-md py-xs',
     },
 
