@@ -24,9 +24,14 @@ type TaskFormData = z.infer<typeof taskSchema>;
 type TaskModalProps = {
   storeId: string;
   task?: Task;
+  columnId?: string;
 };
 
-function TaskModal({ storeId, task }: TaskModalProps) {
+function TaskModal({
+  storeId,
+  task,
+  columnId: defaultColumnId,
+}: TaskModalProps) {
   const store = kanbanStore.getById(storeId);
   const isEditing = !!task;
 
@@ -36,7 +41,7 @@ function TaskModal({ storeId, task }: TaskModalProps) {
       title: task?.title || '',
       description: task?.description || '',
       dueDate: task?.dueDate || '',
-      columnId: task?.columnId || '',
+      columnId: task?.columnId || defaultColumnId || '',
     },
   });
 
