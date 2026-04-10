@@ -213,7 +213,13 @@ function Columns({ render }: ColumnsProps) {
   const snap = useKanban();
 
   return (
-    <>{Object.values(snap.columns).map(column => render(column as Column))}</>
+    <>
+      {Object.values(snap.columns).map(column => (
+        <React.Fragment key={column.id}>
+          {render(column as Column)}
+        </React.Fragment>
+      ))}
+    </>
   );
 }
 
@@ -237,7 +243,13 @@ function Tasks({ columnId, render }: TasksProps) {
   const snap = useKanban();
   const columnTasks = snap.$columnsWithTasks[columnId] || {};
 
-  return <>{Object.values(columnTasks).map(task => render(task))}</>;
+  return (
+    <>
+      {Object.values(columnTasks).map(task => (
+        <React.Fragment key={task.id}>{render(task)}</React.Fragment>
+      ))}
+    </>
+  );
 }
 
 // AddTaskAction component
