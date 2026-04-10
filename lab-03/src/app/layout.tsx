@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
-import '@/styles/globals.css';
+
+import '@/styles/global.css';
+
 import { ModalHandler } from '@/components/handlers/modal';
 import { KanbanHandler } from '@/components/handlers/kanban';
 
