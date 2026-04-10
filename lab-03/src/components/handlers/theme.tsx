@@ -4,7 +4,8 @@ import { useEffect, useCallback } from 'react';
 import { events } from '@/events';
 import { Events } from '@/types/events';
 import { cookie } from '@/utils/cookies';
-import { themes, type Theme } from '@/utils/themes';
+import { themes } from '@/utils/themes';
+import type { Theme } from '@/types/themes';
 import type { ThemeSetPayload } from '@/events/handles/theme';
 
 function getTheme(): string {

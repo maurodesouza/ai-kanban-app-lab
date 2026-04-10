@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { DEFAULT_THEME, AVAILABLE_THEMES } from '@/utils/themes';
-import type { Theme } from '@/utils/themes';
+import type { Theme } from '@/types/themes';
 
 export async function getServerTheme(): Promise<string> {
   const cookieStore = await cookies();

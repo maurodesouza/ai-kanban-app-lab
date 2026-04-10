@@ -2,18 +2,11 @@
  * Theme configuration for the kanban app
  */
 
-export type Theme = 'light' | 'dark';
+import type { Theme, ThemeConfig } from '@/types/themes';
 
 export const AVAILABLE_THEMES: Theme[] = ['dark', 'light'];
 
 export const DEFAULT_THEME: Theme = 'dark';
-
-export type ThemeConfig = {
-  name: Theme;
-  displayName: string;
-  icon?: string;
-  description?: string;
-};
 
 export const THEME_CONFIGS: Record<Theme, ThemeConfig> = {
   dark: {

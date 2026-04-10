@@ -1,6 +1,6 @@
 import { Events } from '@/types/events';
 import { BaseEventHandle } from './base';
-import type { Theme } from '@/utils/themes';
+import type { Theme } from '@/types/themes';
 
 export type ThemeTogglePayload = void;
 
