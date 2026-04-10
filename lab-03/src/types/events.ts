@@ -15,4 +15,9 @@ export enum Events {
   NOTIFICATION_ERROR = 'notification.error',
   NOTIFICATION_INFO = 'notification.info',
   NOTIFICATION_WARNING = 'notification.warning',
+
+  // Theme Events
+  THEME_TOGGLE = 'theme.toggle',
+  THEME_SET = 'theme.set',
+  THEME_NEXT = 'theme.next',
 }
