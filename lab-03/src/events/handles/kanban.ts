@@ -1,6 +1,6 @@
 import { Events } from '@/types/events';
 import { BaseEventHandle } from './base';
-import type { Task } from '@/types/kanban';
+import type { Task, Column } from '@/types/kanban';
 
 export type CreateTaskPayload = {
   storeId: string;
@@ -31,6 +31,11 @@ export type FilterPayload = {
   filter: string;
 };
 
+export type CreateColumnPayload = {
+  storeId: string;
+  data: Omit<Column, 'id'>;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   filter(args: FilterPayload) {
     this.emit(Events.KANBAN_FILTER, args);
@@ -50,6 +55,10 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   moveTask(args: MoveTaskPayload) {
     this.emit(Events.KANBAN_TASK_MOVE, args);
+  }
+
+  createColumn(args: CreateColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_CREATE, args);
   }
 }
 

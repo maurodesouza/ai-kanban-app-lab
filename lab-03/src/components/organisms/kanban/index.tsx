@@ -60,6 +60,8 @@ const Header = twx.div`flex gap-md items-end`;
 const Content = twx.div`flex gap-md h-full overflow-x-auto`;
 
 const ColumnContainer = twx.div`base-1 flex flex-col bg-background-base border border-ring-inner rounded-md min-w-60`;
+
+const AddColumnContainer = twx.div`base-2 flex flex-col bg-background-support border border-dashed border-ring-outer rounded-md min-w-60 h-full items-center justify-center cursor-pointer brightness-50 hover:brightness-100 transition-all`;
 const ColumnHeader = twx.div`flex flex-col min-h-0 border-b border-ring-inner p-md`;
 
 // Column title component
@@ -355,6 +357,37 @@ function GlobalAddTaskAction({ children }: GlobalAddTaskActionProps) {
   );
 }
 
+// AddColumnAction component
+type AddColumnActionProps = React.PropsWithChildren;
+
+function AddColumnAction({ children }: AddColumnActionProps) {
+  const store = useContext(KanbanContext)!;
+  const snap = useSnapshot(store);
+
+  function onClick() {
+    const columnCount = Object.keys(snap.columns).length;
+    const newColumnTitle = `Column ${columnCount + 1}`;
+
+    events.kanban.createColumn({
+      storeId: store.$$storeId,
+      data: {
+        kanbanId: snap.id,
+        title: newColumnTitle,
+        tasksId: [],
+      },
+    });
+  }
+
+  return (
+    <AddColumnContainer onClick={onClick}>
+      <Plus className="w-8 h-8 text-foreground-min mb-xs" />
+      <Text.Paragraph className="text-foreground-min text-center">
+        {children || 'Add Column'}
+      </Text.Paragraph>
+    </AddColumnContainer>
+  );
+}
+
 // Export composition
 export const Kanban = {
   Provider: KanbanProvider,
@@ -365,6 +398,7 @@ export const Kanban = {
   GlobalAddTaskAction,
   Content,
   Columns,
+  AddColumnAction,
   Column: {
     Container: ColumnContainer,
     Header: ColumnHeader,

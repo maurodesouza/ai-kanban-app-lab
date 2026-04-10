@@ -11,6 +11,7 @@ import type {
   UpdateTaskPayload,
   DeleteTaskPayload,
   MoveTaskPayload,
+  CreateColumnPayload,
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
@@ -136,12 +137,34 @@ function KanbanHandler() {
     });
   }
 
+  function onCreateColumn(event: CustomEvent<CreateColumnPayload>) {
+    const { storeId, data } = event.detail;
+    const store = kanbanStore.getById(storeId);
+
+    if (!store) return;
+
+    const newColumn = {
+      ...data,
+      id: random.id(),
+    };
+
+    store.columns[newColumn.id] = newColumn;
+
+    // Show success notification
+    events.notification.success({
+      message: 'Column created successfully!',
+      description: `"${newColumn.title}" has been added`,
+      duration: 3000,
+    });
+  }
+
   useEffect(() => {
     events.on(Events.KANBAN_FILTER, onFilter);
     events.on(Events.KANBAN_TASK_CREATE, onCreateTask);
     events.on(Events.KANBAN_TASK_UPDATE, onUpdateTask);
     events.on(Events.KANBAN_TASK_DELETE, onDeleteTask);
     events.on(Events.KANBAN_TASK_MOVE, onMoveTask);
+    events.on(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
 
     return () => {
       events.off(Events.KANBAN_FILTER, onFilter);
@@ -149,6 +172,7 @@ function KanbanHandler() {
       events.off(Events.KANBAN_TASK_UPDATE, onUpdateTask);
       events.off(Events.KANBAN_TASK_DELETE, onDeleteTask);
       events.off(Events.KANBAN_TASK_MOVE, onMoveTask);
+      events.off(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
     };
   }, []);
 

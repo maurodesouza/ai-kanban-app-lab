@@ -51,6 +51,7 @@ function KanbanBoard() {
             </Kanban.Column.Container>
           )}
         />
+        <Kanban.AddColumnAction />
       </Kanban.Content>
     </Kanban.Container>
   );

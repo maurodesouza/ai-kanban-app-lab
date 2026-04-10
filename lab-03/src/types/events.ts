@@ -9,6 +9,7 @@ export enum Events {
   KANBAN_TASK_UPDATE = 'kanban.task.update',
   KANBAN_TASK_DELETE = 'kanban.task.delete',
   KANBAN_TASK_MOVE = 'kanban.task.move',
+  KANBAN_COLUMN_CREATE = 'kanban.column.create',
 
   // Notification Events
   NOTIFICATION_SUCCESS = 'notification.success',
