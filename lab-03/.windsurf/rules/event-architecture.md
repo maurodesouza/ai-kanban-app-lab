@@ -7,7 +7,7 @@ description: Use this rule when implementing event-driven architecture in the ap
 
 ## Overview
 
-This project uses an **event-based pub/sub pattern** to decouple UI from state logic. The system is agnostic regarding the state manager (Zustand, Valtio, etc.). 
+This project uses an **event-based pub/sub pattern** to decouple UI from state logic. The system is agnostic regarding the state manager (Zustand, Valtio, etc.).
 
 ## Rule Scope
 
@@ -93,12 +93,12 @@ export enum Events {
 import { Events } from '@types/events';
 import { BaseEventHandle } from './base';
 
-type ShowModalArgs = {
+export type ShowModalPayload = {
   modal: string;
 };
 
 class ModalHandleEvents extends BaseEventHandle {
-  show(args: ShowModalArgs) {
+  show(args: ShowModalPayload) {
     this.emit(Events.MODAL_SHOW, args);
   }
 
@@ -135,13 +135,10 @@ import { useEffect } from 'react';
 import { events } from '@events';
 import { Events } from '@types/events';
 import { modalStore } from '@/stores/modal';
-
-type ModalPayload = {
-  modal: string;
-};
+import { ShowModalPayload } from '@events/handles/modal';
 
 function ModalHandler() {
-  function onShowModal(event: CustomEvent<ModalPayload>) {
+  function onShowModal(event: CustomEvent<ShowModalPayload>) {
     modalStore.set({
       modal: event.detail.modal,
     });
