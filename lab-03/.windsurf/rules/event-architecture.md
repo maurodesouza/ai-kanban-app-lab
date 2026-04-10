@@ -54,7 +54,7 @@ export { BaseEventHandle };
 import { Events } from '@types/events';
 import { Handles } from './handles';
 
-type Callback = (args: any) => void;
+type Callback = (payload: any) => void;
 type Event = Events | keyof DocumentEventMap;
 
 class EventsHandle extends Handles {
@@ -98,8 +98,8 @@ export type ShowModalPayload = {
 };
 
 class ModalHandleEvents extends BaseEventHandle {
-  show(args: ShowModalPayload) {
-    this.emit(Events.MODAL_SHOW, args);
+  show(payload: ShowModalPayload) {
+    this.emit(Events.MODAL_SHOW, payload);
   }
 
   hide() {
