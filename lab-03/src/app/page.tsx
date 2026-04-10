@@ -1,6 +1,7 @@
 'use client';
 
 import { Kanban } from '@/components/organisms/kanban';
+import { ThemeToggle } from '@/components/molecules/theme-toggle';
 
 function KanbanBoard() {
   return (
@@ -9,6 +10,7 @@ function KanbanBoard() {
         <Kanban.Title />
         <Kanban.Filter />
         <Kanban.GlobalAddTaskAction />
+        <ThemeToggle />
       </Kanban.Header>
 
       <Kanban.Content>
