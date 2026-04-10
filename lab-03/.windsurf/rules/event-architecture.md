@@ -130,7 +130,7 @@ export { Handles };
 ## 4. Handler (Modal)
 
 ```typescript
-// /src/components/handlers/modal.ts
+// /src/components/handlers/modal.tsx
 import { useEffect } from 'react';
 import { events } from '@events';
 import { Events } from '@types/events';
