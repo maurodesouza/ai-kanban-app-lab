@@ -8,7 +8,7 @@ function KanbanBoard() {
       <Kanban.Header>
         <Kanban.Title />
         <Kanban.Filter />
-        <Kanban.AddTaskAction />
+        <Kanban.GlobalAddTaskAction />
       </Kanban.Header>
 
       <Kanban.Content>
@@ -19,28 +19,31 @@ function KanbanBoard() {
                 <Kanban.Column.Title>{column.title}</Kanban.Column.Title>
               </Kanban.Column.Header>
 
-              <Kanban.Column.Content>
-                <Kanban.Task.Tasks
+              <Kanban.Column.Content columnId={column.id}>
+                <Kanban.Tasks
                   columnId={column.id}
                   render={task => (
-                    <Kanban.Task.Container>
-                      <Kanban.Task.Header>
-                        <Kanban.Task.Title>{task.title}</Kanban.Task.Title>
-                      </Kanban.Task.Header>
+                    <Kanban.Task.Draggable
+                      taskId={task.id}
+                      columnId={column.id}
+                    >
+                      <Kanban.Task.Container>
+                        <Kanban.Task.Header>
+                          <Kanban.Task.Title>{task.title}</Kanban.Task.Title>
+                        </Kanban.Task.Header>
 
-                      <Kanban.Task.Footer>
-                        <Kanban.Task.DeleteAction taskId={task.id} />
-                        <Kanban.Task.EditAction taskId={task.id} />
-                      </Kanban.Task.Footer>
-                    </Kanban.Task.Container>
+                        <Kanban.Task.Footer>
+                          <Kanban.Task.DeleteAction taskId={task.id} />
+                          <Kanban.Task.EditAction taskId={task.id} />
+                        </Kanban.Task.Footer>
+                      </Kanban.Task.Container>
+                    </Kanban.Task.Draggable>
                   )}
                 />
               </Kanban.Column.Content>
 
               <Kanban.Column.Footer>
-                <Kanban.Task.AddTaskAction columnId={column.id}>
-                  Add Task
-                </Kanban.Task.AddTaskAction>
+                <Kanban.Column.AddTaskAction columnId={column.id} />
               </Kanban.Column.Footer>
             </Kanban.Column.Container>
           )}

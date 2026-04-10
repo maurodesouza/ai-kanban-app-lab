@@ -1,9 +1,15 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSnapshot } from 'valtio';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { twx } from '@/utils/tailwind/index';
+import { twx, cn } from '@/utils/tailwind/index';
 import { Clickable } from '@/components/atoms/clickable';
 import { Text } from '@/components/atoms/text';
 import { Field } from '@/components/molecules/field';
@@ -55,10 +61,106 @@ const Content = twx.div`flex gap-md h-full overflow-x-auto`;
 
 const ColumnContainer = twx.div`base-1 flex flex-col bg-background-base border border-ring-inner rounded-md min-w-60`;
 const ColumnHeader = twx.div`flex flex-col min-h-0 border-b border-ring-inner p-md`;
-const ColumnContent = twx.div`h-full flex flex-col gap-xs p-md`;
+
+// Column title component
+type ColumnTitleProps = React.PropsWithChildren;
+
+function ColumnTitle({ children }: ColumnTitleProps) {
+  return <Text.Heading as="h3">{children}</Text.Heading>;
+}
+
+// Column content with drop handlers
+type ColumnContentProps = React.PropsWithChildren<{
+  columnId: string;
+}>;
+
+function ColumnContent({ columnId, children }: ColumnContentProps) {
+  const snap = useKanban();
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  function handleDragOver(event: React.DragEvent) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    setIsDragOver(true);
+  }
+
+  function handleDragLeave() {
+    setIsDragOver(false);
+  }
+
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+    setIsDragOver(false);
+
+    const taskId = event.dataTransfer.getData('taskId');
+    const sourceColumnId = event.dataTransfer.getData('sourceColumnId');
+
+    if (!taskId || !sourceColumnId || sourceColumnId === columnId) {
+      return;
+    }
+
+    events.kanban.moveTask({
+      storeId: snap.$$storeId,
+      taskId,
+      fromColumnId: sourceColumnId,
+      toColumnId: columnId,
+    });
+  }
+
+  return (
+    <div
+      className={cn(
+        'h-full flex flex-col gap-xs p-md',
+        'border border-transparent transition-colors',
+        isDragOver && 'tone palette-brand border-tone-ring-inner'
+      )}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {children}
+    </div>
+  );
+}
 const ColumnFooter = twx.div`flex flex-row-reverse border-t border-ring-inner p-md`;
 
 const TaskContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-md`;
+
+// Draggable task wrapper component
+type DraggableProps = React.PropsWithChildren<{
+  taskId: string;
+  columnId: string;
+}>;
+
+function Draggable({ taskId, columnId, children }: DraggableProps) {
+  const [isDragging, setIsDragging] = useState(false);
+
+  function handleDragStart(event: React.DragEvent) {
+    event.dataTransfer.setData('taskId', taskId);
+    event.dataTransfer.setData('sourceColumnId', columnId);
+    event.dataTransfer.effectAllowed = 'move';
+    setIsDragging(true);
+  }
+
+  function handleDragEnd() {
+    setIsDragging(false);
+  }
+
+  return (
+    <div
+      className={cn(
+        'transition-opacity hover:opacity-80',
+        isDragging ? 'opacity-50 cursor-grabbing' : 'cursor-move'
+      )}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      {children}
+    </div>
+  );
+}
+TaskContainer.displayName = 'TaskContainer';
 const TaskHeader = twx.div`p-xs`;
 const TaskFooter = twx.div`flex justify-end gap-xs p-xs border-t border-ring-inner`;
 
@@ -85,7 +187,7 @@ function Filter({ children }: React.PropsWithChildren) {
           storeId: store.$$storeId,
           filter: value,
         });
-      }, 300) as (value: string) => void,
+      }, 300),
     [store.$$storeId]
   );
 
@@ -115,11 +217,6 @@ function Columns({ render }: ColumnsProps) {
   );
 }
 
-// Column Title component
-function ColumnTitle({ children }: React.PropsWithChildren) {
-  return <Text.Heading as="h3">{children}</Text.Heading>;
-}
-
 // Column namespace
 const Column = {
   Container: ColumnContainer,
@@ -127,6 +224,7 @@ const Column = {
   Title: ColumnTitle,
   Content: ColumnContent,
   Footer: ColumnFooter,
+  AddTaskAction,
 };
 
 // Tasks component
@@ -172,8 +270,7 @@ const Task = {
   Footer: TaskFooter,
   DeleteAction,
   EditAction,
-  Tasks,
-  AddTaskAction,
+  Draggable,
 };
 
 // Task Title component
@@ -253,9 +350,21 @@ export const Kanban = {
   Header,
   Title,
   Filter,
-  AddTaskAction: GlobalAddTaskAction,
+  GlobalAddTaskAction,
   Content,
   Columns,
-  Column,
+  Column: {
+    Container: ColumnContainer,
+    Header: ColumnHeader,
+    Title: ColumnTitle,
+    Content: ColumnContent,
+    Footer: ColumnFooter,
+    AddTaskAction,
+  },
   Task,
+  Tasks,
+  AddTaskAction,
 };
+
+// Export hook separately
+export { useKanban };
