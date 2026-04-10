@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { twx } from '@/utils/tailwind/index';
 import { Clickable } from '@/components/atoms/clickable';
@@ -23,6 +23,12 @@ function KanbanProvider({
   title = 'AI Todo App',
 }: KanbanProviderProps) {
   const [store] = React.useState(() => kanbanStore.create(title));
+
+  useEffect(() => {
+    return () => {
+      kanbanStore.remove(store.$$storeId);
+    };
+  }, [store]);
 
   return (
     <KanbanContext.Provider value={store}>{children}</KanbanContext.Provider>
