@@ -213,6 +213,23 @@ function EditAction({ taskId, children }: EditActionProps) {
   );
 }
 
+// Global AddTaskAction component
+type GlobalAddTaskActionProps = React.PropsWithChildren;
+
+function GlobalAddTaskAction({ children }: GlobalAddTaskActionProps) {
+  const store = useContext(KanbanContext)!;
+
+  function onClick() {
+    events.modal.show(() => <TaskModal storeId={store.$$storeId} />);
+  }
+
+  return (
+    <Clickable.Button tone="success" onClick={onClick}>
+      {children || 'Add Task'}
+    </Clickable.Button>
+  );
+}
+
 // Export composition
 export const Kanban = {
   Provider: KanbanProvider,
@@ -220,11 +237,9 @@ export const Kanban = {
   Header,
   Title,
   Filter,
+  AddTaskAction: GlobalAddTaskAction,
   Content,
   Columns,
   Column,
   Task,
 };
-
-// Export as default
-export default Kanban;
