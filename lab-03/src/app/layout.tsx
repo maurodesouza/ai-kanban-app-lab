@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "@/styles/globals.css";
+import type { Metadata } from 'next';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  title: "AI Todo App Lab 03",
-  description: "AI Todo App Lab 03",
+  title: 'AI Todo App Lab 03',
+  description: 'AI Todo App Lab 03',
 };
 
 export default function RootLayout({
