@@ -12,6 +12,7 @@ import type {
   DeleteTaskPayload,
   MoveTaskPayload,
   CreateColumnPayload,
+  UpdateColumnPayload,
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
@@ -158,6 +159,26 @@ function KanbanHandler() {
     });
   }
 
+  function onUpdateColumn(event: CustomEvent<UpdateColumnPayload>) {
+    const { storeId, columnId, data } = event.detail;
+    const store = kanbanStore.getById(storeId);
+
+    if (!store || !store.columns[columnId]) return;
+
+    const column = store.columns[columnId];
+    const oldTitle = column.title;
+
+    // Update column data
+    Object.assign(column, data);
+
+    // Show success notification
+    events.notification.success({
+      message: 'Column updated successfully!',
+      description: `"${oldTitle}" has been renamed to "${column.title}"`,
+      duration: 3000,
+    });
+  }
+
   useEffect(() => {
     events.on(Events.KANBAN_FILTER, onFilter);
     events.on(Events.KANBAN_TASK_CREATE, onCreateTask);
@@ -165,6 +186,7 @@ function KanbanHandler() {
     events.on(Events.KANBAN_TASK_DELETE, onDeleteTask);
     events.on(Events.KANBAN_TASK_MOVE, onMoveTask);
     events.on(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
+    events.on(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
 
     return () => {
       events.off(Events.KANBAN_FILTER, onFilter);
@@ -173,6 +195,7 @@ function KanbanHandler() {
       events.off(Events.KANBAN_TASK_DELETE, onDeleteTask);
       events.off(Events.KANBAN_TASK_MOVE, onMoveTask);
       events.off(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
+      events.off(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
     };
   }, []);
 

@@ -64,11 +64,110 @@ const ColumnContainer = twx.div`base-1 flex flex-col bg-background-base border b
 const AddColumnContainer = twx.div`base-2 flex flex-col bg-background-support border border-dashed border-ring-outer rounded-md min-w-60 h-full items-center justify-center cursor-pointer brightness-50 hover:brightness-100 transition-all`;
 const ColumnHeader = twx.div`flex flex-col min-h-0 border-b border-ring-inner p-md`;
 
-// Column title component
-type ColumnTitleProps = React.PropsWithChildren;
+// Editable column title component
+type EditableColumnTitleProps = {
+  columnId: string;
+  title: string;
+};
 
-function ColumnTitle({ children }: ColumnTitleProps) {
-  return <Text.Heading as="h3">{children}</Text.Heading>;
+function EditableColumnTitle({ columnId, title }: EditableColumnTitleProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(title);
+  const [error, setError] = useState('');
+  const store = useContext(KanbanContext)!;
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const MAX_CHARS = 20;
+  const MIN_CHARS = 1;
+
+  function startEditing() {
+    setIsEditing(true);
+    setEditValue(title);
+    setError('');
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
+  function cancelEditing() {
+    setIsEditing(false);
+    setEditValue(title);
+    setError('');
+  }
+
+  function saveEditing() {
+    // Validation
+    if (editValue.trim().length < MIN_CHARS) {
+      setError('Column name is required');
+      return;
+    }
+
+    if (editValue.length > MAX_CHARS) {
+      setError(`Maximum ${MAX_CHARS} characters`);
+      return;
+    }
+
+    // Only update if value changed
+    if (editValue.trim() !== title) {
+      events.kanban.updateColumn({
+        storeId: store.$$storeId,
+        columnId,
+        data: { title: editValue.trim() },
+      });
+    }
+
+    setIsEditing(false);
+    setError('');
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      saveEditing();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      cancelEditing();
+    }
+  }
+
+  function handleBlur() {
+    saveEditing();
+  }
+
+  if (isEditing) {
+    return (
+      <div className="flex flex-col gap-md w-full">
+        <input
+          ref={inputRef}
+          type="text"
+          value={editValue}
+          onChange={e => {
+            setEditValue(e.target.value);
+            setError('');
+          }}
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          className={`w-full px-xs py-1 text-sm font-medium bg-background-base border rounded ${
+            error
+              ? 'tone palette-danger border-tone-contrast-500 text-tone-contrast-500'
+              : 'focus:border-ring-outer'
+          }`}
+          maxLength={MAX_CHARS}
+          placeholder="Column name"
+        />
+        {error && <Field.Error>{error}</Field.Error>}
+      </div>
+    );
+  }
+
+  return (
+    <Text.Heading
+      as="h3"
+      className="cursor-pointer hover:brightness-110 transition-all"
+      onClick={startEditing}
+      title="Click to edit"
+    >
+      {title}
+    </Text.Heading>
+  );
 }
 
 // Column content with drop handlers
@@ -229,7 +328,7 @@ function Columns({ render }: ColumnsProps) {
 const Column = {
   Container: ColumnContainer,
   Header: ColumnHeader,
-  Title: ColumnTitle,
+  Title: EditableColumnTitle,
   Content: ColumnContent,
   Footer: ColumnFooter,
   AddTaskAction,
@@ -402,7 +501,7 @@ export const Kanban = {
   Column: {
     Container: ColumnContainer,
     Header: ColumnHeader,
-    Title: ColumnTitle,
+    Title: EditableColumnTitle,
     Content: ColumnContent,
     Footer: ColumnFooter,
     AddTaskAction,

@@ -36,6 +36,12 @@ export type CreateColumnPayload = {
   data: Omit<Column, 'id'>;
 };
 
+export type UpdateColumnPayload = {
+  storeId: string;
+  columnId: string;
+  data: Partial<Pick<Column, 'title'>>;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   filter(args: FilterPayload) {
     this.emit(Events.KANBAN_FILTER, args);
@@ -59,6 +65,10 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   createColumn(args: CreateColumnPayload) {
     this.emit(Events.KANBAN_COLUMN_CREATE, args);
+  }
+
+  updateColumn(args: UpdateColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_UPDATE, args);
   }
 }
 

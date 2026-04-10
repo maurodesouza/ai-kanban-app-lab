@@ -18,7 +18,10 @@ function KanbanBoard() {
           render={column => (
             <Kanban.Column.Container key={column.id}>
               <Kanban.Column.Header>
-                <Kanban.Column.Title>{column.title}</Kanban.Column.Title>
+                <Kanban.Column.Title
+                  columnId={column.id}
+                  title={column.title}
+                />
               </Kanban.Column.Header>
 
               <Kanban.Column.Content columnId={column.id}>
