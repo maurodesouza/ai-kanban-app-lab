@@ -13,6 +13,7 @@ import type {
   MoveTaskPayload,
   CreateColumnPayload,
   UpdateColumnPayload,
+  DeleteColumnPayload,
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
@@ -179,6 +180,43 @@ function KanbanHandler() {
     });
   }
 
+  function onDeleteColumn(event: CustomEvent<DeleteColumnPayload>) {
+    const { storeId, columnId } = event.detail;
+    const store = kanbanStore.getById(storeId);
+
+    if (!store || !store.columns[columnId]) return;
+
+    const column = store.columns[columnId];
+    const columnTitle = column.title;
+    const taskIds = column.tasksId;
+
+    // Delete all tasks in the column using existing events
+    taskIds.forEach(taskId => {
+      if (store.tasks[taskId]) {
+        events.kanban.deleteTask({
+          storeId,
+          taskId,
+        });
+      }
+    });
+
+    // Remove column from store
+    delete store.columns[columnId];
+
+    // Show success notification
+    const taskCount = taskIds.length;
+    const description =
+      taskCount > 0
+        ? `"${columnTitle}" and ${taskCount} task${taskCount > 1 ? 's' : ''} have been deleted`
+        : `"${columnTitle}" has been deleted`;
+
+    events.notification.info({
+      message: 'Column deleted',
+      description,
+      duration: 3000,
+    });
+  }
+
   useEffect(() => {
     events.on(Events.KANBAN_FILTER, onFilter);
     events.on(Events.KANBAN_TASK_CREATE, onCreateTask);
@@ -187,6 +225,7 @@ function KanbanHandler() {
     events.on(Events.KANBAN_TASK_MOVE, onMoveTask);
     events.on(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
     events.on(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
+    events.on(Events.KANBAN_COLUMN_DELETE, onDeleteColumn);
 
     return () => {
       events.off(Events.KANBAN_FILTER, onFilter);
@@ -196,6 +235,7 @@ function KanbanHandler() {
       events.off(Events.KANBAN_TASK_MOVE, onMoveTask);
       events.off(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
       events.off(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
+      events.off(Events.KANBAN_COLUMN_DELETE, onDeleteColumn);
     };
   }, []);
 

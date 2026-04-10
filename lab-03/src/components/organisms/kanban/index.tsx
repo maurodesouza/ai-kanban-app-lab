@@ -223,7 +223,7 @@ function ColumnContent({ columnId, children }: ColumnContentProps) {
     </div>
   );
 }
-const ColumnFooter = twx.div`flex flex-row-reverse border-t border-ring-inner p-md`;
+const ColumnFooter = twx.div`flex gap-xs border-t border-ring-inner p-md`;
 
 const TaskContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-md`;
 
@@ -332,6 +332,7 @@ const Column = {
   Content: ColumnContent,
   Footer: ColumnFooter,
   AddTaskAction,
+  DeleteColumnAction,
 };
 
 // Tasks component
@@ -371,6 +372,43 @@ function AddTaskAction({ columnId, children }: AddTaskActionProps) {
     <Clickable.Button tone="brand" size="full" onClick={onClick}>
       <Plus className="w-4 h-4" />
       {children || 'Add Task'}
+    </Clickable.Button>
+  );
+}
+
+// DeleteColumnAction component
+type DeleteColumnActionProps = {
+  columnId: string;
+};
+
+function DeleteColumnAction({ columnId }: DeleteColumnActionProps) {
+  const store = useContext(KanbanContext)!;
+  const snap = useSnapshot(store);
+
+  function onClick() {
+    const column = snap.columns[columnId];
+    if (!column) return;
+
+    // Check if column has tasks
+    const taskCount = column.tasksId.length;
+    const hasTasks = taskCount > 0;
+
+    // Show confirmation message
+    const confirmMessage = hasTasks
+      ? `Are you sure you want to delete "${column.title}"? This will also delete ${taskCount} task${taskCount > 1 ? 's' : ''} in this column.`
+      : `Are you sure you want to delete "${column.title}"?`;
+
+    if (window.confirm(confirmMessage)) {
+      events.kanban.deleteColumn({
+        storeId: store.$$storeId,
+        columnId,
+      });
+    }
+  }
+
+  return (
+    <Clickable.Button tone="danger" onClick={onClick}>
+      <Trash2 className="w-4 h-4" />
     </Clickable.Button>
   );
 }
@@ -505,6 +543,7 @@ export const Kanban = {
     Content: ColumnContent,
     Footer: ColumnFooter,
     AddTaskAction,
+    DeleteColumnAction,
   },
   Task,
   Tasks,

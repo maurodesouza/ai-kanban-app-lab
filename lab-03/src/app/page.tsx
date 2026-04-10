@@ -50,6 +50,7 @@ function KanbanBoard() {
 
               <Kanban.Column.Footer>
                 <Kanban.Column.AddTaskAction columnId={column.id} />
+                <Kanban.Column.DeleteColumnAction columnId={column.id} />
               </Kanban.Column.Footer>
             </Kanban.Column.Container>
           )}

@@ -42,6 +42,11 @@ export type UpdateColumnPayload = {
   data: Partial<Pick<Column, 'title'>>;
 };
 
+export type DeleteColumnPayload = {
+  storeId: string;
+  columnId: string;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   filter(args: FilterPayload) {
     this.emit(Events.KANBAN_FILTER, args);
@@ -69,6 +74,10 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   updateColumn(args: UpdateColumnPayload) {
     this.emit(Events.KANBAN_COLUMN_UPDATE, args);
+  }
+
+  deleteColumn(args: DeleteColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_DELETE, args);
   }
 }
 
