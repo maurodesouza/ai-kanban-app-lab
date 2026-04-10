@@ -1,7 +1,6 @@
 'use client';
 
 import { proxy } from 'valtio';
-import { subscribeKey } from 'valtio/utils';
 import type {
   KanbanStoreState,
   KanbanStores,
@@ -50,38 +49,31 @@ function createKanbanStore(title = 'New Kanban'): KanbanStoreState {
     columns: createDefaultColumns(kanbanId),
     tasks: {} as Record<string, Task>,
     $$storeId: storeId,
-    $columnsWithTasks: {} as Record<string, Record<string, Task>>,
-  });
 
-  function updateColumnsWithTasks() {
-    const result: Record<string, Record<string, Task>> = {};
+    get $columnsWithTasks() {
+      const result: Record<string, Record<string, Task>> = {};
 
-    Object.entries(store.columns).forEach(([columnId, column]) => {
-      result[columnId] = {};
+      Object.entries(this.columns).forEach(([columnId, column]) => {
+        result[columnId] = {};
 
-      column.tasksId.forEach((taskId: string) => {
-        const task = store.tasks[taskId];
-        if (!task) return;
+        column.tasksId.forEach((taskId: string) => {
+          const task = this.tasks[taskId];
+          if (!task) return;
 
-        if (
-          store.filter &&
-          !task.title.toLowerCase().includes(store.filter.toLowerCase())
-        ) {
-          return;
-        }
+          if (
+            this.filter &&
+            !task.title.toLowerCase().includes(this.filter.toLowerCase())
+          ) {
+            return;
+          }
 
-        result[columnId][taskId] = task;
+          result[columnId][taskId] = task;
+        });
       });
-    });
 
-    store.$columnsWithTasks = result;
-  }
-
-  updateColumnsWithTasks();
-
-  subscribeKey(store, 'tasks', updateColumnsWithTasks);
-  subscribeKey(store, 'columns', updateColumnsWithTasks);
-  subscribeKey(store, 'filter', updateColumnsWithTasks);
+      return result;
+    },
+  });
 
   kanbanStores.set(storeId, store);
 
