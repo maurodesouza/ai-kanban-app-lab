@@ -16,7 +16,7 @@ function KanbanBoard() {
       <Kanban.Content>
         <Kanban.Columns
           render={column => (
-            <Kanban.Column.Container>
+            <Kanban.Column.Container key={column.id}>
               <Kanban.Column.Header>
                 <Kanban.Column.Title>{column.title}</Kanban.Column.Title>
               </Kanban.Column.Header>
@@ -26,6 +26,7 @@ function KanbanBoard() {
                   columnId={column.id}
                   render={task => (
                     <Kanban.Task.Draggable
+                      key={task.id}
                       taskId={task.id}
                       columnId={column.id}
                     >

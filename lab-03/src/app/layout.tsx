@@ -22,7 +22,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="h-screen">
-      <body className={`h-screen base-1 ${themeClassName}`}>
+      <body
+        className={`h-screen base-1 ${themeClassName}`}
+        suppressHydrationWarning
+      >
         <ThemeHandler />
         <ModalHandler />
         <KanbanHandler />
