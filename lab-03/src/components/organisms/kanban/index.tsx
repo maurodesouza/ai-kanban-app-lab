@@ -96,12 +96,18 @@ function Columns({ render }: ColumnsProps) {
   );
 }
 
+// Column Footer component
+function ColumnFooter({ children }: React.PropsWithChildren) {
+  return <div className="mt-4 pt-4 border-t border-ring-inner">{children}</div>;
+}
+
 // Column namespace
 const Column = {
   Container: ColumnContainer,
   Header: ColumnHeader,
   Title: ColumnTitle,
   Content: ColumnContent,
+  Footer: ColumnFooter,
 };
 
 // Column Title component
@@ -124,12 +130,16 @@ function Tasks({ columnId, render }: TasksProps) {
 
 // AddTaskAction component
 type AddTaskActionProps = React.PropsWithChildren<{
-  storeId: string;
+  columnId: string;
 }>;
 
-function AddTaskAction({ storeId, children }: AddTaskActionProps) {
+function AddTaskAction({ columnId, children }: AddTaskActionProps) {
+  const store = useContext(KanbanContext)!;
+
   function onClick() {
-    events.modal.show(() => <TaskModal storeId={storeId} />);
+    events.modal.show(() => (
+      <TaskModal storeId={store.$$storeId} columnId={columnId} />
+    ));
   }
 
   return (
