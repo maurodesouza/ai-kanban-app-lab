@@ -91,11 +91,10 @@ function TaskModal({
           <Field.Input
             {...form.register('title')}
             placeholder="Enter task title"
+            tone={form.formState.errors.title ? 'danger' : 'brand'}
           />
           {form.formState.errors.title && (
-            <p className="text-sm text-red-500">
-              {form.formState.errors.title.message}
-            </p>
+            <Field.Error>{form.formState.errors.title.message}</Field.Error>
           )}
         </Field.Container>
 
@@ -104,12 +103,20 @@ function TaskModal({
           <Field.TextArea
             {...form.register('description')}
             placeholder="Enter task description"
+            tone="brand"
           />
         </Field.Container>
 
         <Field.Container>
           <Field.Label>Due Date</Field.Label>
-          <Field.Input {...form.register('dueDate')} type="date" />
+          <Field.Input
+            {...form.register('dueDate')}
+            type="date"
+            tone={form.formState.errors.dueDate ? 'danger' : 'brand'}
+          />
+          {form.formState.errors.dueDate && (
+            <Field.Error>{form.formState.errors.dueDate.message}</Field.Error>
+          )}
         </Field.Container>
 
         <Field.Container>
@@ -122,7 +129,9 @@ function TaskModal({
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <SelectField.Trigger>
+                <SelectField.Trigger
+                  tone={form.formState.errors.columnId ? 'danger' : 'brand'}
+                >
                   <SelectField.Value placeholder="Select a column" />
                 </SelectField.Trigger>
                 <SelectField.Content>
@@ -136,21 +145,15 @@ function TaskModal({
             )}
           />
           {form.formState.errors.columnId && (
-            <p className="text-sm text-red-500">
-              {form.formState.errors.columnId.message}
-            </p>
+            <Field.Error>{form.formState.errors.columnId.message}</Field.Error>
           )}
         </Field.Container>
 
         <Dialog.Footer>
-          <Clickable.Button
-            tone="brand"
-            type="button"
-            onClick={() => events.modal.hide()}
-          >
+          <Clickable.Button type="button" onClick={() => events.modal.hide()}>
             Cancel
           </Clickable.Button>
-          <Clickable.Button tone="success" type="submit">
+          <Clickable.Button tone="brand" type="submit">
             {isEditing ? 'Update Task' : 'Create Task'}
           </Clickable.Button>
         </Dialog.Footer>

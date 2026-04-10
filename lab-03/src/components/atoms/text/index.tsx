@@ -22,7 +22,7 @@ type HeadingProps = React.HTMLAttributes<HTMLHeadingElement> &
 
 const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
   function Heading(props, ref) {
-    const { as: Element = 'h1', className } = props;
+    const { as: Element = 'h1', className, ...rest } = props;
 
     return (
       <Element
@@ -31,7 +31,7 @@ const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
           hierarchy: Element,
           className,
         })}
-        {...props}
+        {...rest}
       />
     );
   }

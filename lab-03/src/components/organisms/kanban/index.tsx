@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { twx } from '@/utils/tailwind/index';
 import { Clickable } from '@/components/atoms/clickable';
 import { Text } from '@/components/atoms/text';
@@ -47,21 +48,28 @@ function useKanban() {
 }
 
 // Styles with twx for static components
-const Container = twx.div`base-1 bg-background-base min-h-screen p-6`;
-const Header = twx.div`flex justify-between items-center mb-6`;
-const Content = twx.div`flex gap-6 overflow-x-auto`;
-const ColumnContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-lg min-w-80 p-4`;
-const ColumnHeader = twx.div`mb-4`;
-const ColumnContent = twx.div`space-y-2`;
-const TaskContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-md p-3`;
-const TaskHeader = twx.div`mb-2`;
-const TaskFooter = twx.div`flex justify-end gap-2`;
+const Container = twx.div`base-1 flex flex-col gap-lg bg-background-base h-full`;
+const Header = twx.div`flex gap-md items-end`;
+const Content = twx.div`flex gap-md h-full overflow-x-auto`;
+
+const ColumnContainer = twx.div`base-1 flex flex-col bg-background-base border border-ring-inner rounded-md min-w-60`;
+const ColumnHeader = twx.div`flex flex-col min-h-0 border-b border-ring-inner p-md`;
+const ColumnContent = twx.div`h-full flex flex-col gap-xs p-md`;
+const ColumnFooter = twx.div`flex flex-row-reverse border-t border-ring-inner p-md`;
+
+const TaskContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-md`;
+const TaskHeader = twx.div`p-xs`;
+const TaskFooter = twx.div`flex justify-end gap-xs p-xs border-t border-ring-inner`;
 
 // Title component that consumes store
 function Title() {
   const snap = useKanban();
 
-  return <Text.Heading hierarchy="h1">{snap.title}</Text.Heading>;
+  return (
+    <Text.Heading as="h2" className="self-center shrink-0">
+      {snap.title}
+    </Text.Heading>
+  );
 }
 
 // Filter component
@@ -77,7 +85,7 @@ function Filter({ children }: React.PropsWithChildren) {
   }, []);
 
   return (
-    <Field.Container>
+    <Field.Container className="w-full">
       <Field.Label>Filter</Field.Label>
       <Field.Input
         value={snap.filter}
@@ -102,9 +110,9 @@ function Columns({ render }: ColumnsProps) {
   );
 }
 
-// Column Footer component
-function ColumnFooter({ children }: React.PropsWithChildren) {
-  return <div className="mt-4 pt-4 border-t border-ring-inner">{children}</div>;
+// Column Title component
+function ColumnTitle({ children }: React.PropsWithChildren) {
+  return <Text.Heading as="h3">{children}</Text.Heading>;
 }
 
 // Column namespace
@@ -115,11 +123,6 @@ const Column = {
   Content: ColumnContent,
   Footer: ColumnFooter,
 };
-
-// Column Title component
-function ColumnTitle({ children }: React.PropsWithChildren) {
-  return <Text.Heading hierarchy="h2">{children}</Text.Heading>;
-}
 
 // Tasks component
 type TasksProps = {
@@ -150,6 +153,7 @@ function AddTaskAction({ columnId, children }: AddTaskActionProps) {
 
   return (
     <Clickable.Button tone="brand" onClick={onClick}>
+      <Plus className="w-4 h-4" />
       {children || 'Add Task'}
     </Clickable.Button>
   );
@@ -177,7 +181,7 @@ type DeleteActionProps = React.PropsWithChildren<{
   taskId: string;
 }>;
 
-function DeleteAction({ taskId, children }: DeleteActionProps) {
+function DeleteAction({ taskId }: DeleteActionProps) {
   const store = useContext(KanbanContext)!;
 
   function onClick() {
@@ -188,8 +192,8 @@ function DeleteAction({ taskId, children }: DeleteActionProps) {
   }
 
   return (
-    <Clickable.Button tone="danger" onClick={onClick}>
-      {children || 'Delete'}
+    <Clickable.Button tone="danger" onClick={onClick} size="icon">
+      <Trash2 className="w-4 h-4" />
     </Clickable.Button>
   );
 }
@@ -199,7 +203,7 @@ type EditActionProps = React.PropsWithChildren<{
   taskId: string;
 }>;
 
-function EditAction({ taskId, children }: EditActionProps) {
+function EditAction({ taskId }: EditActionProps) {
   const store = useContext(KanbanContext)!;
   const snap = useSnapshot(store);
 
@@ -213,8 +217,8 @@ function EditAction({ taskId, children }: EditActionProps) {
   }
 
   return (
-    <Clickable.Button tone="brand" onClick={onClick}>
-      {children || 'Edit'}
+    <Clickable.Button tone="brand" onClick={onClick} size="icon">
+      <Edit2 className="w-4 h-4" />
     </Clickable.Button>
   );
 }
@@ -230,7 +234,8 @@ function GlobalAddTaskAction({ children }: GlobalAddTaskActionProps) {
   }
 
   return (
-    <Clickable.Button tone="success" onClick={onClick}>
+    <Clickable.Button tone="brand" onClick={onClick} className="shrink-0">
+      <Plus className="w-4 h-4" />
       {children || 'Add Task'}
     </Clickable.Button>
   );

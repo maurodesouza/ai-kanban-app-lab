@@ -35,13 +35,13 @@ function KanbanBoard() {
                     </Kanban.Task.Container>
                   )}
                 />
-
-                <Kanban.Column.Footer>
-                  <Kanban.Task.AddTaskAction columnId={column.id}>
-                    Add Task
-                  </Kanban.Task.AddTaskAction>
-                </Kanban.Column.Footer>
               </Kanban.Column.Content>
+
+              <Kanban.Column.Footer>
+                <Kanban.Task.AddTaskAction columnId={column.id}>
+                  Add Task
+                </Kanban.Task.AddTaskAction>
+              </Kanban.Column.Footer>
             </Kanban.Column.Container>
           )}
         />
@@ -52,8 +52,10 @@ function KanbanBoard() {
 
 export default function Home() {
   return (
-    <Kanban.Provider title="AI Todo App">
-      <KanbanBoard />
-    </Kanban.Provider>
+    <div className="base-1 h-full p-xxl bg-background-base">
+      <Kanban.Provider title="AI Todo App">
+        <KanbanBoard />
+      </Kanban.Provider>
+    </div>
   );
 }

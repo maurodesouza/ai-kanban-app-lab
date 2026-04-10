@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-screen">
-      <body className="h-screen">
+      <body className="theme-dark h-screen base-1">
         <ModalHandler />
         <KanbanHandler />
         {children}
