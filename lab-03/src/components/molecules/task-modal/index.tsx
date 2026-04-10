@@ -35,13 +35,16 @@ function TaskModal({
   const store = kanbanStore.getById(storeId);
   const isEditing = !!task;
 
+  // Get first column ID as default for new tasks
+  const firstColumnId = store ? Object.keys(store.columns)[0] : '';
+
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       title: task?.title || '',
       description: task?.description || '',
       dueDate: task?.dueDate || '',
-      columnId: task?.columnId || defaultColumnId || '',
+      columnId: task?.columnId || defaultColumnId || firstColumnId || '',
     },
   });
 
