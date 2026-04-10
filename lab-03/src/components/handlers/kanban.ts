@@ -24,39 +24,36 @@ function KanbanHandler() {
   }
 
   function onCreateTask(event: CustomEvent<CreateTaskPayload>) {
-    const { storeId, task } = event.detail;
+    const { storeId, data } = event.detail;
     const store = kanbanStore.getById(storeId);
 
     if (!store) return;
 
     const newTask = {
-      ...task,
+      ...data,
       id: random.id(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    // Add task to store
     store.tasks[newTask.id] = newTask;
 
-    // Add task ID to column
-    const column = store.columns[task.columnId];
+    // Add task to column
+    const column = store.columns[newTask.columnId];
     if (column) {
       column.tasksId.push(newTask.id);
     }
   }
 
   function onUpdateTask(event: CustomEvent<UpdateTaskPayload>) {
-    const { storeId, taskId, updates } = event.detail;
+    const { storeId, taskId, data } = event.detail;
     const store = kanbanStore.getById(storeId);
 
     if (!store || !store.tasks[taskId]) return;
 
-    // Update task with new data
-    Object.assign(store.tasks[taskId], {
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    });
+    const task = store.tasks[taskId];
+    Object.assign(task, data);
+    task.updatedAt = new Date().toISOString();
   }
 
   function onDeleteTask(event: CustomEvent<DeleteTaskPayload>) {

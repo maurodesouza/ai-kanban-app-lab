@@ -4,13 +4,13 @@ import type { Task } from '@/types/kanban';
 
 export type CreateTaskPayload = {
   storeId: string;
-  task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+  data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
 };
 
 export type UpdateTaskPayload = {
   storeId: string;
   taskId: string;
-  updates: Partial<Pick<Task, 'title' | 'description' | 'dueDate'>>;
+  data: Partial<Pick<Task, 'title' | 'description' | 'dueDate'>>;
 };
 
 export type DeleteTaskPayload = {
