@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { twx } from '@/utils/tailwind/index';
@@ -10,6 +10,7 @@ import { Field } from '@/components/molecules/field';
 import { events } from '@/events';
 import { kanbanStore } from '@/stores/kanban';
 import { TaskModal } from '@/components/molecules/task-modal';
+import { debounce } from '@/utils/debounce';
 import type { KanbanStoreState, Column, Task } from '@/types/kanban';
 
 // Context and Provider
@@ -75,21 +76,25 @@ function Title() {
 // Filter component
 function Filter({ children }: React.PropsWithChildren) {
   const snap = useKanban();
-  const storeRef = React.useRef(useContext(KanbanContext)!);
+  const store = useContext(KanbanContext)!;
 
-  const onChange = React.useCallback((value: string) => {
-    events.kanban.filter({
-      storeId: storeRef.current.$$storeId,
-      filter: value,
-    });
-  }, []);
+  const debouncedFilter = useMemo(
+    () =>
+      debounce((value: string) => {
+        events.kanban.filter({
+          storeId: store.$$storeId,
+          filter: value,
+        });
+      }, 300) as (value: string) => void,
+    [store.$$storeId]
+  );
 
   return (
     <Field.Container className="w-full">
       <Field.Label>Filter</Field.Label>
       <Field.Input
         value={snap.filter}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => debouncedFilter(e.target.value)}
         placeholder="Filter tasks..."
       />
       {children}
