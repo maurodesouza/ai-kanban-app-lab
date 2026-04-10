@@ -5,7 +5,6 @@ import '@/styles/global.css';
 import { ModalHandler } from '@/components/handlers/modal';
 import { KanbanHandler } from '@/components/handlers/kanban';
 import { NotificationHandler } from '@/components/handlers/notification';
-import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'AI Todo App Lab 03',
@@ -24,7 +23,6 @@ export default function RootLayout({
         <KanbanHandler />
         <NotificationHandler />
         {children}
-        <Toaster />
       </body>
     </html>
   );
