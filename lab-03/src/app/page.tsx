@@ -1,3 +1,5 @@
+'use client';
+
 import { Kanban } from '@/components/organisms/kanban';
 
 function KanbanBoard() {
@@ -6,6 +8,7 @@ function KanbanBoard() {
       <Kanban.Header>
         <Kanban.Title />
         <Kanban.Filter />
+        <Kanban.AddTaskAction />
       </Kanban.Header>
 
       <Kanban.Content>
