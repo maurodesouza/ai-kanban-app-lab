@@ -4,17 +4,11 @@ import { useEffect, useCallback } from 'react';
 import { events } from '@/events';
 import { Events } from '@/types/events';
 import { cookie } from '@/utils/cookies';
-import {
-  AVAILABLE_THEMES,
-  getNextTheme,
-  isValidTheme,
-  DEFAULT_THEME,
-} from '@/utils/themes';
-import type { Theme } from '@/utils/themes';
+import { themes, type Theme } from '@/utils/themes';
 import type { ThemeSetPayload } from '@/events/handles/theme';
 
 function getTheme(): string {
-  return cookie.get('theme') || DEFAULT_THEME;
+  return cookie.get('theme') || themes.DEFAULT_THEME;
 }
 
 function setTheme(theme: string): void {
@@ -22,9 +16,11 @@ function setTheme(theme: string): void {
 }
 
 function validateAndFallbackTheme(theme: string): Theme {
-  if (!isValidTheme(theme)) {
-    console.warn(`Invalid theme: ${theme}, falling back to ${DEFAULT_THEME}`);
-    return DEFAULT_THEME;
+  if (!themes.isValidTheme(theme)) {
+    console.warn(
+      `Invalid theme: ${theme}, falling back to ${themes.DEFAULT_THEME}`
+    );
+    return themes.DEFAULT_THEME;
   }
   return theme as Theme;
 }
@@ -38,7 +34,7 @@ function ThemeHandler() {
     const body = document.body;
 
     // Remove all existing theme classes
-    AVAILABLE_THEMES.forEach(t => {
+    themes.AVAILABLE_THEMES.forEach((t: Theme) => {
       body.classList.remove(`theme-${t}`);
     });
 
@@ -50,7 +46,7 @@ function ThemeHandler() {
     const currentTheme = getTheme();
     const validTheme = validateAndFallbackTheme(currentTheme);
 
-    const newTheme = getNextTheme(validTheme);
+    const newTheme = themes.getNextTheme(validTheme);
     setTheme(newTheme);
     applyTheme(newTheme);
   }, [applyTheme]);
