@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production
+build/
+dist/
+.next/
+out/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Images and binary files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+
+# Config files that shouldn't be formatted
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+package.json
+tsconfig.json
+*.config.js
+*.config.mjs
+*.config.ts
+.editorconfig
+.eslintrc.json
+.prettierrc
+.prettierignore
+.gitignore
+
+# Documentation and markdown
+*.md
+.windsurf/
+
+# CSS files (handled by Tailwind)
+*.css
+
+# Lock files and other generated files
+*.log
