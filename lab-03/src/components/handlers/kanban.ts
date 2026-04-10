@@ -6,6 +6,7 @@ import { Events } from '@/types/events';
 import { kanbanStore } from '@/stores/kanban';
 import { random } from '@/utils/random';
 import type {
+  FilterPayload,
   CreateTaskPayload,
   UpdateTaskPayload,
   DeleteTaskPayload,
@@ -13,6 +14,15 @@ import type {
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
+  function onFilter(event: CustomEvent<FilterPayload>) {
+    const { storeId, filter } = event.detail;
+    const store = kanbanStore.getById(storeId);
+
+    if (!store) return;
+
+    store.filter = filter;
+  }
+
   function onCreateTask(event: CustomEvent<CreateTaskPayload>) {
     const { storeId, task } = event.detail;
     const store = kanbanStore.getById(storeId);
@@ -100,12 +110,14 @@ function KanbanHandler() {
   }
 
   useEffect(() => {
+    events.on(Events.KANBAN_FILTER, onFilter);
     events.on(Events.KANBAN_TASK_CREATE, onCreateTask);
     events.on(Events.KANBAN_TASK_UPDATE, onUpdateTask);
     events.on(Events.KANBAN_TASK_DELETE, onDeleteTask);
     events.on(Events.KANBAN_TASK_MOVE, onMoveTask);
 
     return () => {
+      events.off(Events.KANBAN_FILTER, onFilter);
       events.off(Events.KANBAN_TASK_CREATE, onCreateTask);
       events.off(Events.KANBAN_TASK_UPDATE, onUpdateTask);
       events.off(Events.KANBAN_TASK_DELETE, onDeleteTask);

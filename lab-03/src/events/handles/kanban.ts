@@ -26,7 +26,16 @@ export type MoveTaskPayload = {
   newIndex?: number;
 };
 
+export type FilterPayload = {
+  storeId: string;
+  filter: string;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
+  filter(args: FilterPayload) {
+    this.emit(Events.KANBAN_FILTER, args);
+  }
+
   createTask(args: CreateTaskPayload) {
     this.emit(Events.KANBAN_TASK_CREATE, args);
   }
