@@ -1,65 +1,65 @@
 /* Base color classes */
 .theme-dark .base-1 {
-    --background-base: 240 15% 6%;
-    --background-support: 240 15% 22%;
+    --background-base: 220 25% 6%;
+    --background-support: 220 25% 12%;
 
-    --foreground-min: 220 10% 40%;
-    --foreground: 220 10% 75%;
-    --foreground-max: 220 10% 95%;
+    --foreground-min: 220 8% 35%;
+    --foreground: 220 8% 70%;
+    --foreground-max: 220 8% 95%;
 
-    --ring-inner: 240 12% 16%;
-    --ring-outer: 240 12% 60%;
+    --ring-inner: 220 15% 12%;
+    --ring-outer: 220 15% 65%;
 }
 
 .theme-dark .base-2 {
-    --background-base: 240 15% 12%;
-    --background-support: 240 15% 30%;
+    --background-base: 220 25% 10%;
+    --background-support: 220 25% 18%;
 
-    --foreground-min: 220 10% 46%;
-    --foreground: 220 10% 81%;
-    --foreground-max: 220 10% 95%;
+    --foreground-min: 220 8% 42%;
+    --foreground: 220 8% 76%;
+    --foreground-max: 220 8% 95%;
 
-    --ring-inner: 240 12% 22%;
-    --ring-outer: 240 12% 66%;
+    --ring-inner: 220 15% 18%;
+    --ring-outer: 220 15% 70%;
 }
 /* Token color classes */
 
 .theme-dark .palette-brand {
-    --tone-100: 225 80% 30%;
-    --tone-200: 225 80% 45%;
-    --tone-300: 225 80% 65%;
-    --tone-400: 225 80% 75%;
-    --tone-500: 225 80% 85%;
+    --tone-100: 220 80% 20%;
+    --tone-200: 220 80% 30%;
+    --tone-300: 220 80% 45%;
+    --tone-400: 220 80% 60%;
+    --tone-500: 220 80% 75%;
 
     --tone-contrast: 0 0% 100%;
 }
 
 .theme-dark .palette-success {
-    --tone-100: 160 40% 20%;
-    --tone-200: 160 40% 35%;
-    --tone-300: 160 40% 50%;
-    --tone-400: 160 40% 65%;
-    --tone-500: 160 40% 80%;
+    --tone-100: 160 70% 20%;
+    --tone-200: 160 70% 30%;
+    --tone-300: 160 70% 45%;
+    --tone-400: 160 70% 60%;
+    --tone-500: 160 70% 75%;
 
     --tone-contrast: 0 0% 100%;
 }
 
 .theme-dark .palette-danger {
-    --tone-100: 350 70% 28%;
-    --tone-200: 350 70% 43%;
-    --tone-300: 350 70% 58%;
-    --tone-400: 350 70% 70%;
-    --tone-500: 350 70% 82%;
+    --tone-100: 0 70% 20%;
+    --tone-200: 0 70% 30%;
+    --tone-300: 0 70% 45%;
+    --tone-400: 0 70% 60%;
+    --tone-500: 0 70% 75%;
 
     --tone-contrast: 0 0% 100%;
 }
 
 .theme-dark .palette-warning {
-    --tone-100: 40 90% 20%;
-    --tone-200: 40 90% 32%;
-    --tone-300: 40 90% 44%;
-    --tone-400: 40 90% 58%;
-    --tone-500: 40 90% 70%;
+    --tone-100: 30 70% 20%;
+    --tone-200: 30 70% 30%;
+    --tone-300: 30 70% 45%;
+    --tone-400: 30 70% 60%;
+    --tone-500: 30 70% 75%;
 
     --tone-contrast: 0 0% 100%;
 }
