@@ -8,6 +8,7 @@ import { Text } from '@/components/atoms/text';
 import { Field } from '@/components/molecules/field';
 import { events } from '@/events';
 import { kanbanStore } from '@/stores/kanban';
+import { TaskModal } from '@/components/molecules/task-modal';
 import type { KanbanStoreState, Column, Task } from '@/types/kanban';
 
 // Context and Provider
@@ -121,6 +122,23 @@ function Tasks({ columnId, render }: TasksProps) {
   return <>{Object.values(columnTasks).map(task => render(task))}</>;
 }
 
+// AddTaskAction component
+type AddTaskActionProps = React.PropsWithChildren<{
+  storeId: string;
+}>;
+
+function AddTaskAction({ storeId, children }: AddTaskActionProps) {
+  function onClick() {
+    events.modal.show(() => <TaskModal storeId={storeId} />);
+  }
+
+  return (
+    <Clickable.Button tone="brand" onClick={onClick}>
+      {children || 'Add Task'}
+    </Clickable.Button>
+  );
+}
+
 // Task namespace
 const Task = {
   Container: TaskContainer,
@@ -130,6 +148,7 @@ const Task = {
   DeleteAction,
   EditAction,
   Tasks,
+  AddTaskAction,
 };
 
 // Task Title component
@@ -165,9 +184,16 @@ type EditActionProps = React.PropsWithChildren<{
 }>;
 
 function EditAction({ taskId, children }: EditActionProps) {
+  const store = useContext(KanbanContext)!;
+  const snap = useSnapshot(store);
+
   function onClick() {
-    // TODO: Implement edit modal
-    console.log('Edit task:', taskId);
+    const task = snap.tasks[taskId];
+    if (!task) return;
+
+    events.modal.show(() => (
+      <TaskModal storeId={store.$$storeId} task={task} />
+    ));
   }
 
   return (
