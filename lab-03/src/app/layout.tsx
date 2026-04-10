@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
+import { ModalHandler } from '@/components/handlers/modal';
+import { KanbanHandler } from '@/components/handlers/kanban';
 
 export const metadata: Metadata = {
   title: 'AI Todo App Lab 03',
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-screen">
-      <body className="h-screen">{children}</body>
+      <body className="h-screen">
+        <ModalHandler />
+        <KanbanHandler />
+        {children}
+      </body>
     </html>
   );
 }
