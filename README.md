@@ -110,4 +110,40 @@ I still had to manually adjust some styling details, but overall the result was 
 * Direct prompting produces more fluid and higher-quality results
 
 </details>
-    
+
+<details>
+    <summary>Lab 03</summary>
+
+<br/>
+
+**Time spent:** About 6h20
+
+**Model used:** 
+SWE-1.5 only
+
+## Process & Result
+
+https://github.com/user-attachments/assets/234f9255-6ccc-4328-8030-a31947e66658
+
+This was the best run so far.
+
+I built the entire lab without using the Spec Kit. The workflow was simple: prompt → review → adjust → commit → repeat.
+
+The experience was surprisingly fluid. I was able to implement significantly more features while maintaining a reasonable level of quality. The AI handled all functional aspects of the application — logic, structure, and behavior — without requiring manual fixes.
+
+The only area that required manual intervention was styling. Even then, the process was efficient. While adjusting styles, the tab feature from [Windsurf IDE](https://windsurf.com) helped anticipate changes, making the process faster. Styling took around 30–40 minutes.
+
+The rest of the development cycle felt natural and fast. The interaction loop became consistent and lightweight, without the overhead from previous attempts.
+
+At some point, the process became so engaging that the original goal of the experiment faded into the background. The focus shifted entirely to building and iterating on new features.
+
+Overall, the result was strong, with good feature coverage and acceptable structure, achieved with minimal friction.
+
+## Observations
+
+* The AI still struggles to properly follow the token-based styling system
+* It requires frequent reminders about the defined rules
+* Styling is still a weak point — either due to limitations of the AI or how instructions are written
+
+</details>
+
