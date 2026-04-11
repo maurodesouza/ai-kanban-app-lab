@@ -50,6 +50,9 @@ function ThemeHandler() {
     const newTheme = themes.getNextTheme(validTheme);
     setTheme(newTheme);
     applyTheme(newTheme);
+
+    // Emit theme changed event
+    events.theme.emitChanged(newTheme);
   }, [applyTheme]);
 
   const onSet = useCallback(
@@ -59,6 +62,9 @@ function ThemeHandler() {
 
       setTheme(validTheme);
       applyTheme(validTheme);
+
+      // Emit theme changed event
+      events.theme.emitChanged(validTheme);
     },
     [applyTheme]
   );

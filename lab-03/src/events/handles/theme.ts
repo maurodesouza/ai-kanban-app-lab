@@ -12,6 +12,10 @@ export type ThemeNextPayload = {
   themes: Theme[];
 };
 
+export type ThemeChangedPayload = {
+  theme: Theme;
+};
+
 class ThemeHandleEvents extends BaseEventHandle {
   toggle() {
     this.emit(Events.THEME_TOGGLE);
@@ -23,6 +27,10 @@ class ThemeHandleEvents extends BaseEventHandle {
 
   next(payload: ThemeNextPayload) {
     this.emit(Events.THEME_NEXT, payload);
+  }
+
+  emitChanged(theme: Theme) {
+    this.emit(Events.THEME_CHANGED, { theme });
   }
 }
 

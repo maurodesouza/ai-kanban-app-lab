@@ -25,5 +25,6 @@ export enum Events {
   // Theme Events
   THEME_TOGGLE = 'theme.toggle',
   THEME_SET = 'theme.set',
+  THEME_CHANGED = 'theme.changed',
   THEME_NEXT = 'theme.next',
 }

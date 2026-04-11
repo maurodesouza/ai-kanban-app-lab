@@ -1,11 +1,14 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { ComponentType } from 'react';
 import { events } from '@/events';
 import { cookie } from '@/utils/cookies';
 import { themes } from '@/utils/themes';
 import { Clickable } from '@/components/atoms/clickable';
+import { Events } from '@/types/events';
+import type { ThemeChangedPayload } from '@/events/handles/theme';
 
 const THEME_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   dark: Moon,
@@ -13,7 +16,21 @@ const THEME_ICONS: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 function ThemeToggle() {
-  const currentTheme = cookie.get('theme') || themes.DEFAULT_THEME;
+  const [currentTheme, setCurrentTheme] = useState(
+    () => cookie.get('theme') || themes.DEFAULT_THEME
+  );
+
+  function onThemeChanged(event: CustomEvent<ThemeChangedPayload>) {
+    setCurrentTheme(event.detail.theme);
+  }
+
+  useEffect(() => {
+    events.on(Events.THEME_CHANGED, onThemeChanged);
+
+    return () => {
+      events.off(Events.THEME_CHANGED, onThemeChanged);
+    };
+  }, []);
 
   const themeConfig =
     themes.THEME_CONFIGS[currentTheme as keyof typeof themes.THEME_CONFIGS];
