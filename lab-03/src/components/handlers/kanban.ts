@@ -14,6 +14,7 @@ import type {
   CreateColumnPayload,
   UpdateColumnPayload,
   DeleteColumnPayload,
+  MoveColumnPayload,
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
@@ -217,6 +218,72 @@ function KanbanHandler() {
     });
   }
 
+  // Helper function to move column in any direction
+  function moveColumnInDirection(
+    storeId: string,
+    columnId: string,
+    direction: 'left' | 'right'
+  ) {
+    const store = kanbanStore.getById(storeId);
+
+    if (!store || !store.columns[columnId]) return false;
+
+    // Get current column order
+    const columnIds = Object.keys(store.columns);
+    const currentIndex = columnIds.indexOf(columnId);
+
+    // Calculate new index based on direction
+    const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+
+    // Validate bounds
+    if (newIndex < 0 || newIndex >= columnIds.length) return false;
+
+    // Get the column to move and target column
+    const columnToMove = store.columns[columnId];
+    const targetColumnId = columnIds[newIndex];
+    const targetColumn = store.columns[targetColumnId];
+
+    if (!columnToMove || !targetColumn) return false;
+
+    // Create new columns object with swapped order
+    const newColumns: typeof store.columns = {};
+    columnIds.forEach((id, index) => {
+      if (index === newIndex) {
+        // Place the moved column at new position
+        newColumns[columnId] = columnToMove;
+      }
+      if (index === currentIndex) {
+        // Place the target column at old position
+        newColumns[targetColumnId] = targetColumn;
+      } else if (index !== newIndex && index !== currentIndex) {
+        // Keep other columns in their positions
+        newColumns[id] = store.columns[id];
+      }
+    });
+
+    // Update store with new column order
+    store.columns = newColumns;
+
+    // Show success notification
+    events.notification.success({
+      message: 'Column moved',
+      description: `"${columnToMove.title}" moved ${direction}`,
+      duration: 2000,
+    });
+
+    return true;
+  }
+
+  function onMoveColumnLeft(event: CustomEvent<MoveColumnPayload>) {
+    const { storeId, columnId } = event.detail;
+    moveColumnInDirection(storeId, columnId, 'left');
+  }
+
+  function onMoveColumnRight(event: CustomEvent<MoveColumnPayload>) {
+    const { storeId, columnId } = event.detail;
+    moveColumnInDirection(storeId, columnId, 'right');
+  }
+
   useEffect(() => {
     events.on(Events.KANBAN_FILTER, onFilter);
     events.on(Events.KANBAN_TASK_CREATE, onCreateTask);
@@ -226,6 +293,8 @@ function KanbanHandler() {
     events.on(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
     events.on(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
     events.on(Events.KANBAN_COLUMN_DELETE, onDeleteColumn);
+    events.on(Events.KANBAN_COLUMN_MOVE_LEFT, onMoveColumnLeft);
+    events.on(Events.KANBAN_COLUMN_MOVE_RIGHT, onMoveColumnRight);
 
     return () => {
       events.off(Events.KANBAN_FILTER, onFilter);
@@ -236,6 +305,8 @@ function KanbanHandler() {
       events.off(Events.KANBAN_COLUMN_CREATE, onCreateColumn);
       events.off(Events.KANBAN_COLUMN_UPDATE, onUpdateColumn);
       events.off(Events.KANBAN_COLUMN_DELETE, onDeleteColumn);
+      events.off(Events.KANBAN_COLUMN_MOVE_LEFT, onMoveColumnLeft);
+      events.off(Events.KANBAN_COLUMN_MOVE_RIGHT, onMoveColumnRight);
     };
   }, []);
 

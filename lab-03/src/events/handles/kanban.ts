@@ -47,6 +47,12 @@ export type DeleteColumnPayload = {
   columnId: string;
 };
 
+export type MoveColumnPayload = {
+  storeId: string;
+  columnId: string;
+  direction: 'left' | 'right';
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   filter(args: FilterPayload) {
     this.emit(Events.KANBAN_FILTER, args);
@@ -78,6 +84,18 @@ class KanbanHandleEvents extends BaseEventHandle {
 
   deleteColumn(args: DeleteColumnPayload) {
     this.emit(Events.KANBAN_COLUMN_DELETE, args);
+  }
+
+  moveColumn(args: MoveColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_MOVE, args);
+  }
+
+  moveColumnLeft(args: MoveColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_MOVE_LEFT, args);
+  }
+
+  moveColumnRight(args: MoveColumnPayload) {
+    this.emit(Events.KANBAN_COLUMN_MOVE_RIGHT, args);
   }
 }
 

@@ -12,6 +12,9 @@ export enum Events {
   KANBAN_COLUMN_CREATE = 'kanban.column.create',
   KANBAN_COLUMN_UPDATE = 'kanban.column.update',
   KANBAN_COLUMN_DELETE = 'kanban.column.delete',
+  KANBAN_COLUMN_MOVE = 'kanban.column.move',
+  KANBAN_COLUMN_MOVE_LEFT = 'kanban.column.move.left',
+  KANBAN_COLUMN_MOVE_RIGHT = 'kanban.column.move.right',
 
   // Notification Events
   NOTIFICATION_SUCCESS = 'notification.success',

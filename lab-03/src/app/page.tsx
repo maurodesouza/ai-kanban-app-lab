@@ -49,8 +49,10 @@ function KanbanBoard() {
               </Kanban.Column.Content>
 
               <Kanban.Column.Footer>
-                <Kanban.Column.AddTaskAction columnId={column.id} />
+                <Kanban.Column.MoveColumnLeft columnId={column.id} />
                 <Kanban.Column.DeleteColumnAction columnId={column.id} />
+                <Kanban.Column.AddTaskAction columnId={column.id} />
+                <Kanban.Column.MoveColumnRight columnId={column.id} />
               </Kanban.Column.Footer>
             </Kanban.Column.Container>
           )}

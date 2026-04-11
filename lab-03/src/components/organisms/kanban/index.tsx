@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { useSnapshot } from 'valtio';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Edit2, Trash2 } from 'lucide-react';
 import { twx, cn } from '@/utils/tailwind/index';
 import { Clickable } from '@/components/atoms/clickable';
 import { Text } from '@/components/atoms/text';
@@ -223,7 +223,7 @@ function ColumnContent({ columnId, children }: ColumnContentProps) {
     </div>
   );
 }
-const ColumnFooter = twx.div`flex gap-xs border-t border-ring-inner p-md`;
+const ColumnFooter = twx.div`flex justify-evenly gap-xs border-t border-ring-inner p-md`;
 
 const TaskContainer = twx.div`base-1 bg-background-base border border-ring-inner rounded-md`;
 
@@ -333,6 +333,8 @@ const Column = {
   Footer: ColumnFooter,
   AddTaskAction,
   DeleteColumnAction,
+  MoveColumnLeft,
+  MoveColumnRight,
 };
 
 // Tasks component
@@ -355,11 +357,11 @@ function Tasks({ columnId, render }: TasksProps) {
 }
 
 // AddTaskAction component
-type AddTaskActionProps = React.PropsWithChildren<{
+type AddTaskActionProps = {
   columnId: string;
-}>;
+};
 
-function AddTaskAction({ columnId, children }: AddTaskActionProps) {
+function AddTaskAction({ columnId }: AddTaskActionProps) {
   const store = useContext(KanbanContext)!;
 
   function onClick() {
@@ -369,9 +371,8 @@ function AddTaskAction({ columnId, children }: AddTaskActionProps) {
   }
 
   return (
-    <Clickable.Button tone="brand" size="full" onClick={onClick}>
+    <Clickable.Button tone="brand" size="icon" onClick={onClick}>
       <Plus className="w-4 h-4" />
-      {children || 'Add Task'}
     </Clickable.Button>
   );
 }
@@ -407,8 +408,76 @@ function DeleteColumnAction({ columnId }: DeleteColumnActionProps) {
   }
 
   return (
-    <Clickable.Button tone="danger" onClick={onClick}>
+    <Clickable.Button tone="danger" size="icon" onClick={onClick}>
       <Trash2 className="w-4 h-4" />
+    </Clickable.Button>
+  );
+}
+
+// MoveColumnLeft component
+type MoveColumnLeftProps = {
+  columnId: string;
+};
+
+function MoveColumnLeft({ columnId }: MoveColumnLeftProps) {
+  const store = useContext(KanbanContext)!;
+  const snap = useSnapshot(store);
+
+  function moveLeft() {
+    events.kanban.moveColumnLeft({
+      storeId: store.$$storeId,
+      columnId,
+      direction: 'left',
+    });
+  }
+
+  // Get column order and position
+  const columnIds = Object.keys(snap.columns);
+  const currentIndex = columnIds.indexOf(columnId);
+  const isFirst = currentIndex === 0;
+
+  return (
+    <Clickable.Button
+      tone="default"
+      onClick={moveLeft}
+      disabled={isFirst}
+      size="icon"
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </Clickable.Button>
+  );
+}
+
+// MoveColumnRight component
+type MoveColumnRightProps = {
+  columnId: string;
+};
+
+function MoveColumnRight({ columnId }: MoveColumnRightProps) {
+  const store = useContext(KanbanContext)!;
+  const snap = useSnapshot(store);
+
+  function moveRight() {
+    events.kanban.moveColumnRight({
+      storeId: store.$$storeId,
+      columnId,
+      direction: 'right',
+    });
+  }
+
+  // Get column order and position
+  const columnIds = Object.keys(snap.columns);
+  const currentIndex = columnIds.indexOf(columnId);
+  const isLast = currentIndex === columnIds.length - 1;
+
+  return (
+    <Clickable.Button
+      tone="default"
+      onClick={moveRight}
+      disabled={isLast}
+      size="icon"
+    >
+      <ChevronRight className="w-4 h-4" />
     </Clickable.Button>
   );
 }
@@ -544,6 +613,8 @@ export const Kanban = {
     Footer: ColumnFooter,
     AddTaskAction,
     DeleteColumnAction,
+    MoveColumnLeft,
+    MoveColumnRight,
   },
   Task,
   Tasks,
