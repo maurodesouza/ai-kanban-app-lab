@@ -296,7 +296,6 @@ function Filter({ children }: React.PropsWithChildren) {
     <Field.Container className="w-full">
       <Field.Label>Filter</Field.Label>
       <Field.Input
-        value={snap.filter}
         onChange={e => debouncedFilter(e.target.value)}
         placeholder="Filter tasks..."
       />
