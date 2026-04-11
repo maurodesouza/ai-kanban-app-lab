@@ -1,6 +1,6 @@
 'use client';
 
-import { proxy } from 'valtio';
+import { proxy, unstable_enableOp, subscribe } from 'valtio';
 import type {
   KanbanStoreState,
   KanbanStores,
@@ -8,6 +8,8 @@ import type {
   Column,
 } from '@/types/kanban';
 import { random } from '@/utils/random';
+
+unstable_enableOp(true);
 
 const kanbanStores: KanbanStores = new Map();
 
@@ -49,31 +51,54 @@ function createKanbanStore(title = 'New Kanban'): KanbanStoreState {
     columns: createDefaultColumns(kanbanId),
     tasks: {} as Record<string, Task>,
     $$storeId: storeId,
-
-    get $columnsWithTasks() {
-      const result: Record<string, Record<string, Task>> = {};
-
-      Object.entries(this.columns).forEach(([columnId, column]) => {
-        result[columnId] = {};
-
-        column.tasksId.forEach((taskId: string) => {
-          const task = this.tasks[taskId];
-          if (!task) return;
-
-          if (
-            this.filter &&
-            !task.title.toLowerCase().includes(this.filter.toLowerCase())
-          ) {
-            return;
-          }
-
-          result[columnId][taskId] = task;
-        });
-      });
-
-      return result;
-    },
+    $columnsWithTasks: {} as Record<string, Record<string, Task>>,
   });
+
+  function compute$columnsWithTasks() {
+    const columnsWithTasks: Record<string, Record<string, Task>> = {};
+    const filterText = store.filter.toLowerCase().trim();
+
+    for (const columnId in store.columns) {
+      columnsWithTasks[columnId] = {};
+      const column = store.columns[columnId];
+
+      for (const taskId of column.tasksId) {
+        const task = store.tasks[taskId];
+        if (task) {
+          // Apply filter: check if task title or description contains filter text
+          if (
+            !filterText ||
+            task.title.toLowerCase().includes(filterText) ||
+            (task.description &&
+              task.description.toLowerCase().includes(filterText))
+          ) {
+            columnsWithTasks[columnId][taskId] = task;
+          }
+        }
+      }
+    }
+
+    Object.keys(store.$columnsWithTasks).forEach(key => {
+      delete store.$columnsWithTasks[key];
+    });
+
+    Object.assign(store.$columnsWithTasks, columnsWithTasks);
+  }
+
+  subscribe(store, ops => {
+    for (const op of ops) {
+      const path = Array.isArray(op[1]) ? op[1][0] : op[1];
+      if (
+        typeof path === 'string' &&
+        ['columns', 'tasks', 'filter'].includes(path)
+      ) {
+        compute$columnsWithTasks();
+        break;
+      }
+    }
+  });
+
+  compute$columnsWithTasks();
 
   kanbanStores.set(storeId, store);
 
