@@ -11,10 +11,12 @@ The goal is to understand how to work with AI in a real development workflow, mi
   
 <br/>
   
-**Time spent:**
+**Time spent:** <br/>
 Started at 18:30 and finished at 21:50
 
-**Model used:**
+Total: ~3h20
+
+**Model used:** <br/>
 SWE-1.5 only
 
 ## Process & Result
@@ -57,3 +59,55 @@ In the end, I had to manually fix 2 runtime issues and 1 styling issue to make t
 * Letting the AI work without supervision also leads to bad results
 </details>
 
+<details>
+    <summary>Lab 02</summary>
+
+<br/>
+
+**Time spent:** <br/>
+About 6h10 using the spec kit with limited progress<br/>
+About 3h40 without the spec kit with significant progress
+
+total: ~9h50
+
+**Model used:** <br/>
+SWE-1.5 only
+
+## Process & Result
+
+https://github.com/user-attachments/assets/a267e790-3496-4eda-8559-9e7eeb01e443
+
+This attempt was significantly better than the first one.
+
+I started by requesting very small pieces: a simple utility function, then isolated logic. This improved accuracy, but the process became extremely slow when using the Spec Kit workflow.
+
+The full cycle — specification → plan → tasks → implementation — added too much overhead for small features. For simple things, doing it manually would have been much faster.
+
+The slowdown became worse when working with components and styling. The AI frequently misunderstood instructions or implemented them incorrectly, especially when composition patterns were involved. This led to increasing manual intervention.
+
+At some point, I wrote a specification that the AI misunderstood and skipped directly to implementation. Surprisingly, the result was good. From there, I stopped using Spec Kit and started prompting directly.
+
+<img width="762" height="573" alt="image" src="https://github.com/user-attachments/assets/5b8eca97-8c78-4fb6-a382-a136e273e380" />
+
+Without Spec Kit, the workflow became much faster and more fluid. The AI responded better to direct, smaller prompts.
+
+I still had to manually adjust some styling details, but overall the result was solid. The AI also performed well in debugging — it quickly identified and fixed an issue with Valtio that had taken me around 20 minutes to investigate.
+
+## Observations
+
+* The Spec Kit process feels slow; possibly being used incorrectly
+* It needs explicit rules for typing — it creates redundant types, including for native types
+* It needs clear rules for how functions should be written
+* Strong difficulty in building components using composition
+* Even with explicit instructions and examples, it does not follow the expected composition pattern
+* Even with detailed specs and plans, it still adds things that were not requested
+* Spends too much time checking imports or verifying existing code
+* Frequently forgets or does not recognize previously created structures, leading to duplication
+
+(Without Spec Kit)
+
+* The workflow is faster and more effective without Spec Kit
+* Direct prompting produces more fluid and higher-quality results
+
+</details>
+    
