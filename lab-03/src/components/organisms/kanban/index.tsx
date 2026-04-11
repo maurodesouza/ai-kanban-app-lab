@@ -278,7 +278,6 @@ function Title() {
 
 // Filter component
 function Filter({ children }: React.PropsWithChildren) {
-  const snap = useKanban();
   const store = useContext(KanbanContext)!;
 
   const debouncedFilter = useMemo(
