@@ -18,6 +18,7 @@ import { kanbanStore } from '@/stores/kanban';
 import { TaskModal } from '@/components/molecules/task-modal';
 import { debounce } from '@/utils/debounce';
 import type { KanbanStoreState, Column, Task } from '@/types/kanban';
+import { ThemeToggle } from '#/components/molecules/theme-toggle';
 
 const KanbanContext = createContext<KanbanStoreState | null>(null);
 
@@ -452,6 +453,7 @@ function Kanban() {
         <Header>
           <Title />
           <Filter />
+          <ThemeToggle />
         </Header>
         <Columns />
       </Container>
