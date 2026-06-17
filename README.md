@@ -147,3 +147,39 @@ Overall, the result was strong, with good feature coverage and acceptable struct
 
 </details>
 
+<details>
+    <summary>Lab 04</summary>
+
+<br/>
+
+**Time spent:** About 1h
+
+**Model used:**
+Opus 4.8 (planning) + SWE-1.6 (implementation)
+
+## Process & Result
+
+https://github.com/user-attachments/assets/2af84109-de4f-47a9-bb98-f22202f58f5f
+
+This lab used a different workflow.
+
+Instead of implementing features directly, I first used Opus 4.8 to generate all GitHub issues (23 issues). Once the planning phase was complete, SWE-1.6 (Devin Local) handled the implementation.
+
+The implementation took roughly 30 minutes. After that, I spent another 30 minutes fixing a few styling issues and adding a missing "Add Task" button in the header.
+
+Overall, the result was impressive. The model generated more than ~9,000 lines of code in a very short time while correctly following the event-driven architecture that had been defined beforehand. It also respected the design token system much better than previous runs.
+
+The main weakness was component composition. While the application worked as expected, the generated structure was far more monolithic than intended and did not follow the compound component pattern that had been specified.
+
+Considering the limited amount of manual intervention required, the final result was strong and achieved with very little friction.
+
+## Observations
+
+* Event-driven architecture was implemented correctly
+* Design token usage improved significantly
+* Component composition is still a major weakness
+* The model prefers monolithic structures over compound component APIs
+* Most manual work was limited to styling fixes and small UI adjustments
+
+</details>
+
