@@ -3,6 +3,10 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles/global.css?url'
+import { ModalHandler } from '@/components/handlers/modal'
+import { KanbanHandler } from '@/components/handlers/kanban'
+import { NotificationHandler } from '@/components/handlers/notification'
+import { ThemeHandler } from '@/components/handlers/theme'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -15,7 +19,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'AI Todo App Lab 04',
       },
     ],
     links: [
@@ -30,11 +34,15 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-screen">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="h-screen base-1">
+        <ThemeHandler />
+        <ModalHandler />
+        <KanbanHandler />
+        <NotificationHandler />
         {children}
         <TanStackDevtools
           config={{
