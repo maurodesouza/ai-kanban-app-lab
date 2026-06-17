@@ -3,7 +3,7 @@ import { Link as RouterLink } from '@tanstack/react-router';
 import { tv, type VariantProps } from 'tailwind-variants';
 
 import { twx } from '@/utils/tailwind';
-import { cn } from '@/utils/tailwind/index';
+import { cn } from '@/utils/tailwind';
 
 const headingVariants = tv({
   base: 'font-semibold text-foreground',
@@ -56,7 +56,7 @@ const Label = twx.label`text-foreground text-sm font-semibold block`;
 
 const Highlight = twx.span`text-tone-foreground-context text-sm`;
 
-const Error = cn(Highlight, 'tone palette-danger text-xs');
+const Error = twx(Highlight)`tone palette-danger text-xs`;
 
 export const Text = {
   Heading,
