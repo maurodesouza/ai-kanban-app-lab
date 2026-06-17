@@ -180,6 +180,8 @@ Considering the limited amount of manual intervention required, the final result
 * Component composition is still a major weakness
 * The model prefers monolithic structures over compound component APIs
 * Most manual work was limited to styling fixes and small UI adjustments
+* Created a single branch and pull request instead of one per issue
+* Failed to correctly apply the requested commit co-author information
 
 </details>
 
