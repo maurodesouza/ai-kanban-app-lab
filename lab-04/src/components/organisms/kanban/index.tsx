@@ -52,7 +52,7 @@ function useKanban() {
   return useSnapshot(store);
 }
 
-const Container = twx.div`base-1 flex flex-col gap-lg bg-background-base h-full`;
+const Container = twx.div`base-1 flex flex-col gap-lg bg-background-base h-full p-lg`;
 const Header = twx.div`flex gap-md items-end`;
 const Content = twx.div`flex gap-md h-full overflow-x-auto`;
 
