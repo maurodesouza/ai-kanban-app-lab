@@ -313,6 +313,7 @@ function AddTaskButton() {
 
   return (
     <Clickable.Button
+      className="shrink-0"
       onClick={handleAddTask}
       disabled={!hasColumns}
       title="Add new task to first column"
