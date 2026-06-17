@@ -13,6 +13,8 @@ import type {
   UpdateColumnPayload,
   DeleteColumnPayload,
   MoveColumnPayload,
+  MoveColumnLeftPayload,
+  MoveColumnRightPayload,
 } from '@/events/handles/kanban';
 
 function KanbanHandler() {
@@ -253,13 +255,13 @@ function KanbanHandler() {
   }
 
   function onMoveColumnLeft(payload: unknown) {
-    const event = payload as CustomEvent<MoveColumnPayload>;
+    const event = payload as CustomEvent<MoveColumnLeftPayload>;
     const { storeId, columnId } = event.detail;
     moveColumnInDirection(storeId, columnId, 'left');
   }
 
   function onMoveColumnRight(payload: unknown) {
-    const event = payload as CustomEvent<MoveColumnPayload>;
+    const event = payload as CustomEvent<MoveColumnRightPayload>;
     const { storeId, columnId } = event.detail;
     moveColumnInDirection(storeId, columnId, 'right');
   }

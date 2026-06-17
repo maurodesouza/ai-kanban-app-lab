@@ -53,6 +53,16 @@ export type MoveColumnPayload = {
   direction: 'left' | 'right';
 };
 
+export type MoveColumnLeftPayload = {
+  storeId: string;
+  columnId: string;
+};
+
+export type MoveColumnRightPayload = {
+  storeId: string;
+  columnId: string;
+};
+
 class KanbanHandleEvents extends BaseEventHandle {
   filter(args: FilterPayload) {
     this.emit(Events.KANBAN_FILTER, args);
@@ -90,11 +100,11 @@ class KanbanHandleEvents extends BaseEventHandle {
     this.emit(Events.KANBAN_COLUMN_MOVE, args);
   }
 
-  moveColumnLeft(args: MoveColumnPayload) {
+  moveColumnLeft(args: MoveColumnLeftPayload) {
     this.emit(Events.KANBAN_COLUMN_MOVE_LEFT, args);
   }
 
-  moveColumnRight(args: MoveColumnPayload) {
+  moveColumnRight(args: MoveColumnRightPayload) {
     this.emit(Events.KANBAN_COLUMN_MOVE_RIGHT, args);
   }
 }
