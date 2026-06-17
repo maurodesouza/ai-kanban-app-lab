@@ -1,0 +1,52 @@
+import { useState, useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
+import type { ComponentType } from 'react';
+import { events } from '@/events';
+import { cookie } from '@/utils/cookies';
+import { themes } from '@/utils/themes';
+import { Clickable } from '@/components/atoms/clickable';
+import { Events } from '@/types/events';
+import type { ThemeChangedPayload } from '@/events/handles/theme';
+
+const THEME_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  dark: Moon,
+  light: Sun,
+};
+
+function ThemeToggle() {
+  const [currentTheme, setCurrentTheme] = useState(
+    () => cookie.get('theme') || themes.DEFAULT_THEME
+  );
+
+  function onThemeChanged(payload: unknown) {
+    const event = payload as CustomEvent<ThemeChangedPayload>;
+    setCurrentTheme(event.detail.theme);
+  }
+
+  useEffect(() => {
+    events.on(Events.THEME_CHANGED, onThemeChanged);
+
+    return () => {
+      events.off(Events.THEME_CHANGED, onThemeChanged);
+    };
+  }, []);
+
+  const themeConfig =
+    themes.THEME_CONFIGS[currentTheme as keyof typeof themes.THEME_CONFIGS];
+  const Icon = THEME_ICONS[currentTheme] || Moon;
+
+  function handleToggle() {
+    events.theme.toggle();
+  }
+
+  return (
+    <Clickable.Button
+      onClick={handleToggle}
+      title={`Switch from ${themeConfig.displayName} theme`}
+    >
+      <Icon />
+    </Clickable.Button>
+  );
+}
+
+export { ThemeToggle };
