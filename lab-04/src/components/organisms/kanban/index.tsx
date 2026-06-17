@@ -297,6 +297,32 @@ function Filter({ children }: React.PropsWithChildren) {
   );
 }
 
+function AddTaskButton() {
+  const snap = useKanban();
+  const columnIds = Object.keys(snap.columns);
+  const firstColumnId = columnIds[0];
+  const hasColumns = columnIds.length > 0;
+
+  function handleAddTask() {
+    if (!firstColumnId) return;
+
+    events.modal.show(
+      <TaskModal storeId={snap.$$storeId} columnId={firstColumnId} />
+    );
+  }
+
+  return (
+    <Clickable.Button
+      onClick={handleAddTask}
+      disabled={!hasColumns}
+      title="Add new task to first column"
+    >
+      <Plus />
+      <Text.Paragraph>Add Task</Text.Paragraph>
+    </Clickable.Button>
+  );
+}
+
 function Column({ columnId }: { columnId: string }) {
   const snap = useKanban();
   const column = snap.columns[columnId];
@@ -453,6 +479,7 @@ function Kanban() {
         <Header>
           <Title />
           <Filter />
+          <AddTaskButton />
           <ThemeToggle />
         </Header>
         <Columns />
