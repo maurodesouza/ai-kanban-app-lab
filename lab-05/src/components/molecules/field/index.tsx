@@ -1,5 +1,6 @@
 import React from 'react';
-import { tv, VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
+import type { VariantProps } from 'tailwind-variants';
 
 import { Text } from '@/components/atoms/text';
 

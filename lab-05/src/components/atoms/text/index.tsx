@@ -1,6 +1,7 @@
 import React, { JSX } from 'react';
 import { Link as RouterLink } from '@tanstack/react-router';
-import { tv, VariantProps } from 'tailwind-variants';
+import { tv } from 'tailwind-variants';
+import type { VariantProps } from 'tailwind-variants';
 
 import { twx } from '@/utils/tailwind';
 
