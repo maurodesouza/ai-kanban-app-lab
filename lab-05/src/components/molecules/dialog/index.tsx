@@ -75,7 +75,7 @@ type ContentProps = {
 
 const Overlay = twx.div`fixed inset-0 z-50 bg-background-base/80`;
 
-const Panel = twx.div`base-1 fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 border border-ring-inner bg-background-base rounded-md p-md shadow-lg`;
+const Panel = twx.div`base-1 fixed left-1/2 top-1/2 z-50 w-full max-w-150 -translate-x-1/2 -translate-y-1/2 border border-ring-inner bg-background-base rounded-md p-md shadow-lg`;
 
 function Content({ children, className }: ContentProps) {
     const { open } = useDialog();
