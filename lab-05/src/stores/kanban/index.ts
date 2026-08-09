@@ -57,11 +57,17 @@ const initialFilter: KanbanFilter = {
     statuses: [],
 };
 
+const initialUI = {
+    editingTaskId: null,
+    addingTaskColumnId: null,
+};
+
 const initialState: KanbanState = {
     columns: initialColumns,
     columnOrder: ["col-1", "col-2", "col-3"],
     tasks: initialTasks,
     filter: initialFilter,
+    ui: initialUI,
 };
 
 export const kanbanState = proxy<KanbanState>({ ...initialState });
@@ -71,6 +77,7 @@ export function resetKanbanState() {
     kanbanState.columnOrder = [...initialState.columnOrder];
     kanbanState.tasks = [...initialState.tasks];
     kanbanState.filter = { ...initialState.filter };
+    kanbanState.ui = { ...initialState.ui };
 }
 
 export function getTaskById(

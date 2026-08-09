@@ -78,6 +78,8 @@ command.handle("kanban.task.add", async (payload) => {
         message: `Task "${payload.title}" added`,
         type: "success",
     });
+
+    await actions.kanban.ui.close();
 });
 
 command.handle("kanban.task.edit", async (payload) => {
@@ -91,6 +93,8 @@ command.handle("kanban.task.edit", async (payload) => {
             message: `Task "${payload.title}" updated`,
             type: "success",
         });
+
+        await actions.kanban.ui.close();
     }
 });
 
@@ -142,4 +146,17 @@ command.handle("kanban.filter.clear", async () => {
         message: "Filters cleared",
         type: "info",
     });
+});
+
+command.handle("kanban.ui.openTaskEdit", async (payload) => {
+    kanbanState.ui.editingTaskId = payload.taskId;
+});
+
+command.handle("kanban.ui.openTaskAdd", async (payload) => {
+    kanbanState.ui.addingTaskColumnId = payload.columnId;
+});
+
+command.handle("kanban.ui.close", async () => {
+    kanbanState.ui.editingTaskId = null;
+    kanbanState.ui.addingTaskColumnId = null;
 });

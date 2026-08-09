@@ -26,9 +26,15 @@ export type KanbanFilter = {
     statuses: TaskStatus[];
 };
 
+export type KanbanUI = {
+    editingTaskId: string | null;
+    addingTaskColumnId: string | null;
+};
+
 export type KanbanState = {
     columns: Column[];
     columnOrder: string[];
     tasks: Task[];
     filter: KanbanFilter;
+    ui: KanbanUI;
 };

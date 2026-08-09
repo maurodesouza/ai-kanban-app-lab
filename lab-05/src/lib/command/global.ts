@@ -28,6 +28,11 @@ export interface Actions {
             setStatus: Action<TaskStatus[]>;
             clear: Action;
         };
+        ui: {
+            openTaskEdit: Action<{ taskId: string }>;
+            openTaskAdd: Action<{ columnId: string }>;
+            close: Action;
+        };
     };
     theme: {
         toggle: Action;
