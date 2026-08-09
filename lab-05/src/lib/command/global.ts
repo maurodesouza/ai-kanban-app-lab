@@ -1,3 +1,4 @@
+import type { TaskStatus } from "#/types/kanban";
 import type { Action } from "./types";
 
 export interface Actions {
@@ -24,7 +25,7 @@ export interface Actions {
         filter: {
             setText: Action<string>;
             setDateRange: Action<{ start?: string; end?: string }>;
-            setStatus: Action<string[]>;
+            setStatus: Action<TaskStatus[]>;
             clear: Action;
         };
     };
