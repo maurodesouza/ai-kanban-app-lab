@@ -206,6 +206,8 @@ Considering the limited amount of manual intervention required, the final result
 
 ## Process & Result
 
+[lab-05.webm](https://github.com/user-attachments/assets/dbd868e7-155e-44b1-957c-0dfda0f72d8e)
+
 This lab used a new autonomous development workflow.
 
 I created a Tech Lead workflow that generated an Epic and its implementation Issues. An Epic Implementer then handled the implementation, alternating between testing and code review until the Epic was completed.
