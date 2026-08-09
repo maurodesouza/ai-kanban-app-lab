@@ -13,7 +13,8 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 1 | ~3h20 | Bad | SWE-1.5 only |
 | Lab 2 | ~9h50 | Good | SWE-1.5 only |
 | Lab 3 | ~6h20 | Good | SWE-1.5 only |
-| Lab 4 | ~1h | Good | Opus 4.8 (planning) + SWE-1.6 (implementation) |
+| Lab 4 | ~1h | Very Good | Opus 4.8 (planning) + SWE-1.6 (implementation) |
+| Lab 5 | ~1h15 | Not so good | SWE-1.7 only |
 
 <details>
     <summary>Lab 1</summary>
@@ -194,3 +195,40 @@ Considering the limited amount of manual intervention required, the final result
 
 </details>
 
+<details>
+    <summary>Lab 5</summary>
+
+<br/>
+
+**Time spent:** About 1h15
+
+**Model used:** SWE-1.7 only
+
+## Process & Result
+
+This lab used a new autonomous development workflow.
+
+I created a Tech Lead workflow that generated an Epic and its implementation Issues. An Epic Implementer then handled the implementation, alternating between testing and code review until the Epic was completed.
+
+The entire process used SWE-1.7 for both planning and implementation.
+
+The result was mixed. The implementation took approximately 1h15 and generated around 7,000 lines of code, with very little manual intervention.
+
+The AI followed several architectural requirements, including headless components and component composition. However, this was surprising given its previous difficulty with these patterns, so I suspect some of these components may have been copied or influenced by previous projects. I plan to repeat the experiment with the projects isolated.
+
+This was also the first lab where automated tests were generated successfully. The tests appear to have been created independently.
+
+The main issue was that I did not specify some requirements explicitly. The AI did not implement drag and drop, a global "Add Task" button, or the data fields required by the filters. It also did not create a page to access the Kanban, which I had not explicitly requested.
+
+I had to make one small styling correction and later create an additional Issue for the missing page.
+
+Overall, the workflow was fast and required very little manual intervention, but the initial specification was not detailed enough.
+
+## Observations
+
+* The autonomous workflow completed the implementation in approximately 1h15
+* SWE-1.7 followed the explicit requirements closely, but did not infer missing requirements
+* Headless components and composition were implemented better than in previous labs, although I suspect previous projects influenced the result
+* This was the first lab with automated tests, and they were created successfully
+* Styling was reasonably good and required only a minor correction
+* The main improvement for the next iteration is better isolation from previous projects and more explicit initial requirements
