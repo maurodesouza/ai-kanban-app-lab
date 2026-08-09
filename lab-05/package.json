@@ -1,0 +1,51 @@
+{
+    "name": "lab-05",
+    "private": true,
+    "type": "module",
+    "imports": {
+        "#/*": "./src/*"
+    },
+    "scripts": {
+        "dev": "vite dev --port 3000",
+        "build": "vite build",
+        "preview": "vite preview",
+        "lint": "biome check .",
+        "format": "biome format --write .",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "generate-routes": "tsr generate"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "~4.3.1",
+        "@tanstack/react-router": "~1.170.16",
+        "@tanstack/react-start": "~1.168.26",
+        "@tanstack/router-plugin": "~1.168.18",
+        "clsx": "~2.1.1",
+        "lucide-react": "~0.545.0",
+        "react": "~19.2.7",
+        "react-dom": "~19.2.7",
+        "react-twc": "~1.5.1",
+        "sonner": "~2.0.7",
+        "tailwind-merge": "~3.6.0",
+        "tailwind-variants": "~3.2.2",
+        "tailwindcss": "~4.3.1",
+        "valtio": "~2.3.2"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "~1.8.3",
+        "@tanstack/router-cli": "~1.132.0",
+        "@testing-library/dom": "~10.4.1",
+        "@testing-library/react": "~16.3.2",
+        "@types/node": "~22.19.21",
+        "@types/react": "~19.2.17",
+        "@types/react-dom": "~19.2.3",
+        "@vitejs/plugin-react": "~6.0.2",
+        "jsdom": "~28.1.0",
+        "typescript": "~5.8.0",
+        "vite": "~8.0.16",
+        "vitest": "~4.1.5"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": ["esbuild", "lightningcss"]
+    }
+}
