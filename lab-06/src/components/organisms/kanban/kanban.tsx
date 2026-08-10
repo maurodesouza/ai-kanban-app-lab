@@ -1,16 +1,39 @@
 import {
+    type CollisionDetection,
+    closestCorners,
+    DndContext,
+    type DragEndEvent,
+    DragOverlay,
+    type DragStartEvent,
+    KeyboardSensor,
+    PointerSensor,
+    pointerWithin,
+    useDroppable,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
+import {
+    horizontalListSortingStrategy,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
     ArrowLeft,
     ArrowRight,
     CalendarDays,
     ChevronLeft,
     ChevronRight,
     CirclePlus,
+    GripVertical,
     Pencil,
     Plus,
     Trash2,
 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import {
+    type CSSProperties,
     createContext,
     type FormEvent,
     Fragment,
@@ -39,6 +62,12 @@ import type {
     Task as TaskModel,
 } from "#/types/kanban";
 import { cn } from "#/utils/tailwind";
+import {
+    type KanbanDragData,
+    type KanbanDropData,
+    resolveColumnReorder,
+    resolveTaskMove,
+} from "./dnd";
 
 const PRIORITIES: Priority[] = ["none", "low", "medium", "high", "urgent"];
 const priorityLabel = (priority: Priority) =>
@@ -48,6 +77,153 @@ const InlineEditContext = createContext<{
     editingColumnId: string | null;
     setEditingColumnId: (columnId: string | null) => void;
 } | null>(null);
+
+type DragHandleContextValue = ReturnType<typeof useSortable>;
+const ColumnDragContext = createContext<DragHandleContextValue | null>(null);
+const TaskDragContext = createContext<DragHandleContextValue | null>(null);
+
+function isDragData(value: unknown): value is KanbanDragData {
+    if (!value || typeof value !== "object" || !("type" in value)) return false;
+    const data = value as Partial<KanbanDragData>;
+    return (
+        (data.type === "task" &&
+            typeof data.taskId === "string" &&
+            typeof data.columnId === "string") ||
+        (data.type === "column" && typeof data.columnId === "string")
+    );
+}
+
+function isDropData(value: unknown): value is KanbanDropData {
+    if (isDragData(value)) return true;
+    if (!value || typeof value !== "object") return false;
+    const data = value as Partial<KanbanDropData>;
+    return data.type === "column-drop" && typeof data.columnId === "string";
+}
+
+const kanbanCollisionDetection: CollisionDetection = (args) => {
+    const activeData = args.active.data.current;
+    if (!isDragData(activeData)) return [];
+    const droppableContainers = args.droppableContainers.filter((container) => {
+        const data = container.data.current;
+        return activeData.type === "column"
+            ? isDropData(data) && data.type === "column"
+            : isDropData(data) && data.type !== "column";
+    });
+    const narrowedArgs = { ...args, droppableContainers };
+    const pointerCollisions = pointerWithin(narrowedArgs);
+    if (pointerCollisions.length > 0) {
+        const taskCollisions = pointerCollisions.filter(
+            ({ id }) =>
+                droppableContainers.find((container) => container.id === id)
+                    ?.data.current?.type === "task",
+        );
+        return taskCollisions.length > 0 ? taskCollisions : pointerCollisions;
+    }
+    return closestCorners(narrowedArgs);
+};
+
+const DndPreview = observer(function DndPreview({
+    active,
+}: {
+    active: KanbanDragData | null;
+}) {
+    const { board } = getRootStore();
+    if (!active) return null;
+    if (active.type === "column") {
+        const column = board.columns[active.columnId];
+        return column ? (
+            <div className="w-80 rounded-xl border border-border bg-muted p-3 text-foreground shadow-lg">
+                <Text.Heading level={3}>{column.title}</Text.Heading>
+            </div>
+        ) : null;
+    }
+
+    const task = board.tasks[active.taskId];
+    return task ? (
+        <div className="w-72 rounded-lg border border-border bg-card p-3 text-card-foreground shadow-lg">
+            <Text.Heading level={4}>{task.title}</Text.Heading>
+            <Text.Paragraph className="mt-2 text-muted-foreground">
+                {task.description}
+            </Text.Paragraph>
+        </div>
+    ) : null;
+});
+
+const DndProvider = observer(function DndProvider({
+    children,
+}: {
+    children: ReactNode;
+}) {
+    const { board, filter } = getRootStore();
+    const [active, setActive] = useState<KanbanDragData | null>(null);
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        }),
+    );
+
+    function handleDragStart(event: DragStartEvent) {
+        const data = event.active.data.current;
+        setActive(isDragData(data) ? data : null);
+    }
+
+    function handleDragEnd(event: DragEndEvent) {
+        setActive(null);
+        const activeData = event.active.data.current;
+        const over = event.over;
+        const overData = over?.data.current;
+        if (!over || !isDragData(activeData) || !isDropData(overData)) return;
+
+        if (activeData.type === "column" && overData.type === "column") {
+            const payload = resolveColumnReorder(
+                activeData,
+                overData,
+                board.columnOrder.slice(),
+            );
+            if (payload) void actions.kanban.column.reorder(payload);
+            return;
+        }
+        if (activeData.type !== "task" || overData.type === "column") return;
+
+        const translated = event.active.rect.current.translated;
+        const afterOverTask =
+            overData.type === "task" &&
+            Boolean(
+                translated &&
+                    translated.top > over.rect.top + over.rect.height / 2,
+            );
+        const payload = resolveTaskMove({
+            active: activeData,
+            over: overData,
+            columns: Object.fromEntries(
+                Object.entries(board.columns).map(([columnId, column]) => [
+                    columnId,
+                    { taskIds: column.taskIds.slice() },
+                ]),
+            ),
+            visibleTaskIds: (columnId) =>
+                filter.filteredTaskIds(columnId).slice(),
+            afterOverTask,
+        });
+        if (payload) void actions.kanban.task.move(payload);
+    }
+
+    return (
+        <DndContext
+            sensors={sensors}
+            collisionDetection={kanbanCollisionDetection}
+            onDragStart={handleDragStart}
+            onDragCancel={() => setActive(null)}
+            onDragEnd={handleDragEnd}
+        >
+            {children}
+            <DragOverlay dropAnimation={null}>
+                <DndPreview active={active} />
+            </DragOverlay>
+        </DndContext>
+    );
+});
 
 function Container({
     className,
@@ -123,13 +299,65 @@ type ColumnsProps = {
 
 const Columns = observer(function Columns({ render }: ColumnsProps) {
     const { board } = getRootStore();
-    return board.columnOrder.map((columnId, index) => {
-        const column = board.columns[columnId];
-        return column ? (
-            <Fragment key={column.id}>{render(column, index)}</Fragment>
-        ) : null;
-    });
+    const columnOrder = board.columnOrder.slice();
+    return (
+        <SortableContext
+            items={columnOrder.map((columnId) => `column:${columnId}`)}
+            strategy={horizontalListSortingStrategy}
+        >
+            {columnOrder.map((columnId, index) => {
+                const column = board.columns[columnId];
+                return column ? (
+                    <Fragment key={column.id}>{render(column, index)}</Fragment>
+                ) : null;
+            })}
+        </SortableContext>
+    );
 });
+
+function SortableColumn({
+    columnId,
+    children,
+}: {
+    columnId: string;
+    children: ReactNode;
+}) {
+    const sortable = useSortable({
+        id: `column:${columnId}`,
+        data: { type: "column", columnId } satisfies KanbanDragData,
+    });
+    const style: CSSProperties = {
+        transform: sortable.transform
+            ? `translate3d(${sortable.transform.x}px, ${sortable.transform.y}px, 0) scaleX(${sortable.transform.scaleX}) scaleY(${sortable.transform.scaleY})`
+            : undefined,
+        transition: sortable.transition,
+        opacity: sortable.isDragging ? 0.45 : undefined,
+    };
+    return (
+        <ColumnDragContext.Provider value={sortable}>
+            <div ref={sortable.setNodeRef} style={style}>
+                {children}
+            </div>
+        </ColumnDragContext.Provider>
+    );
+}
+
+function ColumnDragHandle({ title }: { title: string }) {
+    const sortable = useContext(ColumnDragContext);
+    if (!sortable) return null;
+    return (
+        <Clickable.Icon
+            ref={sortable.setActivatorNodeRef}
+            variant="ghost"
+            className="cursor-grab touch-none active:cursor-grabbing"
+            aria-label={`Drag ${title} column`}
+            {...sortable.attributes}
+            {...sortable.listeners}
+        >
+            <GripVertical className="size-4" aria-hidden="true" />
+        </Clickable.Icon>
+    );
+}
 
 const ColumnContainer = forwardRef<
     HTMLElement,
@@ -231,17 +459,27 @@ const ColumnTitle = observer(function ColumnTitle({
     );
 });
 
-const ColumnContent = forwardRef<
-    HTMLDivElement,
-    HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn("flex min-h-24 flex-1 flex-col gap-3", className)}
-        {...props}
-    />
-));
-ColumnContent.displayName = "Kanban.Column.Content";
+type ColumnContentProps = HTMLAttributes<HTMLDivElement> & {
+    columnId: string;
+};
+
+function ColumnContent({ columnId, className, ...props }: ColumnContentProps) {
+    const { setNodeRef, isOver } = useDroppable({
+        id: `column-drop:${columnId}`,
+        data: { type: "column-drop", columnId } satisfies KanbanDropData,
+    });
+    return (
+        <div
+            ref={setNodeRef}
+            className={cn(
+                "flex min-h-24 flex-1 flex-col gap-3 rounded-md transition-colors",
+                isOver && "bg-accent/50",
+                className,
+            )}
+            {...props}
+        />
+    );
+}
 
 function ColumnAddTask({ columnId }: { columnId: string }) {
     const pending = useTransition(["dialog.openTaskForm"]);
@@ -346,13 +584,67 @@ type TasksProps = {
 
 const Tasks = observer(function Tasks({ columnId, render }: TasksProps) {
     const { board, filter } = getRootStore();
-    return filter.filteredTaskIds(columnId).map((taskId, index) => {
-        const task = board.tasks[taskId];
-        return task ? (
-            <Fragment key={task.id}>{render(task, index)}</Fragment>
-        ) : null;
-    });
+    const taskIds = filter.filteredTaskIds(columnId).slice();
+    return (
+        <SortableContext
+            items={taskIds.map((taskId) => `task:${taskId}`)}
+            strategy={verticalListSortingStrategy}
+        >
+            {taskIds.map((taskId, index) => {
+                const task = board.tasks[taskId];
+                return task ? (
+                    <Fragment key={task.id}>{render(task, index)}</Fragment>
+                ) : null;
+            })}
+        </SortableContext>
+    );
 });
+
+function SortableTask({
+    taskId,
+    columnId,
+    children,
+}: {
+    taskId: string;
+    columnId: string;
+    children: ReactNode;
+}) {
+    const sortable = useSortable({
+        id: `task:${taskId}`,
+        data: { type: "task", taskId, columnId } satisfies KanbanDragData,
+    });
+    const style: CSSProperties = {
+        transform: sortable.transform
+            ? `translate3d(${sortable.transform.x}px, ${sortable.transform.y}px, 0) scaleX(${sortable.transform.scaleX}) scaleY(${sortable.transform.scaleY})`
+            : undefined,
+        transition: sortable.transition,
+        opacity: sortable.isDragging ? 0.45 : undefined,
+    };
+    return (
+        <TaskDragContext.Provider value={sortable}>
+            <div ref={sortable.setNodeRef} style={style}>
+                {children}
+            </div>
+        </TaskDragContext.Provider>
+    );
+}
+
+function TaskDragHandle({ title }: { title: string }) {
+    const sortable = useContext(TaskDragContext);
+    if (!sortable) return null;
+    return (
+        <Clickable.Icon
+            ref={sortable.setActivatorNodeRef}
+            variant="ghost"
+            className="size-7 cursor-grab touch-none active:cursor-grabbing"
+            aria-label={`Drag ${title} task`}
+            {...sortable.attributes}
+            {...sortable.listeners}
+        >
+            <GripVertical className="size-4" aria-hidden="true" />
+        </Clickable.Icon>
+    );
+}
 
 const TaskContainer = forwardRef<
     HTMLElement,
@@ -868,13 +1160,16 @@ const DialogHost = observer(function DialogHost({ render }: DialogHostProps) {
 
 export const Kanban = {
     Container,
+    DndProvider,
     Header,
     Title,
     Filter,
     Content,
     Columns,
     Column: {
+        Sortable: SortableColumn,
         Container: ColumnContainer,
+        DragHandle: ColumnDragHandle,
         Header: ColumnHeader,
         Title: ColumnTitle,
         Content: ColumnContent,
@@ -890,7 +1185,9 @@ export const Kanban = {
     },
     Tasks,
     Task: {
+        Sortable: SortableTask,
         Container: TaskContainer,
+        DragHandle: TaskDragHandle,
         Header: TaskHeader,
         Title: TaskTitle,
         Description: TaskDescription,

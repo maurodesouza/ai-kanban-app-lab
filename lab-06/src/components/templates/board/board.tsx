@@ -47,85 +47,130 @@ export function Board() {
                 </div>
             </Kanban.Header>
 
-            <Kanban.Content>
-                <div className="flex min-w-max items-start gap-4 pb-4">
-                    <Kanban.Columns
-                        render={(column, columnIndex) => (
-                            <Kanban.Column.Container
-                                columnId={column.id}
-                                aria-label={column.title}
-                            >
-                                <Kanban.Column.Header>
-                                    <Kanban.Column.Title columnId={column.id}>
-                                        {column.title}
-                                    </Kanban.Column.Title>
-                                    <Kanban.Column.MoveLeft
-                                        index={columnIndex}
-                                    />
-                                    <Kanban.Column.MoveRight
-                                        index={columnIndex}
-                                    />
-                                    <Kanban.Column.Delete
+            <Kanban.DndProvider>
+                <Kanban.Content>
+                    <div className="flex min-w-max items-start gap-4 pb-4">
+                        <Kanban.Columns
+                            render={(column, columnIndex) => (
+                                <Kanban.Column.Sortable columnId={column.id}>
+                                    <Kanban.Column.Container
                                         columnId={column.id}
-                                        title={column.title}
-                                    />
-                                </Kanban.Column.Header>
-
-                                <Kanban.Column.Content>
-                                    <Kanban.Tasks
-                                        columnId={column.id}
-                                        render={(task) => (
-                                            <Kanban.Task.Container
-                                                taskId={task.id}
+                                        aria-label={column.title}
+                                    >
+                                        <Kanban.Column.Header>
+                                            <Kanban.Column.DragHandle
+                                                title={column.title}
+                                            />
+                                            <Kanban.Column.Title
+                                                columnId={column.id}
                                             >
-                                                <Kanban.Task.Header>
-                                                    <Kanban.Task.Title>
-                                                        {task.title}
-                                                    </Kanban.Task.Title>
-                                                    <Kanban.Task.Priority
-                                                        taskId={task.id}
-                                                        priority={task.priority}
-                                                    />
-                                                </Kanban.Task.Header>
-                                                <Kanban.Task.Description>
-                                                    {task.description}
-                                                </Kanban.Task.Description>
-                                                <Kanban.Task.Dates
-                                                    startDate={task.startDate}
-                                                    endDate={task.endDate}
-                                                />
+                                                {column.title}
+                                            </Kanban.Column.Title>
+                                            <Kanban.Column.MoveLeft
+                                                index={columnIndex}
+                                            />
+                                            <Kanban.Column.MoveRight
+                                                index={columnIndex}
+                                            />
+                                            <Kanban.Column.Delete
+                                                columnId={column.id}
+                                                title={column.title}
+                                            />
+                                        </Kanban.Column.Header>
 
-                                                <Kanban.Task.Footer>
-                                                    <Kanban.Task.MovePrev
+                                        <Kanban.Column.Content
+                                            columnId={column.id}
+                                        >
+                                            <Kanban.Tasks
+                                                columnId={column.id}
+                                                render={(task) => (
+                                                    <Kanban.Task.Sortable
                                                         taskId={task.id}
                                                         columnId={task.columnId}
-                                                    />
-                                                    <Kanban.Task.MoveNext
-                                                        taskId={task.id}
-                                                        columnId={task.columnId}
-                                                    />
-                                                    <span className="flex-1" />
-                                                    <Kanban.Task.EditAction
-                                                        taskId={task.id}
-                                                    />
-                                                    <Kanban.Task.DeleteAction
-                                                        taskId={task.id}
-                                                        title={task.title}
-                                                    />
-                                                </Kanban.Task.Footer>
-                                            </Kanban.Task.Container>
-                                        )}
-                                    />
-                                    <Kanban.Column.AddTask
-                                        columnId={column.id}
-                                    />
-                                </Kanban.Column.Content>
-                            </Kanban.Column.Container>
-                        )}
-                    />
-                    <Kanban.Column.Ghost />
-                </div>
-            </Kanban.Content>
+                                                    >
+                                                        <Kanban.Task.Container
+                                                            taskId={task.id}
+                                                        >
+                                                            <Kanban.Task.Header>
+                                                                <Kanban.Task.DragHandle
+                                                                    title={
+                                                                        task.title
+                                                                    }
+                                                                />
+                                                                <Kanban.Task.Title>
+                                                                    {task.title}
+                                                                </Kanban.Task.Title>
+                                                                <Kanban.Task.Priority
+                                                                    taskId={
+                                                                        task.id
+                                                                    }
+                                                                    priority={
+                                                                        task.priority
+                                                                    }
+                                                                />
+                                                            </Kanban.Task.Header>
+                                                            <Kanban.Task.Description>
+                                                                {
+                                                                    task.description
+                                                                }
+                                                            </Kanban.Task.Description>
+                                                            <Kanban.Task.Dates
+                                                                startDate={
+                                                                    task.startDate
+                                                                }
+                                                                endDate={
+                                                                    task.endDate
+                                                                }
+                                                            />
+
+                                                            <Kanban.Task.Footer>
+                                                                <Kanban.Task.MovePrev
+                                                                    taskId={
+                                                                        task.id
+                                                                    }
+                                                                    columnId={
+                                                                        task.columnId
+                                                                    }
+                                                                />
+                                                                <Kanban.Task.MoveNext
+                                                                    taskId={
+                                                                        task.id
+                                                                    }
+                                                                    columnId={
+                                                                        task.columnId
+                                                                    }
+                                                                />
+                                                                <span className="flex-1" />
+                                                                <Kanban.Task.EditAction
+                                                                    taskId={
+                                                                        task.id
+                                                                    }
+                                                                />
+                                                                <Kanban.Task.DeleteAction
+                                                                    taskId={
+                                                                        task.id
+                                                                    }
+                                                                    title={
+                                                                        task.title
+                                                                    }
+                                                                />
+                                                            </Kanban.Task.Footer>
+                                                        </Kanban.Task.Container>
+                                                    </Kanban.Task.Sortable>
+                                                )}
+                                            />
+                                            <Kanban.Column.AddTask
+                                                columnId={column.id}
+                                            />
+                                        </Kanban.Column.Content>
+                                    </Kanban.Column.Container>
+                                </Kanban.Column.Sortable>
+                            )}
+                        />
+                        <Kanban.Column.Ghost />
+                    </div>
+                </Kanban.Content>
+            </Kanban.DndProvider>
 
             <Kanban.DialogHost
                 render={(descriptor) => {

@@ -61,6 +61,30 @@ async function openGlobalAdd() {
 }
 
 describe("Board task interactions", () => {
+    it("provides keyboard-accessible drag handles without capturing task actions", async () => {
+        const taskId = await seedTask("todo");
+        renderBoard();
+
+        const columnHandle = screen.getByRole("button", {
+            name: "Drag Todo column",
+        });
+        const taskHandle = screen.getByRole("button", {
+            name: `Drag ${draft.title} task`,
+        });
+        expect(columnHandle.getAttribute("tabindex")).toBe("0");
+        expect(taskHandle.getAttribute("tabindex")).toBe("0");
+        expect(columnHandle.getAttribute("aria-roledescription")).toBe(
+            "sortable",
+        );
+        expect(taskHandle.getAttribute("aria-roledescription")).toBe(
+            "sortable",
+        );
+
+        fireEvent.click(screen.getByRole("button", { name: "Edit task" }));
+        await screen.findByRole("dialog", { name: "Edit task" });
+        expect(getRootStore().dialog.current).toMatchObject({ taskId });
+    });
+
     it("opens global and per-column add with the correct column defaults", async () => {
         renderBoard();
 
