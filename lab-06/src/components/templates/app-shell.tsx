@@ -1,14 +1,13 @@
+import type { ReactNode } from "react";
 import { KanbanHandle } from "#/components/handles/kanban-handle/kanban-handle";
 import { ThemeHandle } from "#/components/handles/theme-handle/theme-handle";
 
-export function AppShell() {
+export function AppShell({ children }: Readonly<{ children?: ReactNode }>) {
     return (
         <>
             <KanbanHandle />
             <ThemeHandle />
-            <main className="grid min-h-screen place-items-center bg-background text-foreground">
-                <h1 className="text-3xl font-semibold">AI Kanban</h1>
-            </main>
+            {children}
         </>
     );
 }

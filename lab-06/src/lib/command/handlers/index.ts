@@ -22,7 +22,7 @@ export function registerKanbanHandlers(
 
     const disposes = [
         command.handle("kanban.task.add", async ({ columnId, ...draft }) => {
-            stores.board.addTask(validDraft(draft), columnId);
+            return stores.board.addTask(validDraft(draft), columnId);
         }),
         command.handle("kanban.task.edit", async ({ taskId, ...changes }) => {
             const task = stores.board.tasks[taskId];

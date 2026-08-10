@@ -4,7 +4,7 @@ import type { Action } from "./types";
 export interface Actions {
     kanban: {
         task: {
-            add: Action<TaskDraft & { columnId?: string }>;
+            add: Action<TaskDraft & { columnId?: string }, string | undefined>;
             edit: Action<{ taskId: string } & Partial<TaskDraft>>;
             remove: Action<{ taskId: string }>;
             setPriority: Action<{ taskId: string; priority: Priority }>;
