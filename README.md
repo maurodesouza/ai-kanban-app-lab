@@ -235,6 +235,7 @@ Overall, the workflow was fast and required very little manual intervention, but
 * This was the first lab with automated tests, and they were created successfully
 * Styling was reasonably good and required only a minor correction
 * The main improvement for the next iteration is better isolation from previous projects and more explicit initial requirements
+</details>
 
 <details>
     <summary>Lab 6</summary>
