@@ -15,6 +15,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 3 | ~6h20 | Good | SWE-1.5 only |
 | Lab 4 | ~1h | Very Good | Opus 4.8 (planning) + SWE-1.6 (implementation) |
 | Lab 5 | ~1h15 | Not so good | SWE-1.7 only |
+| Lab 6 | ~2h10 | Very Good | Opus 5 (planning) + GPT-5.6 Sol (implementation) |
 
 <details>
     <summary>Lab 1</summary>
@@ -234,3 +235,41 @@ Overall, the workflow was fast and required very little manual intervention, but
 * This was the first lab with automated tests, and they were created successfully
 * Styling was reasonably good and required only a minor correction
 * The main improvement for the next iteration is better isolation from previous projects and more explicit initial requirements
+
+<details>
+    <summary>Lab 6</summary>
+
+<br/>
+
+****Time spent:**** About 2h10
+
+****Model used:****
+Opus 5 (planning) + GPT-5.6 (implementation)
+
+**## Process & Result**
+
+This lab used the same autonomous workflow as the previous experiment, with Opus 5 handling the planning phase and GPT-5.6 Sol handling the implementation.
+
+The planning phase took around 10 minutes to generate the plan and create the issues. The implementation took roughly 2 hours. Compared to the previous labs, the coding phase felt noticeably slower. The model also consumed the entire available usage limit, requiring an additional $6 to complete the implementation, making this one of the more expensive runs.
+
+Despite the higher cost and longer implementation time, the result was very good. The model generated more than 10,600 lines of code and completed the entire implementation without requiring any manual intervention.
+
+The code organization was not as good as I expected. For example, when working with MobX, the model did not recognize or make use of the existing JavaScript utility for persisting data to local storage. More generally, the project structure did not fully follow the organization I had defined. However, it was not far from the expected structure, and I believe that another 30–60 minutes of manual work would have been enough to reorganize the code properly.
+
+Styling was the strongest part of this run. The final application looked very good and, compared to the previous labs, the model did a particularly good job with the visual design.
+
+One important limitation of this experiment is that I was still unable to fully isolate the project from the previous labs. Even though I tried to isolate the context, the model still had access to the previous projects through the repository and was able to use them as references. This makes it difficult to determine how much of the result came from the model's actual understanding of the requirements versus its ability to reuse patterns and structures from previous experiments.
+
+Because of this, I am not sure whether I will continue using the labs to evaluate the model's ability to understand requirements and implement them from scratch. I may continue the experiments primarily to evaluate things such as implementation speed, usage, cost, and overall workflow efficiency.
+
+**## Observations**
+
+* The implementation was slower and more expensive than previous autonomous runs
+* Code organization remains a weakness, especially when existing project patterns are not explicitly reinforced
+* The model performed particularly well on visual design and styling
+* The generated structure was close enough to the expected architecture that relatively little manual work would be needed to clean it up
+* Previous projects continue to influence the model, making it difficult to reliably evaluate its ability to understand and implement requirements in isolation
+* Future experiments may be more useful for evaluating model speed, usage, and cost rather than raw implementation ability
+
+
+</details>
