@@ -40,7 +40,12 @@ export function Board() {
         <Kanban.Container>
             <Kanban.Header>
                 <Kanban.Title>AI Kanban App</Kanban.Title>
-                <Kanban.Filter>Filters coming in #106</Kanban.Filter>
+                <Kanban.Filter.Container>
+                    <Kanban.Filter.Search />
+                    <Kanban.Filter.DateRange />
+                    <Kanban.Filter.Priority />
+                    <Kanban.Filter.Clear />
+                </Kanban.Filter.Container>
                 <div className="flex items-center gap-2">
                     <ThemeToggle.Button />
                     <Kanban.AddTaskAction />
@@ -158,6 +163,9 @@ export function Board() {
                                                         </Kanban.Task.Container>
                                                     </Kanban.Task.Sortable>
                                                 )}
+                                            />
+                                            <Kanban.Tasks.EmptyState
+                                                columnId={column.id}
                                             />
                                             <Kanban.Column.AddTask
                                                 columnId={column.id}

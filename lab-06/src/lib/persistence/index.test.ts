@@ -132,6 +132,9 @@ describe("persistence", () => {
         const disposeFirst = initializePersistence(first, storage);
         first.board.addTask(draft, "in-progress");
         first.theme.set("dark");
+        first.filter.setSearch("temporary");
+        first.filter.setDateRange({ start: "2026-01-01" });
+        first.filter.setPriorities(["urgent"]);
         disposeFirst();
 
         const second = createRootStore();
@@ -140,6 +143,11 @@ describe("persistence", () => {
         expect(second.board.tasks["task-1"].title).toBe("Persisted");
         expect(second.board.columns["in-progress"].taskIds).toEqual(["task-1"]);
         expect(second.theme.value).toBe("dark");
+        expect(second.filter.snapshot).toEqual({
+            search: "",
+            dateRange: {},
+            priorities: [],
+        });
         disposeSecond();
     });
 

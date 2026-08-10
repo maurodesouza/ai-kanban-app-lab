@@ -23,13 +23,16 @@ import {
     ArrowLeft,
     ArrowRight,
     CalendarDays,
+    ChevronDown,
     ChevronLeft,
     ChevronRight,
     CirclePlus,
     GripVertical,
     Pencil,
     Plus,
+    Search,
     Trash2,
+    X,
 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import {
@@ -47,6 +50,7 @@ import {
     useState,
 } from "react";
 import { Badge, Clickable, Field, Text } from "#/components/atoms";
+import { Popover } from "#/components/molecules";
 import { useTransition } from "#/hooks/use-transition";
 import { actions } from "#/lib/command";
 import {
@@ -266,11 +270,14 @@ function Title({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
     return <Text.Heading level={1} className={className} {...props} />;
 }
 
-function Filter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+function FilterContainer({
+    className,
+    ...props
+}: HTMLAttributes<HTMLDivElement>) {
     return (
         <section
             className={cn(
-                "rounded-md border border-dashed border-border px-3 py-2 text-sm text-muted-foreground",
+                "flex flex-1 flex-wrap items-end gap-2 rounded-lg border border-border bg-card p-3 text-card-foreground",
                 className,
             )}
             aria-label="Task filters"
@@ -278,6 +285,187 @@ function Filter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
         />
     );
 }
+
+const FilterSearch = observer(function FilterSearch() {
+    const { filter } = getRootStore();
+    const [value, setValue] = useState(filter.search);
+    const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const pending = useTransition(["kanban.filter.setSearch"]);
+
+    useEffect(() => {
+        if (timeout.current) clearTimeout(timeout.current);
+        timeout.current = null;
+        setValue(filter.search);
+    }, [filter.search]);
+
+    useEffect(
+        () => () => {
+            if (timeout.current) clearTimeout(timeout.current);
+        },
+        [],
+    );
+
+    return (
+        <Field.Root>
+            <Field.Label htmlFor="kanban-filter-search" className="sr-only">
+                Search tasks
+            </Field.Label>
+            <div className="relative w-56">
+                <Search
+                    className="pointer-events-none absolute left-2.5 top-2.5 size-4 text-muted-foreground"
+                    aria-hidden="true"
+                />
+                <Field.Input
+                    id="kanban-filter-search"
+                    type="search"
+                    className="pl-8"
+                    placeholder="Search tasks"
+                    value={value}
+                    disabled={pending}
+                    onChange={(event) => {
+                        const nextValue = event.target.value;
+                        setValue(nextValue);
+                        if (timeout.current) clearTimeout(timeout.current);
+                        timeout.current = setTimeout(() => {
+                            timeout.current = null;
+                            void actions.kanban.filter.setSearch(nextValue);
+                        }, 250);
+                    }}
+                />
+            </div>
+        </Field.Root>
+    );
+});
+
+const FilterDateRange = observer(function FilterDateRange() {
+    const { filter } = getRootStore();
+    const pending = useTransition(["kanban.filter.setDateRange"]);
+
+    function setBound(bound: "start" | "end", value: string) {
+        const dateRange = { ...filter.dateRange };
+        if (value) dateRange[bound] = value;
+        else delete dateRange[bound];
+        void actions.kanban.filter.setDateRange(dateRange);
+    }
+
+    return (
+        <div className="flex items-end gap-2">
+            <Field.Root>
+                <Field.Label
+                    htmlFor="kanban-filter-start-date"
+                    className="mb-1 block text-xs"
+                >
+                    Filter start date
+                </Field.Label>
+                <Field.Date
+                    id="kanban-filter-start-date"
+                    className="w-36"
+                    value={filter.dateRange.start ?? ""}
+                    disabled={pending}
+                    onChange={(event) => setBound("start", event.target.value)}
+                />
+            </Field.Root>
+            <Field.Root>
+                <Field.Label
+                    htmlFor="kanban-filter-end-date"
+                    className="mb-1 block text-xs"
+                >
+                    Filter end date
+                </Field.Label>
+                <Field.Date
+                    id="kanban-filter-end-date"
+                    className="w-36"
+                    value={filter.dateRange.end ?? ""}
+                    disabled={pending}
+                    onChange={(event) => setBound("end", event.target.value)}
+                />
+            </Field.Root>
+        </div>
+    );
+});
+
+const FilterPriority = observer(function FilterPriority() {
+    const { filter } = getRootStore();
+    const pending = useTransition(["kanban.filter.setPriorities"]);
+
+    function toggle(priority: Priority, selected: boolean) {
+        const priorities = selected
+            ? [...filter.priorities, priority]
+            : filter.priorities.filter((value) => value !== priority);
+        void actions.kanban.filter.setPriorities(priorities);
+    }
+
+    return (
+        <Popover.Root>
+            <Popover.Trigger asChild>
+                <Clickable.Button
+                    variant="outline"
+                    aria-label="Filter by priority"
+                    disabled={pending}
+                >
+                    Priority
+                    {filter.priorities.length > 0
+                        ? ` (${filter.priorities.length})`
+                        : " (All)"}
+                    <ChevronDown className="size-4" aria-hidden="true" />
+                </Clickable.Button>
+            </Popover.Trigger>
+            <Popover.Portal>
+                <Popover.Content align="start" className="w-52">
+                    <fieldset className="space-y-2">
+                        <legend className="mb-2 text-sm font-medium">
+                            Priorities
+                        </legend>
+                        {PRIORITIES.map((priority) => (
+                            <label
+                                key={priority}
+                                className="flex cursor-pointer items-center gap-2 rounded-sm px-1 py-1 text-sm hover:bg-accent hover:text-accent-foreground"
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="size-4 accent-primary"
+                                    checked={filter.priorities.includes(
+                                        priority,
+                                    )}
+                                    disabled={pending}
+                                    onChange={(event) =>
+                                        toggle(priority, event.target.checked)
+                                    }
+                                />
+                                {priorityLabel(priority)}
+                            </label>
+                        ))}
+                        <p className="text-xs text-muted-foreground">
+                            No selection includes every priority.
+                        </p>
+                    </fieldset>
+                </Popover.Content>
+            </Popover.Portal>
+        </Popover.Root>
+    );
+});
+
+const FilterClear = observer(function FilterClear() {
+    const { filter } = getRootStore();
+    const pending = useTransition(["kanban.filter.clear"]);
+    const active = Boolean(
+        filter.search ||
+            filter.dateRange.start ||
+            filter.dateRange.end ||
+            filter.priorities.length,
+    );
+    if (!active) return null;
+
+    return (
+        <Clickable.Button
+            variant="ghost"
+            disabled={pending}
+            onClick={() => void actions.kanban.filter.clear()}
+        >
+            <X className="size-4" aria-hidden="true" /> Clear filters
+        </Clickable.Button>
+    );
+});
 
 const Content = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
@@ -597,6 +785,20 @@ const Tasks = observer(function Tasks({ columnId, render }: TasksProps) {
                 ) : null;
             })}
         </SortableContext>
+    );
+});
+
+const TasksEmptyState = observer(function TasksEmptyState({
+    columnId,
+}: {
+    columnId: string;
+}) {
+    const { filter } = getRootStore();
+    if (filter.filteredTaskIds(columnId).length > 0) return null;
+    return (
+        <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-muted-foreground">
+            No tasks to display.
+        </p>
     );
 });
 
@@ -1163,7 +1365,13 @@ export const Kanban = {
     DndProvider,
     Header,
     Title,
-    Filter,
+    Filter: {
+        Container: FilterContainer,
+        Search: FilterSearch,
+        DateRange: FilterDateRange,
+        Priority: FilterPriority,
+        Clear: FilterClear,
+    },
     Content,
     Columns,
     Column: {
@@ -1183,7 +1391,7 @@ export const Kanban = {
         ),
         Ghost: ColumnGhost,
     },
-    Tasks,
+    Tasks: Object.assign(Tasks, { EmptyState: TasksEmptyState }),
     Task: {
         Sortable: SortableTask,
         Container: TaskContainer,

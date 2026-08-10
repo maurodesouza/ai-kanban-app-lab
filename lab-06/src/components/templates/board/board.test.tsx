@@ -1,4 +1,5 @@
 import {
+    act,
     cleanup,
     fireEvent,
     render,
@@ -6,7 +7,7 @@ import {
     waitFor,
     within,
 } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { actions } from "#/lib/command";
 import { registerKanbanHandlers } from "#/lib/command/handlers";
 import { localDate } from "#/lib/validation";
@@ -254,6 +255,180 @@ describe("Board task interactions", () => {
         ).toBeDefined();
         expect(getRootStore().board.tasks[taskId]).toEqual(original);
         expect(getRootStore().dialog.current?.type).toBe("taskForm");
+    });
+});
+
+describe("Board filters", () => {
+    async function seed(overrides: Partial<TaskDraft>, columnId = "todo") {
+        await actions.kanban.task.add({ ...draft, ...overrides, columnId });
+    }
+
+    it("debounces search for 250ms and matches task titles and descriptions", async () => {
+        vi.useFakeTimers();
+        try {
+            await seed({ title: "Searchable title", description: "Other" });
+            await seed({ title: "Other title", description: "Hidden keyword" });
+            await seed({ title: "Unrelated", description: "Nothing" });
+            renderBoard();
+
+            const search = screen.getByRole("searchbox", {
+                name: "Search tasks",
+            });
+            fireEvent.change(search, { target: { value: "searchable" } });
+            expect((search as HTMLInputElement).value).toBe("searchable");
+            expect(getRootStore().filter.search).toBe("");
+
+            await act(() => vi.advanceTimersByTimeAsync(249));
+            expect(getRootStore().filter.search).toBe("");
+            await act(() => vi.advanceTimersByTimeAsync(1));
+            expect(getRootStore().filter.search).toBe("searchable");
+            expect(screen.getByText("Searchable title")).toBeDefined();
+            expect(screen.queryByText("Other title")).toBeNull();
+
+            fireEvent.change(search, { target: { value: "keyword" } });
+            await act(() => vi.advanceTimersByTimeAsync(250));
+            expect(getRootStore().filter.search).toBe("keyword");
+            expect(screen.getByText("Other title")).toBeDefined();
+            expect(screen.queryByText("Searchable title")).toBeNull();
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it("accepts either date bound independently and both bounds together", async () => {
+        renderBoard();
+        const start = screen.getByLabelText("Filter start date");
+        const end = screen.getByLabelText("Filter end date");
+
+        fireEvent.change(start, { target: { value: "2026-08-11" } });
+        await waitFor(() =>
+            expect(getRootStore().filter.dateRange).toEqual({
+                start: "2026-08-11",
+            }),
+        );
+        fireEvent.change(start, { target: { value: "" } });
+        fireEvent.change(end, { target: { value: "2026-08-20" } });
+        await waitFor(() =>
+            expect(getRootStore().filter.dateRange).toEqual({
+                end: "2026-08-20",
+            }),
+        );
+        fireEvent.change(start, { target: { value: "2026-08-15" } });
+        await waitFor(() =>
+            expect(getRootStore().filter.dateRange).toEqual({
+                start: "2026-08-15",
+                end: "2026-08-20",
+            }),
+        );
+    });
+
+    it("supports all five priorities as a multi-select and empty means all", async () => {
+        await seed({ title: "Low task", priority: "low" });
+        await seed({ title: "Urgent task", priority: "urgent" });
+        renderBoard();
+
+        fireEvent.click(
+            screen.getByRole("button", { name: "Filter by priority" }),
+        );
+        expect(screen.getAllByRole("checkbox")).toHaveLength(5);
+        fireEvent.click(screen.getByRole("checkbox", { name: "Low" }));
+        await waitFor(() =>
+            expect(getRootStore().filter.priorities).toEqual(["low"]),
+        );
+        expect(screen.getByText("Low task")).toBeDefined();
+        expect(screen.queryByText("Urgent task")).toBeNull();
+
+        fireEvent.click(screen.getByRole("checkbox", { name: "Urgent" }));
+        await waitFor(() =>
+            expect(getRootStore().filter.priorities).toEqual(["low", "urgent"]),
+        );
+        expect(screen.getByText("Urgent task")).toBeDefined();
+
+        fireEvent.click(screen.getByRole("checkbox", { name: "Low" }));
+        fireEvent.click(screen.getByRole("checkbox", { name: "Urgent" }));
+        await waitFor(() =>
+            expect(getRootStore().filter.priorities).toEqual([]),
+        );
+        expect(screen.getByText("Low task")).toBeDefined();
+        expect(screen.getByText("Urgent task")).toBeDefined();
+    });
+
+    it("combines search, date, and priority filters", async () => {
+        await seed({
+            title: "Matching task",
+            description: "release candidate",
+            priority: "high",
+            startDate: "2026-08-15",
+            endDate: "2026-08-17",
+        });
+        await seed({
+            title: "Wrong priority",
+            description: "release candidate",
+            priority: "low",
+            startDate: "2026-08-15",
+            endDate: "2026-08-17",
+        });
+        await seed({
+            title: "Wrong date",
+            description: "release candidate",
+            priority: "high",
+            startDate: "2026-09-01",
+            endDate: "2026-09-02",
+        });
+        await actions.kanban.filter.setSearch("release");
+        await actions.kanban.filter.setDateRange({
+            start: "2026-08-14",
+            end: "2026-08-20",
+        });
+        await actions.kanban.filter.setPriorities(["high"]);
+        renderBoard();
+
+        expect(screen.getByText("Matching task")).toBeDefined();
+        expect(screen.queryByText("Wrong priority")).toBeNull();
+        expect(screen.queryByText("Wrong date")).toBeNull();
+    });
+
+    it("shows clear only for active filters, resets all, and cancels stale search", async () => {
+        vi.useFakeTimers();
+        try {
+            renderBoard();
+            expect(
+                screen.queryByRole("button", { name: "Clear filters" }),
+            ).toBeNull();
+            await act(() => actions.kanban.filter.setSearch("active"));
+            const clear = screen.getByRole("button", { name: "Clear filters" });
+            const search = screen.getByRole("searchbox", {
+                name: "Search tasks",
+            });
+            fireEvent.change(search, { target: { value: "stale" } });
+            fireEvent.click(clear);
+            await act(() => vi.advanceTimersByTimeAsync(250));
+
+            expect(getRootStore().filter.snapshot).toEqual({
+                search: "",
+                dateRange: {},
+                priorities: [],
+            });
+            expect((search as HTMLInputElement).value).toBe("");
+            expect(
+                screen.queryByRole("button", { name: "Clear filters" }),
+            ).toBeNull();
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    it("keeps every column visible and explicitly displays empty states", async () => {
+        await seed({ title: "Only visible task" }, "todo");
+        await actions.kanban.filter.setSearch("no matches");
+        renderBoard();
+
+        expect(screen.getByRole("region", { name: "Todo" })).toBeDefined();
+        expect(
+            screen.getByRole("region", { name: "In Progress" }),
+        ).toBeDefined();
+        expect(screen.getByRole("region", { name: "Done" })).toBeDefined();
+        expect(screen.getAllByText("No tasks to display.")).toHaveLength(3);
     });
 });
 
