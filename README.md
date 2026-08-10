@@ -249,6 +249,8 @@ Opus 5 (planning) + GPT-5.6 (implementation)
 
 **## Process & Result**
 
+[lab-06.webm](https://github.com/user-attachments/assets/fe080375-61c5-44c7-8159-c2df7718f58d)
+
 This lab used the same autonomous workflow as the previous experiment, with Opus 5 handling the planning phase and GPT-5.6 Sol handling the implementation.
 
 The planning phase took around 10 minutes to generate the plan and create the issues. The implementation took roughly 2 hours. Compared to the previous labs, the coding phase felt noticeably slower. The model also consumed the entire available usage limit, requiring an additional $6 to complete the implementation, making this one of the more expensive runs.
