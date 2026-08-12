@@ -16,6 +16,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 4 | ~1h | Very Good | Opus 4.8 (planning) + SWE-1.6 (implementation) |
 | Lab 5 | ~1h15 | Not so good | SWE-1.7 only |
 | Lab 6 | ~2h10 | Very Good | Opus 5 (planning) + GPT-5.6 Sol (implementation) |
+| Lab 7 | ~35m | Very Good | GLM 5.2 only |
 
 <details>
     <summary>Lab 1</summary>
@@ -274,5 +275,41 @@ Because of this, I am not sure whether I will continue using the labs to evaluat
 * Previous projects continue to influence the model, making it difficult to reliably evaluate its ability to understand and implement requirements in isolation
 * Future experiments may be more useful for evaluating model speed, usage, and cost rather than raw implementation ability
 
+
+</details>
+
+<details>
+    <summary>Lab 7</summary>
+
+<br/>
+
+**Time spent:** About 35 minutes
+
+**Model used:** GLM 5.2 only
+
+**## Process & Result**
+
+This was the fastest autonomous run so far.
+
+The planning phase took around 9 minutes, with the remaining time spent on implementation. The entire implementation was completed in approximately 35 minutes.
+
+The result was very good overall. The model was extremely fast, and the final visual design was also good. There were no CSS errors during the implementation.
+
+However, the model did not follow my definitions as closely as I expected. I believe the main issue is that some of my requirements need to be more specific. Adding more specialized skills, especially for component creation and code organization, should help the model produce results closer to what I expect.
+
+Code organization was the main weakness. For example, the model placed logic inside the store, which is something I generally do not want. It also created some components that only re-export other components, which did not make much sense.
+
+I also noticed that the model created some components and patterns that already existed in previous labs. I suspect it is still using the previous projects as references. However, as mentioned in the previous lab, I am no longer considering this a major factor when evaluating the experiments. I am focusing more on implementation speed and overall workflow efficiency.
+
+Despite these issues, I believe the remaining problems could be fixed relatively quickly through manual guidance. With another 30–60 minutes of directing the model toward the structure and patterns I want, I believe the project could be brought much closer to the expected result.
+
+**## Observations**
+
+* More specific requirements are needed when the expected implementation pattern is not obvious
+* Specialized skills for component creation and code organization could improve consistency
+* Code organization still requires stronger guidance, particularly around store responsibilities and component boundaries
+* The model can produce unnecessary abstraction, such as components that only re-export other components
+* Additional manual guidance can likely resolve most structural issues without significantly increasing the overall development time
+* Model evaluation is increasingly focused on workflow efficiency rather than strict isolation from previous projects
 
 </details>
