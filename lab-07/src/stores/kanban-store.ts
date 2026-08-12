@@ -153,6 +153,10 @@ export class KanbanStore {
         }));
     }
 
+    get columnOrder(): string[] {
+        return this.columns.map((c) => c.id);
+    }
+
     get columnCount(): number {
         return this.columns.length;
     }
