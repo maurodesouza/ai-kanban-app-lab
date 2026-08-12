@@ -1,9 +1,15 @@
 import { useEffect } from "react";
 import { command } from "#/lib/command";
+import { themeStore } from "#/stores";
 
 export function ThemeHandle() {
-    async function handleThemeToggle() {}
-    async function handleThemeSet() {}
+    async function handleThemeToggle() {
+        themeStore.toggle();
+    }
+
+    async function handleThemeSet(payload: { mode: "light" | "dark" }) {
+        themeStore.set(payload.mode);
+    }
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: handlers register once on mount
     useEffect(() => {

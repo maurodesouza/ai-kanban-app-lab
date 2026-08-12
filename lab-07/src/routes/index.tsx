@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { Button } from "#/components/shared/clickable/button";
 import { ConfirmDialog } from "#/components/shared/modal/confirm-dialog";
+import { ThemeToggle } from "#/components/shared/theme-toggle/theme-toggle";
 import { AddColumn, Kanban } from "#/features/kanban/components";
 import {
     DraggableTask,
@@ -10,6 +11,7 @@ import {
     KanbanDnd,
     SortableColumn,
 } from "#/features/kanban/components/dnd/kanban-dnd";
+import { FilterBar } from "#/features/kanban/components/filter-bar/filter-bar";
 import { TaskModal } from "#/features/kanban/components/task-modal/task-modal";
 import { actions } from "#/lib/command";
 import { kanbanStore } from "#/stores";
@@ -21,7 +23,10 @@ const HomePage = observer(function HomePage() {
                 <Kanban.Header>
                     <Kanban.Title>AI Todo App</Kanban.Title>
                     <div className="flex items-center gap-2">
-                        <Kanban.Filter />
+                        <Kanban.Filter>
+                            <FilterBar />
+                        </Kanban.Filter>
+                        <ThemeToggle />
                         <Button
                             size="sm"
                             onClick={() =>
