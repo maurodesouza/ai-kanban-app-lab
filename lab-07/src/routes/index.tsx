@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { Button } from "#/components/shared/clickable/button";
 import { ConfirmDialog } from "#/components/shared/modal/confirm-dialog";
 import { AddColumn, Kanban } from "#/features/kanban/components";
+import { TaskModal } from "#/features/kanban/components/task-modal/task-modal";
 import { actions } from "#/lib/command";
 
 export const Route = createFileRoute("/")({
@@ -113,6 +114,7 @@ function HomePage() {
                 </Kanban.Content>
             </Kanban.Container>
             <ConfirmDialog />
+            <TaskModal />
         </main>
     );
 }

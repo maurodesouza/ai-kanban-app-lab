@@ -1,11 +1,28 @@
 import { useEffect } from "react";
 import { command } from "#/lib/command";
+import { modalStore } from "#/stores";
+import type { ConfirmState } from "#/stores/modal-store";
 
 export function ModalHandle() {
-    async function handleModalOpen() {}
-    async function handleModalClose() {}
-    async function handleConfirmOpen() {}
-    async function handleConfirmClose() {}
+    async function handleModalOpen(payload: {
+        mode: "create" | "edit";
+        columnId?: string;
+        taskId?: string;
+    }) {
+        modalStore.openTaskModal(payload);
+    }
+
+    async function handleModalClose() {
+        modalStore.closeTaskModal();
+    }
+
+    async function handleConfirmOpen(payload: ConfirmState) {
+        modalStore.openConfirm(payload);
+    }
+
+    async function handleConfirmClose() {
+        modalStore.closeConfirm();
+    }
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: handlers register once on mount
     useEffect(() => {
