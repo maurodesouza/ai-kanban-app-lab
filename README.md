@@ -289,6 +289,8 @@ Because of this, I am not sure whether I will continue using the labs to evaluat
 
 **## Process & Result**
 
+[lab-07.webm](https://github.com/user-attachments/assets/f22e2b0d-248f-4b95-8917-66d4f11e4df6)
+
 This was the fastest autonomous run so far.
 
 The planning phase took around 9 minutes, with the remaining time spent on implementation. The entire implementation was completed in approximately 35 minutes.
