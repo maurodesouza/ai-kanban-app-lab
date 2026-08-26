@@ -315,3 +315,37 @@ Despite these issues, I believe the remaining problems could be fixed relatively
 * Model evaluation is increasingly focused on workflow efficiency rather than strict isolation from previous projects
 
 </details>
+
+<details>
+<summary>Lab 8</summary>
+
+<br/>
+
+**Time spent:** <br/>
+About 54m minutes
+
+**Model used:** <br/>
+GLM 5.2 only
+
+## Process & Result
+
+For this lab, I tried to use [Matt Pocock's workflow and skills](https://www.youtube.com/watch?v=M6mYodf0dJM). The idea was similar to my previous workflow: planning first, then creating tickets, and only after that implementing the features.
+
+The planning took around 12 minutes. The AI asked 29 questions, which was a bit too much for me, and I ended up skipping some of them. My previous workflow felt more direct.
+
+I also did not use the workflow correctly. The AI went from the planning/grilling stage directly to implementation without me asking it to implement. It ended up writing around 13k lines of code in about 35 minutes.
+
+The implementation was very fast, but it had quite a few bugs. I spent another ~20 minutes fixing some layout and functionality issues. There are still some bugs left, but I decided not to fix them. Overall, the code is okay, and I think another 30 minutes would be enough to get it closer to how I like it.
+
+Another problem was that it did not use GitHub, so everything ended up in a single commit with around 13k lines.
+
+Overall, I think the result was good for a first attempt. The workflow worked reasonably well, but I did not use it properly, so I want to run another experiment before making a final conclusion.
+
+## Observations
+
+* 29 planning questions felt excessive for this type of task.
+* The workflow seems to have more steps and structure than mine, but my workflow feels more direct.
+* I want to run another test using the workflow correctly before deciding which approach I prefer.
+
+</details>
+
