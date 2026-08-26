@@ -17,6 +17,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 5 | ~1h15 | Not so good | SWE-1.7 only |
 | Lab 6 | ~2h10 | Very Good | Opus 5 (planning) + GPT-5.6 Sol (implementation) |
 | Lab 7 | ~35m | Very Good | GLM 5.2 only |
+| Lab 8 | ~54m | Good | GLM 5.2 only |
 
 <details>
     <summary>Lab 1</summary>
