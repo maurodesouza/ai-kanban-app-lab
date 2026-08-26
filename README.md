@@ -330,6 +330,9 @@ GLM 5.2 only
 
 ## Process & Result
 
+[lab-08.webm](https://github.com/user-attachments/assets/0ccead73-90ff-433c-ad89-ad1507b91553)
+
+
 For this lab, I tried to use [Matt Pocock's workflow and skills](https://www.youtube.com/watch?v=M6mYodf0dJM). The idea was similar to my previous workflow: planning first, then creating tickets, and only after that implementing the features.
 
 The planning took around 12 minutes. The AI asked 29 questions, which was a bit too much for me, and I ended up skipping some of them. My previous workflow felt more direct.
