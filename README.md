@@ -8,16 +8,32 @@ The goal is to understand how to work with AI in a real development workflow, mi
 
 ## Summary
 
-| Lab | Time spent | Result | Models used | Cost | Workflow used | Lines generated | Lines/hour | Manual intervention |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Lab 1 | ~3h20 | Bad | SWE-1.5 only | Free | Spec Kit | ~7,600 | ~2,300 | Moderate (manual edits during process + 2 runtime + 1 styling fix) |
-| Lab 2 | ~9h50 | Good | SWE-1.5 only | Free | Spec Kit → direct prompting | ~10,500 | ~1,100 | Moderate (increasing manual intervention + styling adjustments) |
-| Lab 3 | ~6h20 | Good | SWE-1.5 only | Free | Direct prompting | ~3,100 | ~490 | Minimal (~30–40 min styling only) |
-| Lab 4 | ~1h | Very Good | Opus 4.8 (planning) + SWE-1.6 (implementation) | Free (within daily limit) | GitHub Issues + Devin Local | ~9,000 | ~9,000 | Minimal (~30 min styling + missing button) |
-| Lab 5 | ~1h15 | Not so good | SWE-1.7 only | Free | Tech Lead (Epic + Issues) | ~6,400 | ~5,100 | Minimal (1 styling correction + 1 extra issue) |
-| Lab 6 | ~2h10 | Very Good | Opus 5 (planning) + GPT-5.6 Sol (implementation) | Paid (daily limit + $6) | Tech Lead (Epic + Issues) | ~10,600 | ~4,900 | None |
-| Lab 7 | ~35m | Very Good | GLM 5.2 only | Free | Tech Lead (Epic + Issues) | ~9,100 | ~15,600 | None |
-| Lab 8 | ~54m | Good | GLM 5.2 only | Free | Matt Pocock's workflow | ~12,900 | ~14,300 | Minimal (~20 min layout + functionality fixes) |
+| Lab | Time spent | Result | Model (planning) | Model (implementation) | Cost | Lines generated | Lines/hour |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Lab 1 | ~3h20 | Bad | SWE-1.5 | SWE-1.5 | Free | ~7,600 | ~2,300 |
+| Lab 2 | ~9h50 | Good | SWE-1.5 | SWE-1.5 | Free | ~10,500 | ~1,100 |
+| Lab 3 | ~6h20 | Good | SWE-1.5 | SWE-1.5 | Free | ~3,100 | ~490 |
+| Lab 4 | ~1h | Very Good | Opus 4.8 | SWE-1.6 | Free (within daily limit) | ~9,000 | ~9,000 |
+| Lab 5 | ~1h15 | Not so good | SWE-1.7 | SWE-1.7 | Free | ~6,400 | ~5,100 |
+| Lab 6 | ~2h10 | Very Good | Opus 5 | GPT-5.6 Sol | Paid (daily limit + $6) | ~10,600 | ~4,900 |
+| Lab 7 | ~35m | Very Good | GLM 5.2 | GLM 5.2 | Free | ~9,100 | ~15,600 |
+| Lab 8 | ~54m | Good | GLM 5.2 | GLM 5.2 | Free | ~12,900 | ~14,300 |
+
+<details>
+<summary>Workflow & manual intervention</summary>
+
+| Lab | Workflow used | Manual intervention |
+| --- | --- | --- |
+| Lab 1 | Spec Kit | Moderate (manual edits during process + 2 runtime + 1 styling fix) |
+| Lab 2 | Spec Kit → direct prompting | Moderate (increasing manual intervention + styling adjustments) |
+| Lab 3 | Direct prompting | Minimal (~30–40 min styling only) |
+| Lab 4 | GitHub Issues + Devin Local | Minimal (~30 min styling + missing button) |
+| Lab 5 | Tech Lead (Epic + Issues) | Minimal (1 styling correction + 1 extra issue) |
+| Lab 6 | Tech Lead (Epic + Issues) | None |
+| Lab 7 | Tech Lead (Epic + Issues) | None |
+| Lab 8 | Matt Pocock's workflow | Minimal (~20 min layout + functionality fixes) |
+
+</details>
 
 <details>
     <summary>Lab 1</summary>
