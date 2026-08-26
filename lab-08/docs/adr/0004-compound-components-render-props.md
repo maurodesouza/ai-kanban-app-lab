@@ -1,0 +1,5 @@
+# Compound components + render props for composition
+
+The kanban UI is exposed as compound components with namespaced sub-components (`Kanban.Container`, `Kanban.Header`, `Kanban.Column.Container`, etc.) and `render` props on the list-renderers (`Kanban.Columns`, `Kanban.Tasks`). The page assembles the full tree and decides the markup for each column and task via the render props; the components themselves only wire context and dispatch commands, never dictating layout.
+
+We rejected a headless-hooks approach (`useKanban()` returning state + handlers with the page composing presentational components manually) because the spec mandates that "the composition must not be hidden inside the component" and the `plan.excalidraw` already prescribes the compound-component shape. Compound components with render props keep the assembly visible at the page level while still encapsulating context wiring and command dispatch inside each sub-component. The cost is a stricter API surface; the benefit is that the page author controls exactly how the tree is mounted.
