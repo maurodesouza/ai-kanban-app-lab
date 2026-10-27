@@ -43,3 +43,12 @@ export type BoardSnapshot = {
 export type TaskFieldChange = {
     [TField in TaskField]: { field: TField; value: TaskFields[TField] };
 }[TaskField];
+
+export type PriorityFilter = Priority | "all";
+
+export type TaskFilters = {
+    search: string;
+    dateFrom: string;
+    dateTo: string;
+    priority: PriorityFilter;
+};

@@ -11,6 +11,7 @@ import * as ColumnDeleteDialog from "./column-delete-dialog";
 import { Columns } from "./columns";
 import { DndProvider } from "./dnd-provider";
 import { DragOverlay } from "./drag-overlay";
+import * as Filter from "./filter";
 import { GhostColumn } from "./ghost-column";
 import * as Task from "./task";
 import * as TaskDialog from "./task-dialog";
@@ -22,6 +23,7 @@ export const Kanban = {
     Header,
     Title,
     Toolbar,
+    Filter,
     NewTaskAction,
     Content,
     DndProvider,

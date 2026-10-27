@@ -1,4 +1,9 @@
-import type { Task, TaskErrors, TaskFields } from "#/features/kanban/types";
+import type {
+    Task,
+    TaskErrors,
+    TaskFields,
+    TaskFilters,
+} from "#/features/kanban/types";
 import { date } from "#/features/kanban/utils/date/date";
 import { priority } from "#/features/kanban/utils/priority/priority";
 
@@ -34,6 +39,34 @@ function createTask(
     };
 }
 
+function matchesFilters(filters: TaskFilters) {
+    const search = filters.search.trim().toLowerCase();
+
+    return (item: Task): boolean => {
+        if (filters.priority !== "all" && item.priority !== filters.priority) {
+            return false;
+        }
+
+        if (
+            !date.has.overlap(
+                item.startDate,
+                item.endDate,
+                filters.dateFrom,
+                filters.dateTo,
+            )
+        ) {
+            return false;
+        }
+
+        if (!search) return true;
+
+        return (
+            item.title.toLowerCase().includes(search) ||
+            item.description.toLowerCase().includes(search)
+        );
+    };
+}
+
 export const task = {
     create: createTask,
 
@@ -52,6 +85,10 @@ export const task = {
     }),
 
     validate: validateTaskFields,
+
+    filter: {
+        byFilters: matchesFilters,
+    },
 
     has: {
         errors: (errors: TaskErrors): boolean => Object.keys(errors).length > 0,

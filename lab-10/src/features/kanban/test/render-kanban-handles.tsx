@@ -18,6 +18,7 @@ export function resetKanbanStore() {
     kanbanStore.setColumnDeleteDialog(false, null);
     kanbanStore.setTaskDialog({ open: false, taskId: null, columnId: null });
     kanbanStore.setTaskFormErrors({});
+    kanbanStore.resetFilters();
 }
 
 /** Mounts every kanban Handle (seeding the board from storage) plus optional UI. */

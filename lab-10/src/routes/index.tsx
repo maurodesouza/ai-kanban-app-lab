@@ -17,6 +17,13 @@ function Home() {
                 <Kanban.Header>
                     <Kanban.Title />
 
+                    <Kanban.Filter.Container>
+                        <Kanban.Filter.Search />
+                        <Kanban.Filter.DateRange />
+                        <Kanban.Filter.Priority />
+                        <Kanban.Filter.Clear />
+                    </Kanban.Filter.Container>
+
                     <Kanban.Toolbar>
                         <Kanban.NewTaskAction />
                         <ThemeToggle />

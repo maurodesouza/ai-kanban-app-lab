@@ -7,11 +7,19 @@ import type {
     TaskErrors,
     TaskField,
     TaskFields,
+    TaskFilters,
 } from "#/features/kanban/types";
 import { date } from "#/features/kanban/utils/date/date";
 import { priority } from "#/features/kanban/utils/priority/priority";
 import { task as taskUtils } from "#/features/kanban/utils/task/task";
 import { array } from "#/utils/array/array";
+
+const EMPTY_FILTERS: TaskFilters = {
+    search: "",
+    dateFrom: "",
+    dateTo: "",
+    priority: "all",
+};
 
 export class KanbanStore {
     // #region Primitives
@@ -30,6 +38,7 @@ export class KanbanStore {
     };
     taskForm: TaskFields = taskUtils.defaults();
     taskFormErrors: TaskErrors = {};
+    filters: TaskFilters = { ...EMPTY_FILTERS };
     columnDeleteDialog: { open: boolean; columnId: string | null } = {
         open: false,
         columnId: null,
@@ -87,6 +96,14 @@ export class KanbanStore {
         this.taskFormErrors = errors;
     }
 
+    setFilters(filters: Partial<TaskFilters>) {
+        Object.assign(this.filters, filters);
+    }
+
+    resetFilters() {
+        this.filters = { ...EMPTY_FILTERS };
+    }
+
     setColumnDeleteDialog(open: boolean, columnId: string | null) {
         this.columnDeleteDialog = { open, columnId };
     }
@@ -141,6 +158,14 @@ export class KanbanStore {
     get $firstColumnId(): string | undefined {
         return this.columnOrder[0];
     }
+
+    get $hasActiveFilters() {
+        const { search, dateFrom, dateTo, priority } = this.filters;
+
+        return Boolean(
+            search.trim() || dateFrom || dateTo || priority !== "all",
+        );
+    }
     // #endregion
 
     // #region Data
@@ -159,7 +184,16 @@ export class KanbanStore {
 
     /** Single filtering point: every task the board presents passes through here. */
     get $visibleTasksByColumn(): Record<string, Task[]> {
-        return this.$tasksByColumn;
+        if (!this.$hasActiveFilters) return this.$tasksByColumn;
+
+        const matches = taskUtils.filter.byFilters(this.filters);
+
+        return Object.fromEntries(
+            Object.entries(this.$tasksByColumn).map(([columnId, tasks]) => [
+                columnId,
+                tasks.filter(matches),
+            ]),
+        );
     }
 
     get $snapshot(): BoardSnapshot {
@@ -268,6 +302,28 @@ export class KanbanStore {
         return { task: task ?? null };
     }
 
+    get $filterUI() {
+        return {
+            search: {
+                value: this.filters.search,
+                placeholder: "Search tasks",
+                label: "Search tasks by title or description",
+            },
+            dateFrom: { value: this.filters.dateFrom, label: "From date" },
+            dateTo: { value: this.filters.dateTo, label: "To date" },
+            priority: {
+                value: this.filters.priority,
+                label: "Filter by priority",
+                options: [
+                    { value: "all", label: "All priorities" },
+                    ...this.$priorityOptions,
+                ],
+            },
+            showClear: this.$hasActiveFilters,
+            clearLabel: "Clear filters",
+        };
+    }
+
     get $priorityOptions() {
         return priority.list.map(priority.map.toOption());
     }
@@ -283,10 +339,14 @@ export class KanbanStore {
                 id: column.id,
                 title: column.title,
                 taskCount: column.taskIds.length,
-                countLabel: String(column.taskIds.length),
+                countLabel: this.$hasActiveFilters
+                    ? `${this.$visibleTasksByColumn[column.id].length} / ${column.taskIds.length}`
+                    : String(column.taskIds.length),
                 isEditing: this.editingColumnId === column.id,
                 isEmpty: this.$visibleTasksByColumn[column.id].length === 0,
-                emptyLabel: "No tasks yet",
+                emptyLabel: this.$hasActiveFilters
+                    ? "No matching tasks"
+                    : "No tasks yet",
                 labels: {
                     reorder: `Reorder column ${column.title}`,
                     moveLeft: `Move column ${column.title} left`,
