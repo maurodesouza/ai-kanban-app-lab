@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import type { DragItem } from "#/features/kanban/components/handles/dnd/dnd-actions";
 import type {
     BoardSnapshot,
     Column,
@@ -15,6 +16,12 @@ export class KanbanStore {
     columnOrder: string[] = [];
     columns: Record<string, Column> = {};
     tasks: Record<string, Task> = {};
+    editingColumnId: string | null = null;
+    activeDrag: DragItem | null = null;
+    columnDeleteDialog: { open: boolean; columnId: string | null } = {
+        open: false,
+        columnId: null,
+    };
     // #endregion
 
     constructor() {
@@ -39,6 +46,18 @@ export class KanbanStore {
 
     setColumnTitle(columnId: string, title: string) {
         this.columns[columnId].title = title;
+    }
+
+    setEditingColumnId(columnId: string | null) {
+        this.editingColumnId = columnId;
+    }
+
+    setActiveDrag(item: DragItem | null) {
+        this.activeDrag = item;
+    }
+
+    setColumnDeleteDialog(open: boolean, columnId: string | null) {
+        this.columnDeleteDialog = { open, columnId };
     }
 
     setColumnOrder(columnOrder: string[]) {
@@ -130,6 +149,46 @@ export class KanbanStore {
     // #endregion
 
     // #region UI
+    get $boardUI() {
+        return {
+            title: "Kanban",
+            isLoading: !this.isHydrated,
+        };
+    }
+
+    get $dndUI() {
+        return {
+            columnIds: [...this.columnOrder],
+            taskIdsByColumn: Object.fromEntries(
+                this.$orderedColumns.map((column) => [
+                    column.id,
+                    this.$visibleTasksByColumn[column.id].map(
+                        (task) => task.id,
+                    ),
+                ]),
+            ),
+        };
+    }
+
+    get $columnDeleteDialogUI() {
+        const { open, columnId } = this.columnDeleteDialog;
+        const column = columnId ? this.columns[columnId] : undefined;
+        const title = column?.title ?? "";
+        const taskCount = column?.taskIds.length ?? 0;
+        const tasksLabel = taskCount === 1 ? "1 task" : `${taskCount} tasks`;
+
+        return {
+            open: open && Boolean(column),
+            title: `Delete "${title}"?`,
+            description:
+                taskCount > 0
+                    ? `This column and its ${tasksLabel} will be permanently deleted.`
+                    : "This column will be permanently deleted.",
+            cancelLabel: "Cancel",
+            confirmLabel: "Delete column",
+        };
+    }
+
     get $columnsUI() {
         const lastIndex = this.columnOrder.length - 1;
 
@@ -141,6 +200,8 @@ export class KanbanStore {
                 id: column.id,
                 title: column.title,
                 taskCount: column.taskIds.length,
+                countLabel: String(column.taskIds.length),
+                isEditing: this.editingColumnId === column.id,
                 canMoveLeft: !isFirst,
                 canMoveRight: !isLast,
                 tasks: this.$visibleTasksByColumn[column.id].map((task) => ({

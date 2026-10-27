@@ -10,6 +10,14 @@ declare module "#/features/kanban/components/handles/kanban/kanban-actions" {
             move: Action<ColumnPayload & { toIndex: number }>;
             moveBy: Action<ColumnPayload & { offset: -1 | 1 }>;
             delete: Action<ColumnPayload>;
+            edit: {
+                start: Action<ColumnPayload>;
+            };
+        };
+        columnDeleteDialog: {
+            open: Action<ColumnPayload>;
+            change: Action<{ open: boolean }>;
+            confirm: Action;
         };
     }
 }

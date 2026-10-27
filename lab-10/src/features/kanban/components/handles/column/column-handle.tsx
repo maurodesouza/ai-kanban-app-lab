@@ -12,12 +12,17 @@ export function ColumnHandle() {
         const column = board.columns.create(random.id(), board.newColumnTitle);
 
         store.addColumn(column);
+        store.setEditingColumnId(column.id);
 
         return column.id;
     }
 
     async function handleRename(payload: { columnId: string; title: string }) {
         const title = payload.title.trim();
+
+        if (store.editingColumnId === payload.columnId) {
+            store.setEditingColumnId(null);
+        }
 
         if (!store.columns[payload.columnId] || !title) return;
 
@@ -51,6 +56,12 @@ export function ColumnHandle() {
         });
     }
 
+    async function handleEditStart(payload: { columnId: string }) {
+        if (!store.columns[payload.columnId]) return;
+
+        store.setEditingColumnId(payload.columnId);
+    }
+
     async function handleDelete(payload: { columnId: string }) {
         const column = store.columns[payload.columnId];
 
@@ -59,6 +70,10 @@ export function ColumnHandle() {
         for (const taskId of [...column.taskIds]) store.removeTask(taskId);
 
         store.removeColumn(payload.columnId);
+
+        if (store.editingColumnId === payload.columnId) {
+            store.setEditingColumnId(null);
+        }
     }
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: handlers close over the stable store reference
@@ -69,6 +84,7 @@ export function ColumnHandle() {
             command.handle("kanban.column.move", handleMove),
             command.handle("kanban.column.moveBy", handleMoveBy),
             command.handle("kanban.column.delete", handleDelete),
+            command.handle("kanban.column.edit.start", handleEditStart),
         ];
 
         return () => {
