@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ThemeToggle } from "#/components/theme-toggle";
 
-export const Route = createFileRoute("/")({ component: Home });
+// localStorage is the source of truth, so the board renders on the client only.
+export const Route = createFileRoute("/")({ ssr: false, component: Home });
 
 function Home() {
     return (
-        <main>
-            <h1>Welcome to TanStack Start</h1>
-            <p>
-                Edit <code>src/routes/index.tsx</code> to get started.
-            </p>
+        <main className="p-6">
+            <ThemeToggle />
         </main>
     );
 }
