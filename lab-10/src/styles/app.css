@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "./global.css";
+@import "./palettes/surface.css";
+@import "./palettes/raised.css";
+@import "./palettes/surface-blue.css";
+@import "./palettes/blue.css";
+@import "./palettes/green.css";
+@import "./palettes/orange.css";
+@import "./palettes/rose.css";
+@import "./palettes/danger.css";
+
+html,
+body {
+    height: 100%;
+}
