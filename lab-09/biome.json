@@ -7,7 +7,13 @@
     },
     "files": {
         "ignoreUnknown": false,
-        "includes": ["**", "!src/routeTree.gen.ts", "!.agents", "!.claude", "!.codex"]
+        "includes": [
+            "**",
+            "!src/routeTree.gen.ts",
+            "!.agents",
+            "!.claude",
+            "!.codex"
+        ]
     },
     "formatter": {
         "enabled": true,
@@ -51,7 +57,18 @@
             "linter": {
                 "rules": {
                     "suspicious": {
-                        "noExplicitAny": "off"
+                        "noExplicitAny": "off",
+                        "noEmptyInterface": "off"
+                    },
+                    "correctness": {
+                        "noUnusedImports": "off"
+                    }
+                }
+            },
+            "assist": {
+                "actions": {
+                    "source": {
+                        "organizeImports": "off"
                     }
                 }
             }

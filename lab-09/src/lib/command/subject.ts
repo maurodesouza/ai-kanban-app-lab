@@ -1,13 +1,13 @@
 export class Subject {
-  private observers = new Set<() => void>();
+    private observers = new Set<() => void>();
 
-  subscribe(observer: () => void) {
-    this.observers.add(observer);
+    subscribe(observer: () => void) {
+        this.observers.add(observer);
 
-    return () => this.observers.delete(observer);
-  }
+        return () => this.observers.delete(observer);
+    }
 
-  notify() {
-    for (const observer of this.observers) observer();
-  }
+    notify() {
+        for (const observer of this.observers) observer();
+    }
 }
