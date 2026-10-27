@@ -19,6 +19,12 @@ declare module "#/lib/command/global" {
                 rename: Action<{ columnId: string; title: string }>;
                 move: Action<{ columnId: string; direction: Direction }>;
                 delete: Action<{ columnId: string }>;
+                deleteRequest: Action<{ columnId: string }>;
+                deleteConfirm: Action;
+                editStart: Action<{ columnId: string }>;
+                editChange: Action<{ value: string }>;
+                editCommit: Action;
+                editCancel: Action;
             };
             task: {
                 create: Action<TaskCreatePayload, TaskMutationResult>;

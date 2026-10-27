@@ -17,7 +17,7 @@ import { today } from "#/features/kanban/utils/date";
 import { createId } from "#/features/kanban/utils/id";
 import { DEFAULT_PRIORITY, isPriority } from "#/features/kanban/utils/priority";
 import { hasErrors, validateTask } from "#/features/kanban/utils/task";
-import { command } from "#/lib/command";
+import { actions, command } from "#/lib/command";
 import { readJSON, writeJSON } from "#/utils/storage";
 import type { TaskCreatePayload, TaskUpdatePayload } from "./kanban-actions";
 
@@ -50,7 +50,10 @@ export function KanbanHandle() {
 
     // #region Columns
     async function handleColumnCreate() {
-        store.addColumn(createColumn());
+        const column = createColumn();
+
+        store.addColumn(column);
+        store.startColumnEdit(column.id, column.title);
     }
 
     async function handleColumnRename(payload: {
@@ -88,6 +91,51 @@ export function KanbanHandle() {
 
         for (const taskId of [...column.taskIds]) store.removeTask(taskId);
         store.removeColumn(payload.columnId);
+    }
+
+    async function handleColumnDeleteRequest(payload: { columnId: string }) {
+        if (!store.columns[payload.columnId]) return;
+
+        store.setPendingDeleteColumnId(payload.columnId);
+        await actions.modal.open("column-delete-confirm");
+    }
+
+    async function handleColumnDeleteConfirm() {
+        const columnId = store.pendingDeleteColumnId;
+
+        if (columnId) await actions.kanban.column.delete({ columnId });
+
+        store.setPendingDeleteColumnId(null);
+        await actions.modal.close();
+    }
+
+    async function handleColumnEditStart(payload: { columnId: string }) {
+        const column = store.columns[payload.columnId];
+
+        if (!column) return;
+
+        store.startColumnEdit(column.id, column.title);
+    }
+
+    async function handleColumnEditChange(payload: { value: string }) {
+        if (!store.editingColumnId) return;
+
+        store.setColumnTitleDraft(payload.value);
+    }
+
+    async function handleColumnEditCommit() {
+        const columnId = store.editingColumnId;
+
+        if (!columnId) return;
+
+        const title = store.columnTitleDraft;
+
+        store.clearColumnEdit();
+        await actions.kanban.column.rename({ columnId, title });
+    }
+
+    async function handleColumnEditCancel() {
+        store.clearColumnEdit();
     }
     // #endregion
 
@@ -215,6 +263,18 @@ export function KanbanHandle() {
             command.handle("kanban.column.rename", handleColumnRename),
             command.handle("kanban.column.move", handleColumnMove),
             command.handle("kanban.column.delete", handleColumnDelete),
+            command.handle(
+                "kanban.column.deleteRequest",
+                handleColumnDeleteRequest,
+            ),
+            command.handle(
+                "kanban.column.deleteConfirm",
+                handleColumnDeleteConfirm,
+            ),
+            command.handle("kanban.column.editStart", handleColumnEditStart),
+            command.handle("kanban.column.editChange", handleColumnEditChange),
+            command.handle("kanban.column.editCommit", handleColumnEditCommit),
+            command.handle("kanban.column.editCancel", handleColumnEditCancel),
             command.handle("kanban.task.create", handleTaskCreate),
             command.handle("kanban.task.update", handleTaskUpdate),
             command.handle("kanban.task.delete", handleTaskDelete),
