@@ -1,0 +1,27 @@
+/* Surface-blue — a neutral surface whose focus ring carries a blue hue
+   (~250). The neutrals are byte-identical to surface.css; the ONLY role
+   that differs is --palette-ring, which is a literal chromatic value taken
+   verbatim from blue.css's base. A field's frame must read as a surface,
+   not as a coloured element (Rule 3: a control never carries its own
+   body), but its focus ring should state the theme's colour. This tier
+   exists for that: the need is real (theme a field's focus), the answer
+   is a new palette, not a seventh role. Both themes declare all six
+   roles. */
+
+:root[data-theme="light"] .palette-surface-blue {
+    --palette-base: oklch(1 0 0);
+    --palette-soft: oklch(0.96 0.003 250);
+    --palette-line: oklch(0.86 0.004 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.3 0.01 250);
+    --palette-ring: oklch(0.55 0.2 250);
+}
+
+:root[data-theme="dark"] .palette-surface-blue {
+    --palette-base: oklch(0.15 0.01 250);
+    --palette-soft: oklch(0.26 0.012 250);
+    --palette-line: oklch(0.31 0.012 250);
+    --palette-contrast: oklch(0.95 0.005 250);
+    --palette-accent: oklch(0.88 0.005 250);
+    --palette-ring: oklch(0.7 0.18 250);
+}
