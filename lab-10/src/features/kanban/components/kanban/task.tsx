@@ -24,8 +24,9 @@ type TaskPartProps = { task: TaskUI };
 const cardClassName =
     "group/task palette-raised flex flex-col gap-2 rounded-lg border border-palette-line bg-palette-base p-3 text-start shadow-xs";
 
+/** Hidden until hover/focus on devices with a mouse; always visible on touch screens. */
 const revealOnHover =
-    "opacity-0 transition-opacity focus-visible:opacity-100 group-hover/task:opacity-100 group-focus-within/task:opacity-100";
+    "transition-opacity pointer-fine:opacity-0 pointer-fine:group-hover/task:opacity-100 pointer-fine:group-focus-within/task:opacity-100";
 
 type ContainerProps = TaskPartProps & { children: ReactNode };
 
@@ -51,7 +52,7 @@ export function Container({ task, children }: ContainerProps) {
             style={{ transform: CSS.Translate.toString(transform), transition }}
             className={cn(
                 cardClassName,
-                "cursor-grab touch-none focus-visible:outline-2 focus-visible:outline-palette-ring active:cursor-grabbing",
+                "cursor-grab focus-visible:outline-2 focus-visible:outline-palette-ring active:cursor-grabbing",
                 isDragging && "opacity-40",
             )}
             {...attributes}

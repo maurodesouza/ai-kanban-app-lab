@@ -6,8 +6,9 @@ import {
     type DragEndEvent,
     type DragStartEvent,
     KeyboardSensor,
-    PointerSensor,
+    MouseSensor,
     pointerWithin,
+    TouchSensor,
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
@@ -74,7 +75,11 @@ function handleDragEnd(event: DragEndEvent) {
 
 export function DndProvider({ children }: { children: ReactNode }) {
     const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+        useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+        // A short press starts a drag on touch screens, so swiping still scrolls.
+        useSensor(TouchSensor, {
+            activationConstraint: { delay: 200, tolerance: 6 },
+        }),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         }),

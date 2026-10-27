@@ -36,8 +36,9 @@ type SortableHandle = {
 
 const SortableHandleContext = createContext<SortableHandle | null>(null);
 
+/** Hidden until hover/focus on devices with a mouse; always visible on touch screens. */
 const revealOnHover =
-    "opacity-0 transition-opacity focus-visible:opacity-100 group-hover/column:opacity-100 group-focus-within/column:opacity-100";
+    "transition-opacity pointer-fine:opacity-0 pointer-fine:focus-visible:opacity-100 pointer-fine:group-hover/column:opacity-100 pointer-fine:group-focus-within/column:opacity-100";
 
 type ContainerProps = ColumnPartProps & {
     children: ReactNode;
