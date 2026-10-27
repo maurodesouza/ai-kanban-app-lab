@@ -18,6 +18,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 6 | ~2h10 | Very Good | Opus 5 | GPT-5.6 Sol | Paid (daily limit + $6) | ~10,600 | ~4,900 |
 | Lab 7 | ~35m | Very Good | GLM 5.2 | GLM 5.2 | Free | ~9,100 | ~15,600 |
 | Lab 8 | ~54m | Good | GLM 5.2 | GLM 5.2 | Free | ~12,900 | ~14,300 |
+| Lab 9 | ~34m | Very Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~2% of quota) | ~8,100 | ~14,300 |
 
 <details>
 <summary>Workflow & manual intervention</summary>
@@ -32,6 +33,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 6 | Tech Lead (Epic + Issues) | None |
 | Lab 7 | Tech Lead (Epic + Issues) | None |
 | Lab 8 | Matt Pocock's workflow | Minimal (~20 min layout + functionality fixes) |
+| Lab 9 | Tech Lead + Epic Implementer (sub-skills) | None (1 clarification question answered) |
 
 </details>
 
@@ -369,3 +371,38 @@ Overall, I think the result was good for a first attempt. The workflow worked re
 
 </details>
 
+<details>
+<summary>Lab 9</summary>
+
+<br/>
+
+**Time spent:** <br/>
+About 34 minutes
+
+**Model used:** <br/>
+Opus 5.5 (Medium effort) for both planning and implementation
+
+## Process & Result
+
+This lab was mainly about testing a new version of my workflow.
+
+Before, the Tech Lead and the Epic Implementer were each one large skill. I broke them into small sub-skills with a single responsibility. The **Tech Lead** clarifies the request, reads the repository and publishes the Epic and Issues to GitHub. The **Epic Implementer** orchestrates the work: it reads the Epic, creates a worktree, implements each Issue, writes tests, reviews, commits, opens the pull request and merges it. Shared skills define the architecture: `command-bus-architecture` (all state and derived values in MobX stores, all logic in Handles, components only read and present), `setup-command-system`, `command-handle-implementation` and `fragiola-ui`.
+
+The result was very good. The implementation took about 34 minutes and used around 2% of my Claude Max quota, so it was fast and very cheap.
+
+Code quality was the best part of this run. It is much closer to how I would write it: stores only hold state and `$` derived values, Handles hold the logic, and the Kanban is built from headless parts assembled explicitly in the route. I did not find any bugs.
+
+The layout was the weak point. It is not bad and it is well organized, but other models produced a better-looking layout. I think another 10–30 minutes would be enough to get everything into place.
+
+The workflow is approved. There are still some improvements to make, but overall it worked well.
+
+## Observations
+
+* Breaking the workflow into sub-skills worked well and produced the best code quality so far
+* The code follows the architecture closely and is close to how I would write it
+* No bugs found
+* The layout is fine but not as good as some previous labs; another 10–30 minutes would polish it
+* Fast (~34 min) and very cheap (~2% of the Claude Max quota)
+* The new workflow is approved, with some improvements still to make
+
+</details>
