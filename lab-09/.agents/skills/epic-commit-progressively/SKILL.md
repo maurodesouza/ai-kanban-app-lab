@@ -44,4 +44,4 @@ Return:
 
 * Commits created (hash + message)
 
-Stop after committing.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

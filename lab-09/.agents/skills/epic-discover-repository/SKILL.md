@@ -68,4 +68,4 @@ Return:
 * Fragiola UI status: `INSTALLED` (with components list) / `NOT_INSTALLED`
 * Reference files for each layer (paths)
 
-Stop after returning the report.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

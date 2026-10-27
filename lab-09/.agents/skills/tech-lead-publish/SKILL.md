@@ -63,4 +63,4 @@ Return:
 * Labels applied
 * Status: `PUBLISHED` or `BLOCKED`
 
-Stop after publishing.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

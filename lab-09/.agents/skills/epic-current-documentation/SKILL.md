@@ -42,4 +42,4 @@ Return:
 * Documentation sources consulted
 * `UNVERIFIED` when no documentation source was available
 
-Stop after returning the result.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

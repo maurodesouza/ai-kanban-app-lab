@@ -61,4 +61,4 @@ Return:
 * Defaults that apply because no rule exists (mark them as `default`)
 * Conflicts found
 
-Stop after returning the conventions.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

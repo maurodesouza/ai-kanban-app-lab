@@ -208,4 +208,4 @@ Return:
 
 Do NOT modify production code.
 
-Stop after completing the review.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

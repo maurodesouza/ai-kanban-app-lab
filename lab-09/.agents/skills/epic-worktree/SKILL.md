@@ -51,4 +51,4 @@ Return:
 * Branch name
 * Base commit
 
-Stop after the worktree is ready.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

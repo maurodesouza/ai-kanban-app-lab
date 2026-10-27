@@ -135,5 +135,5 @@ Do not modify unrelated tests.
 
 Do not implement unrelated production code.
 
-Stop after test coverage is complete and validated.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.
 

@@ -65,4 +65,4 @@ Return:
 * Local branch deleted
 * Remote branch deleted
 
-Stop after reporting.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

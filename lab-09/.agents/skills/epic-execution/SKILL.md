@@ -66,4 +66,4 @@ Return:
 * Commits created
 * Acceptance criteria status
 
-Stop after the Issue is complete. Do not start the next Issue.
+Return this output to `epic-implementer`, which continues with the next Issue. Do not end the run here.

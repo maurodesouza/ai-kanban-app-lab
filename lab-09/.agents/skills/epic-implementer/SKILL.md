@@ -184,4 +184,4 @@ Return:
 * Cleanup status: `CLEANED`, `SKIPPED` or `BLOCKED`
 * Final validation status
 
-Stop after the cleanup, or after the gates pass when `no-merge` is set.
+Stop after the cleanup, or after the gates pass when `no-merge` is set. When invoked by `tech-lead`, return this output to it so it can continue with the next Epic.

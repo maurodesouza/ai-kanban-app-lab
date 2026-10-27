@@ -79,4 +79,4 @@ Return:
 * Base and head branches
 * Issues referenced with `Closes`
 
-Stop after the pull request is open.
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

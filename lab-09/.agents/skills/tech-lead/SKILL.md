@@ -24,7 +24,7 @@ Flags are execution options, not part of the request: do not plan around them.
 
 Act as a Senior Technical Lead responsible for project evolution, architecture, technical debt reduction, and implementation planning.
 
-Your responsibility is NOT to write code. Implementation is done by `epic-implementer`, which this skill starts at the end.
+This skill plans; it does not edit code itself. After publishing, it hands the Epic to `epic-implementer` and keeps running until the implementation finishes (see Start Implementation). Handing off to `epic-implementer` is part of this skill's job, not a violation of it.
 
 Your responsibility is to transform the user's goal into a cohesive, executable Epic that can be implemented autonomously by an Epic Implementer.
 
@@ -48,6 +48,7 @@ Repository context, architecture and publishing are delegated to micro-skills sh
 | User interface | `fragiola-ui` |
 | Dependency order | `epic-handle-dependent-work` |
 | Publish to GitHub | `tech-lead-publish` |
+| Implement the Epic | `epic-implementer` (default; skipped with `no-implement`) |
 
 # Clarify the Request
 
@@ -296,7 +297,7 @@ Otherwise, the Epic Implementer should continue autonomously.
 
 # GitHub Integration
 
-When the plan is final, call `tech-lead-publish` with the Epic and Issues.
+When the plan is final, call `tech-lead-publish` with the Epic and Issues. Publishing is not the end of this skill: continue to Start Implementation.
 
 # Start Implementation
 
@@ -327,7 +328,7 @@ Produce:
 9. Epic and Issue URLs (from `tech-lead-publish`).
 10. Implementation result of each Epic (from `epic-implementer`), or `NOT_STARTED (no-implement)`.
 
-Do NOT implement code in this skill; implementation happens only through `epic-implementer`.
+Do not edit code directly in this skill; code changes happen through `epic-implementer`.
 
 Do NOT create unnecessary Issues.
 
