@@ -18,7 +18,8 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 6 | ~2h10 | Very Good | Opus 5 | GPT-5.6 Sol | Paid (daily limit + $6) | ~10,600 | ~4,900 |
 | Lab 7 | ~35m | Very Good | GLM 5.2 | GLM 5.2 | Free | ~9,100 | ~15,600 |
 | Lab 8 | ~54m | Good | GLM 5.2 | GLM 5.2 | Free | ~12,900 | ~14,300 |
-| Lab 9 | ~34m | Very Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~2% of quota) | ~8,100 | ~14,300 |
+| Lab 9 | ~34m | Very Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~2% of quota) | ~12,300 | ~21,800 |
+| Lab 10 | ~35m | Good | Opus 5.5 | Opus 5.5 | Claude Max | ~14,800 | ~25,400 |
 
 <details>
 <summary>Workflow & manual intervention</summary>
@@ -34,6 +35,7 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 7 | Tech Lead (Epic + Issues) | None |
 | Lab 8 | Matt Pocock's workflow | Minimal (~20 min layout + functionality fixes) |
 | Lab 9 | Tech Lead + Epic Implementer (sub-skills) | None (1 clarification question answered) |
+| Lab 10 | Tech Lead → Epic Implementer (automatic hand-off) | None (1 clarification question answered + manual PR merge) |
 
 </details>
 
@@ -404,5 +406,50 @@ The workflow is approved. There are still some improvements to make, but overall
 * The layout is fine but not as good as some previous labs; another 10–30 minutes would polish it
 * Fast (~34 min) and very cheap (~2% of the Claude Max quota)
 * The new workflow is approved, with some improvements still to make
+
+</details>
+
+<details>
+<summary>Lab 10</summary>
+
+<br/>
+
+**Time spent:** <br/>
+About 35 minutes (~15 min planning, including one clarification question, and ~20 min implementation)
+
+**Model used:** <br/>
+Opus 5.5 for both planning and implementation
+
+## Process & Result
+
+This lab tested the next version of the workflow. The **Tech Lead** now hands the Epic straight to the **Epic Implementer** when planning is done, so one command goes from the request to a pull request. The skills were also extended with `utils-implementation` (how to write utils) and stricter store rules.
+
+The planning asked a single question (which drag-and-drop approach to use) and produced one Epic with 5 Issues. The implementation followed them in order with atomic commits and opened one pull request of ~14,800 lines. The merge had to be done manually because the agent's permission rules blocked merging without review.
+
+The result was good, but not better than Lab 9. Some things improved and others got worse. I would say it is about 60–70% of how I want the code to be, and another ~30 minutes of editing would get it there.
+
+What got worse:
+
+* **Actions and Handles**: the organization is still not clear to the model. Splitting actions into several sub-domains under one nested `kanban.*` interface made them harder to follow.
+* **Logic in the store**: the store has methods like `addTask`, `removeTask`, `addColumn` and `removeColumn`. Those are logic. The store should only have plain setters (`setX`), and all logic should live in the Handles.
+* **Modals**: each dialog got its own state and actions. I prefer a single modal for the whole app, opened by an action that sends the modal content.
+
+What improved or stayed the same:
+
+* **Utils** are better than before, but still not great. The examples in the skill need work.
+* **UI** is usable and fine, similar to Lab 9: not bad, but nothing special.
+
+I will use Labs 9 and 10 as examples of what to do and what not to do, improve the skill examples, and run a Lab 11 aiming for code that needs no manual changes.
+
+## Observations
+
+* The automatic hand-off from Tech Lead to Epic Implementer worked; only one clarification question was asked
+* Code quality did not improve over Lab 9: better in some places, worse in others (~60–70% of the expected result)
+* Stores still contain logic (`add`/`remove` methods); they should only have setters
+* Action and Handle organization is still unclear to the model
+* Modals should be a single app-wide modal driven by an action, not one dialog per feature
+* Utils improved but the skill examples need to be clearer
+* UI is usable, but not better than previous labs
+* Merging the PR needed a manual step because of the permission rules
 
 </details>
