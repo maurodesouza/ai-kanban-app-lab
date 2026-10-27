@@ -39,3 +39,7 @@ export type BoardSnapshot = {
     columns: Record<string, Column>;
     tasks: Record<string, Task>;
 };
+
+export type TaskFieldChange = {
+    [TField in TaskField]: { field: TField; value: TaskFields[TField] };
+}[TaskField];

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useKanban } from "#/features/kanban/hooks/use-kanban";
 import type { Priority, TaskFields, TaskResult } from "#/features/kanban/types";
+import { priority } from "#/features/kanban/utils/priority/priority";
 import { task } from "#/features/kanban/utils/task/task";
 import { command } from "#/lib/command";
 import { random } from "#/utils/random/random";
@@ -96,6 +97,7 @@ export function TaskHandle() {
         priority: Priority;
     }) {
         if (!store.tasks[payload.taskId]) return;
+        if (!priority.is(payload.priority)) return;
 
         store.updateTask(
             payload.taskId,

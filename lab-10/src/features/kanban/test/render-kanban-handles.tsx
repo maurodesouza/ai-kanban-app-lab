@@ -13,6 +13,11 @@ export function resetKanbanStore() {
         tasks: {},
     });
     kanbanStore.setIsHydrated(false);
+    kanbanStore.setEditingColumnId(null);
+    kanbanStore.setActiveDrag(null);
+    kanbanStore.setColumnDeleteDialog(false, null);
+    kanbanStore.setTaskDialog({ open: false, taskId: null, columnId: null });
+    kanbanStore.setTaskFormErrors({});
 }
 
 /** Mounts every kanban Handle (seeding the board from storage) plus optional UI. */

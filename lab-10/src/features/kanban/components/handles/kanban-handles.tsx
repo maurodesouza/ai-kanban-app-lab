@@ -3,6 +3,7 @@ import { ColumnDeleteDialogHandle } from "./column-delete-dialog/column-delete-d
 import { DndHandle } from "./dnd/dnd-handle";
 import { KanbanPersistenceHandle } from "./persistence/kanban-persistence-handle";
 import { TaskHandle } from "./task/task-handle";
+import { TaskDialogHandle } from "./task-dialog/task-dialog-handle";
 
 /** Mounts every kanban Handle once, at the feature root. */
 export function KanbanHandles() {
@@ -11,6 +12,7 @@ export function KanbanHandles() {
             <KanbanPersistenceHandle />
             <ColumnHandle />
             <TaskHandle />
+            <TaskDialogHandle />
             <ColumnDeleteDialogHandle />
             <DndHandle />
         </>

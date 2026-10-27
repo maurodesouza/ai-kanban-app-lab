@@ -1,9 +1,12 @@
+import { PlusIcon } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import type { ComponentProps } from "react";
+import { Clickable } from "#/components/atoms/clickable";
 import { Text } from "#/components/atoms/text";
 import { Skeleton } from "#/components/ui/skeleton";
 import { useKanban } from "#/features/kanban/hooks/use-kanban";
 import { cn } from "#/lib/cn";
+import { actions } from "#/lib/command";
 
 const SKELETON_COLUMNS = ["a", "b", "c"];
 
@@ -47,6 +50,21 @@ export function Toolbar({ className, ...props }: ComponentProps<"div">) {
         />
     );
 }
+
+export const NewTaskAction = observer(() => {
+    const store = useKanban();
+    const { newTaskLabel } = store.$boardUI;
+
+    return (
+        <Clickable.Button
+            className="palette-blue"
+            onClick={() => actions.kanban.taskDialog.openCreate({})}
+        >
+            <PlusIcon />
+            {newTaskLabel}
+        </Clickable.Button>
+    );
+});
 
 /** Scrollable board area. Shows column placeholders until the board is restored. */
 export const Content = observer(

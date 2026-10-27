@@ -4,10 +4,13 @@ import type {
     BoardSnapshot,
     Column,
     Task,
+    TaskErrors,
+    TaskField,
     TaskFields,
 } from "#/features/kanban/types";
 import { date } from "#/features/kanban/utils/date/date";
 import { priority } from "#/features/kanban/utils/priority/priority";
+import { task as taskUtils } from "#/features/kanban/utils/task/task";
 import { array } from "#/utils/array/array";
 
 export class KanbanStore {
@@ -18,6 +21,15 @@ export class KanbanStore {
     tasks: Record<string, Task> = {};
     editingColumnId: string | null = null;
     activeDrag: DragItem | null = null;
+    taskDialog: TaskDialogState = {
+        open: false,
+        mode: "create",
+        origin: "global",
+        taskId: null,
+        columnId: null,
+    };
+    taskForm: TaskFields = taskUtils.defaults();
+    taskFormErrors: TaskErrors = {};
     columnDeleteDialog: { open: boolean; columnId: string | null } = {
         open: false,
         columnId: null,
@@ -54,6 +66,25 @@ export class KanbanStore {
 
     setActiveDrag(item: DragItem | null) {
         this.activeDrag = item;
+    }
+
+    setTaskDialog(state: Partial<TaskDialogState>) {
+        Object.assign(this.taskDialog, state);
+    }
+
+    setTaskForm(fields: TaskFields) {
+        this.taskForm = fields;
+    }
+
+    setTaskFormField<TField extends TaskField>(
+        field: TField,
+        value: TaskFields[TField],
+    ) {
+        this.taskForm[field] = value;
+    }
+
+    setTaskFormErrors(errors: TaskErrors) {
+        this.taskFormErrors = errors;
     }
 
     setColumnDeleteDialog(open: boolean, columnId: string | null) {
@@ -152,6 +183,7 @@ export class KanbanStore {
     get $boardUI() {
         return {
             title: "Kanban",
+            newTaskLabel: "New task",
             isLoading: !this.isHydrated,
         };
     }
@@ -189,6 +221,57 @@ export class KanbanStore {
         };
     }
 
+    get $taskDialogUI() {
+        const { open, mode, origin, columnId } = this.taskDialog;
+        const isEdit = mode === "edit";
+        const field = <TField extends TaskField>(name: TField) => ({
+            value: this.taskForm[name],
+            error: this.taskFormErrors[name] ?? "",
+            invalid: Boolean(this.taskFormErrors[name]),
+        });
+
+        return {
+            open,
+            title: isEdit ? "Edit task" : "New task",
+            description: isEdit
+                ? "Update the details of this task."
+                : "Add a task to your board.",
+            submitLabel: isEdit ? "Save changes" : "Create task",
+            cancelLabel: "Cancel",
+            showColumnSelect: !isEdit && origin === "global",
+            column: {
+                value: columnId ?? "",
+                options: this.$orderedColumns.map((column) => ({
+                    value: column.id,
+                    label: column.title,
+                })),
+            },
+            priorityOptions: this.$priorityOptions,
+            fields: {
+                title: field("title"),
+                description: field("description"),
+                priority: field("priority"),
+                startDate: field("startDate"),
+                endDate: field("endDate"),
+            },
+        };
+    }
+
+    get $dragOverlayUI() {
+        const active = this.activeDrag;
+        const tasks = this.$columnsUI.flatMap((column) => column.tasks);
+        const task =
+            active?.type === "task"
+                ? tasks.find((item) => item.id === active.id)
+                : undefined;
+
+        return { task: task ?? null };
+    }
+
+    get $priorityOptions() {
+        return priority.list.map(priority.map.toOption());
+    }
+
     get $columnsUI() {
         const lastIndex = this.columnOrder.length - 1;
 
@@ -202,6 +285,15 @@ export class KanbanStore {
                 taskCount: column.taskIds.length,
                 countLabel: String(column.taskIds.length),
                 isEditing: this.editingColumnId === column.id,
+                isEmpty: this.$visibleTasksByColumn[column.id].length === 0,
+                emptyLabel: "No tasks yet",
+                labels: {
+                    reorder: `Reorder column ${column.title}`,
+                    moveLeft: `Move column ${column.title} left`,
+                    moveRight: `Move column ${column.title} right`,
+                    options: `Column ${column.title} options`,
+                    addTask: `Add task to ${column.title}`,
+                },
                 canMoveLeft: !isFirst,
                 canMoveRight: !isLast,
                 tasks: this.$visibleTasksByColumn[column.id].map((task) => ({
@@ -219,12 +311,27 @@ export class KanbanStore {
                     ),
                     canMoveLeft: !isFirst,
                     canMoveRight: !isLast,
+                    labels: {
+                        moveLeft: `Move ${task.title} to the previous column`,
+                        moveRight: `Move ${task.title} to the next column`,
+                        edit: `Edit ${task.title}`,
+                        delete: `Delete ${task.title}`,
+                        priority: `Priority: ${priority.format.label(task.priority)}. Change priority of ${task.title}`,
+                    },
                 })),
             };
         });
     }
     // #endregion
 }
+
+type TaskDialogState = {
+    open: boolean;
+    mode: "create" | "edit";
+    origin: "global" | "column";
+    taskId: string | null;
+    columnId: string | null;
+};
 
 export const kanbanStore = new KanbanStore();
 

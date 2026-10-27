@@ -7,6 +7,7 @@ import {
     EllipsisIcon,
     GripVerticalIcon,
     PencilIcon,
+    PlusIcon,
     Trash2Icon,
 } from "lucide-react";
 import {
@@ -94,7 +95,7 @@ export function DragHandle({ column }: ColumnPartProps) {
             variant="icon"
             size="sm"
             ref={handle?.setActivatorNodeRef}
-            aria-label={`Reorder column ${column.title}`}
+            aria-label={column.labels.reorder}
             className={cn(
                 "w-5 cursor-grab px-0 active:cursor-grabbing",
                 revealOnHover,
@@ -189,7 +190,7 @@ export function MoveLeftAction({ column }: ColumnPartProps) {
             shape="square"
             size="sm"
             className={revealOnHover}
-            aria-label={`Move column ${column.title} left`}
+            aria-label={column.labels.moveLeft}
             disabled={!column.canMoveLeft}
             onClick={() =>
                 actions.kanban.column.moveBy({
@@ -210,13 +211,29 @@ export function MoveRightAction({ column }: ColumnPartProps) {
             shape="square"
             size="sm"
             className={revealOnHover}
-            aria-label={`Move column ${column.title} right`}
+            aria-label={column.labels.moveRight}
             disabled={!column.canMoveRight}
             onClick={() =>
                 actions.kanban.column.moveBy({ columnId: column.id, offset: 1 })
             }
         >
             <ArrowRightIcon />
+        </Clickable.Button>
+    );
+}
+
+export function AddTaskAction({ column }: ColumnPartProps) {
+    return (
+        <Clickable.Button
+            variant="icon"
+            shape="square"
+            size="sm"
+            aria-label={column.labels.addTask}
+            onClick={() =>
+                actions.kanban.taskDialog.openCreate({ columnId: column.id })
+            }
+        >
+            <PlusIcon />
         </Clickable.Button>
     );
 }
@@ -230,7 +247,7 @@ export function Menu({ column, children }: ContainerProps) {
                         variant="icon"
                         shape="square"
                         size="sm"
-                        aria-label={`Column ${column.title} options`}
+                        aria-label={column.labels.options}
                     />
                 }
             >
@@ -277,6 +294,16 @@ export function Content({ className, ...props }: ComponentProps<"div">) {
             )}
             {...props}
         />
+    );
+}
+
+export function Empty({ column }: ColumnPartProps) {
+    if (!column.isEmpty) return null;
+
+    return (
+        <p className="rounded-lg border border-palette-line border-dashed px-3 py-6 text-center text-palette-accent/85 text-xs">
+            {column.emptyLabel}
+        </p>
     );
 }
 
