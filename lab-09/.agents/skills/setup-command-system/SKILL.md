@@ -9,45 +9,21 @@ Install the Command System architecture in the current project by creating the f
 
 ## What this skill does
 
-This skill is a STRICT COPY-PASTE operation.
+The files below are the **reference implementation** of the Command System (V2). They are correct and define the architecture and public API.
 
-Its only job is to:
-1. Create the directories and files listed below.
-2. Copy the provided content into each corresponding file.
-3. Preserve the content EXACTLY as provided.
+1. Create the files listed below with the provided content.
+2. Adapt them so they compile and run in this project. Allowed and expected:
+   * Fix imports, aliases and paths.
+   * Adjust references to the project structure (e.g. env access, file locations).
+   * Fix type or compilation errors caused by the project setup (TypeScript config, strictness, lint rules).
+   * Format with the project formatter.
+3. Keep the design: the public API (`command`, `actions`, `Action`, `ScopedAction`, `useTransition`, `InstanceRegistry`, `TransitionStore`), the file roles and the behavior stay the same. Do not redesign, add features or switch to another version (V3).
 
-DO NOT:
-- Analyze the code.
-- Interpret the code.
-- Modify the code.
-- Improve the code.
-- Refactor the code.
-- Fix the code.
-- Correct TypeScript types.
-- Correct imports.
-- Change aliases.
-- Change formatting.
-- Rename variables, functions, types, files, or directories.
-- Add missing code.
-- Remove code.
-- Adapt the implementation to the project.
-- Validate whether the implementation is correct.
-- Make architectural decisions.
-- Make any changes based on what you think would be better.
-- Try to resolve type errors or compilation errors.
-- Rewrite anything.
-
-The content below is the source of truth. Even if something appears incorrect, incomplete, outdated, incorrectly typed, or incompatible with the project, DO NOT change it.
-
-Do not think about how the implementation should work. Do not reason about the code. Do not reinterpret the requested structure.
-
-Simply create the requested files and perform a literal copy-paste of the content provided for each file.
-
-The expected result is byte-for-byte equivalent content, as far as the file-generation mechanism allows.
+Decide these adaptations yourself and continue. Never stop to ask the user about them; list them in the final output.
 
 ## Before copying
 
-The files import through the `#/` and `@/` aliases. Make sure both resolve to `src/` (this is project configuration, not a change to the files):
+The files import through the `#/` and `@/` aliases. Prefer configuring both to resolve to `src/`; if the project uses another alias convention, change the imports instead:
 
 * `tsconfig.json` → `compilerOptions.paths`: `"#/*": ["./src/*"]` and `"@/*": ["./src/*"]`.
 * `package.json` → `"imports": { "#/*": "./src/*" }`, or the bundler alias equivalent.
@@ -549,3 +525,12 @@ export interface Actions {
   // };
 }
 ```
+
+## Final output
+
+Return:
+
+* Files created
+* Adaptations made, with the reason for each
+
+Return this output to the calling skill and continue its flow. Do not end the run here unless this skill was invoked directly by the user.

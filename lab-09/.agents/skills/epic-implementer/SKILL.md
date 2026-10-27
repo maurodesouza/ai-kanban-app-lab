@@ -39,6 +39,14 @@ Do not re-implement inside this skill what a micro-skill is responsible for.
 
 Shared skills (`command-bus-architecture`, `fragiola-ui`, `command-handle-implementation`, `utils-implementation`, `test-writer`, `reviewer`) are loaded once. While their instructions are still in context, follow them without loading them again for every Issue.
 
+# Autonomy
+
+Work as if the user is not watching.
+
+* When a problem can be solved within the Epic scope and the architecture (failing import, type error, missing config, lint issue, small adaptation of reference code), decide, fix it and continue. Note the decision in the pull request Notes.
+* Ask the user only for the stop conditions in section 9. Everything else is decided by the agent.
+* `clarify-first` does not apply inside this skill; requirements were clarified when the Epic was planned.
+
 # Architecture
 
 All code produced for the Epic must follow `command-bus-architecture`:

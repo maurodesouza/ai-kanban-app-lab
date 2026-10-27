@@ -9,6 +9,12 @@ Before executing any request, make sure nothing important is being guessed.
 
 Ask only when there is a **real ambiguity**. A question that the prompt already answers is a defect.
 
+# Scope
+
+Applies to requests coming directly from the user and at the start of `tech-lead`.
+
+Does not apply inside `epic-implementer` or its sub-skills: they run autonomously and ask only on their stop conditions.
+
 # 1. Language
 
 All communication with the user is in **Brazilian Portuguese**:

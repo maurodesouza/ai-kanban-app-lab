@@ -49,9 +49,9 @@ Extract, when present:
 
 Repository rules always override workflow defaults.
 
-When two repository rules conflict, report the conflict instead of choosing silently.
+When two repository rules conflict, apply the more specific one (closer to the code being changed) and report the conflict in the output. Do not stop for it.
 
-The application architecture is defined by `command-bus-architecture` and `fragiola-ui`. Report any repository rule that contradicts them as a conflict.
+The application architecture is defined by `command-bus-architecture` and `fragiola-ui`. When a repository rule contradicts them, follow the architecture skills and report the conflict.
 
 # 4. Final Output
 
