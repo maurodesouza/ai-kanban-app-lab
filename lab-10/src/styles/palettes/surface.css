@@ -1,0 +1,33 @@
+/* Surface — the floor of the app.
+   The neutral palette that everything else sits on. Both themes declare all
+   six roles; the palette class declares and paints nothing (architecture.md
+   §1) — components paint explicitly with bg-palette-base, text-palette-contrast,
+   and so on.
+
+   Contract (architecture.md §1):
+     --palette-base      the color of this palette — background or fill
+     --palette-soft      subtle background — alert, badge, field surface, hover
+     --palette-line      stroke
+     --palette-contrast  content on base/shade (a background YOU painted)
+     --palette-accent    content on a foreign background or on soft
+     --palette-ring      interaction highlight — focus, active. EVERY palette
+                         declares it; one that does not theme focus uses
+                         var(--palette-accent). */
+
+:root[data-theme="light"] .palette-surface {
+    --palette-base: oklch(1 0 0);
+    --palette-soft: oklch(0.96 0.003 250);
+    --palette-line: oklch(0.86 0.004 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.3 0.01 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-surface {
+    --palette-base: oklch(0.15 0.01 250);
+    --palette-soft: oklch(0.26 0.012 250);
+    --palette-line: oklch(0.31 0.012 250);
+    --palette-contrast: oklch(0.95 0.005 250);
+    --palette-accent: oklch(0.88 0.005 250);
+    --palette-ring: var(--palette-accent);
+}
