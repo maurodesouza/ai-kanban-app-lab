@@ -82,7 +82,7 @@ Primitives and setters never start with `$`.
 * Observable primitive fields.
 * Setters that only assign (`setX(x) { this.x = x }`), push, update or reset state.
 * `$` getters computing any derived value, including all presentation values (texts, labels, variants, flags, formatted values, statuses, lists ready to render).
-* Pure helper functions imported from `utils/` and used inside `$` getters (formatting, math, mapping).
+* Pure helper functions imported from `utils/` (written with `utils-implementation`) and used inside `$` getters (formatting, math, mapping).
 
 ## Forbidden
 

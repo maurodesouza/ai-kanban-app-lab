@@ -32,6 +32,7 @@ For each domain in the architecture map:
 1. Declare the actions in `<domain>-actions.ts`.
 2. Create or update the MobX store in `store/store.ts`: primitives, setters and every `$` derived value the UI needs (one `$<part>UI` per component).
 3. Create or update the Handle with `command-handle-implementation`.
+   Write any helper (formatting, mapping, filtering, parsing, ids, storage access) with `utils-implementation`.
 4. Mount the Handle where it belongs.
 5. Build or update components with `fragiola-ui`. They only read `$` values, present them and dispatch through `actions`. No calculation or value selection in components.
 

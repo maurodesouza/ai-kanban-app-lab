@@ -37,7 +37,7 @@ Each step is delegated to a micro-skill with a single responsibility. Call the m
 
 Do not re-implement inside this skill what a micro-skill is responsible for.
 
-Shared skills (`command-bus-architecture`, `fragiola-ui`, `command-handle-implementation`, `test-writer`, `reviewer`) are loaded once. While their instructions are still in context, follow them without loading them again for every Issue.
+Shared skills (`command-bus-architecture`, `fragiola-ui`, `command-handle-implementation`, `utils-implementation`, `test-writer`, `reviewer`) are loaded once. While their instructions are still in context, follow them without loading them again for every Issue.
 
 # Architecture
 

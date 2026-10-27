@@ -103,7 +103,7 @@ export type ReturnFromAction<T> = T extends (...args: any[]) => infer R
   : never;
 ```
 
-### 2. src/utils/dev/index.ts
+### 2. src/utils/dev/dev.ts
 ```typescript
 export const dev = {
   isDev: import.meta.env?.MODE === 'development' || process.env.NODE_ENV === 'development',
@@ -227,7 +227,7 @@ export type UnscopedCommands = Exclude<ActionPath, ScopedCommands>;
 
 ### 5. src/lib/command/command-bus.ts
 ```typescript
-import { dev } from "#/utils/dev";
+import { dev } from "#/utils/dev/dev";
 import type { TransitionStore } from "./transitions-store";
 import type { DispatchConfig, Dispose, Handler } from "./types";
 

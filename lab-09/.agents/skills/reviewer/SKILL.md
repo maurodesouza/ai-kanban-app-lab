@@ -74,6 +74,10 @@ Review against `command-bus-architecture`:
 * Is dispatch done through the `actions` proxy (no unjustified `command.dispatch()`)?
 * Do Handles follow `command-handle-implementation` (named handlers, registration in `useEffect`, all disposers cleaned up)?
 
+## Utils
+
+Review helpers against `utils-implementation`: one namespace object per domain in `utils/<domain>/<domain>.ts`, grouped by intent, clear names, curried predicates/mappers, existing utils reused.
+
 ## Fragiola UI
 
 Review UI against `fragiola-ui`:
