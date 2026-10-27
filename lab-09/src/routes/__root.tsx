@@ -1,4 +1,5 @@
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { ModalHandle } from "#/components/handles/modal/modal-handle";
 import { ThemeHandle } from "#/components/handles/theme/theme-handle";
 import { THEME_STORAGE_KEY } from "#/store/theme/store";
 import appCss from "../styles.css?url";
@@ -31,6 +32,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             </head>
             <body className="palette-surface">
                 <ThemeHandle />
+                <ModalHandle />
                 {children}
                 <Scripts />
             </body>
