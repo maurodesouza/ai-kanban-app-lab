@@ -25,7 +25,7 @@ export function Container({
     return (
         <section
             className={cn(
-                "palette-raised flex max-h-full w-72 shrink-0 flex-col rounded-lg border border-palette-line bg-palette-base",
+                "palette-raised flex max-h-full w-80 shrink-0 flex-col rounded-lg border border-palette-line bg-palette-base",
                 className,
             )}
         >

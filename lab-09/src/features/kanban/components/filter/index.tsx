@@ -96,7 +96,11 @@ export const DateRange = observer(function DateRange() {
                     </Field.Body>
                 </Field.Row>
             </div>
-            {isInvalid && <Field.Error match>{error}</Field.Error>}
+            {isInvalid && (
+                <Field.Error match className="text-palette-accent">
+                    {error}
+                </Field.Error>
+            )}
         </Field.Root>
     );
 });

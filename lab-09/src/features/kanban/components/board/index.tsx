@@ -93,7 +93,7 @@ export const GhostColumn = observer(function GhostColumn() {
     return (
         <Clickable.Button
             variant="outline"
-            className="h-28 w-72 shrink-0 flex-col border-dashed"
+            className="min-h-28 w-80 shrink-0 flex-col border-dashed"
             onClick={() => actions.kanban.column.create()}
         >
             <PlusIcon />

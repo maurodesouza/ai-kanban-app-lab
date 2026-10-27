@@ -100,7 +100,11 @@ export const TitleField = observer(function TitleField() {
                     />
                 </Field.Body>
             </Field.Row>
-            {isInvalid && <Field.Error match>{error}</Field.Error>}
+            {isInvalid && (
+                <Field.Error match className="text-palette-accent">
+                    {error}
+                </Field.Error>
+            )}
         </Field.Root>
     );
 });
@@ -213,7 +217,11 @@ export const EndDateField = observer(function EndDateField() {
                     />
                 </Field.Body>
             </Field.Row>
-            {isInvalid && <Field.Error match>{error}</Field.Error>}
+            {isInvalid && (
+                <Field.Error match className="text-palette-accent">
+                    {error}
+                </Field.Error>
+            )}
         </Field.Root>
     );
 });
@@ -224,7 +232,11 @@ export const FormError = observer(function FormError() {
 
     if (!hasError) return null;
 
-    return <Text.Error role="alert">{message}</Text.Error>;
+    return (
+        <Text.Error role="alert" className="text-palette-accent">
+            {message}
+        </Text.Error>
+    );
 });
 
 export function Footer({ children }: PartProps) {
