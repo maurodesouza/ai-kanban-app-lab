@@ -14,9 +14,9 @@ import type {
     UnscopedCommands,
 } from "./types";
 
+export type { Actions } from "./global";
 export type {
     Action,
-    Actions,
     HandleConfig,
     IsScopedCommand,
     ScopedAction,
