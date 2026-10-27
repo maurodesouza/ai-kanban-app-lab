@@ -18,8 +18,8 @@ The goal is to understand how to work with AI in a real development workflow, mi
 | Lab 6 | ~2h10 | Very Good | Opus 5 | GPT-5.6 Sol | Paid (daily limit + $6) | ~10,600 | ~4,900 |
 | Lab 7 | ~35m | Very Good | GLM 5.2 | GLM 5.2 | Free | ~9,100 | ~15,600 |
 | Lab 8 | ~54m | Good | GLM 5.2 | GLM 5.2 | Free | ~12,900 | ~14,300 |
-| Lab 9 | ~34m | Very Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~2% of quota) | ~12,300 | ~21,800 |
-| Lab 10 | ~35m | Good | Opus 5.5 | Opus 5.5 | Claude Max | ~14,800 | ~25,400 |
+| Lab 9 | ~34m | Very Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~1% of quota) | ~12,300 | ~21,800 |
+| Lab 10 | ~35m | Good | Opus 5.5 (Medium) | Opus 5.5 (Medium) | Claude Max (~1% of quota) | ~14,800 | ~25,400 |
 
 <details>
 <summary>Workflow & manual intervention</summary>
@@ -390,7 +390,7 @@ This lab was mainly about testing a new version of my workflow.
 
 Before, the Tech Lead and the Epic Implementer were each one large skill. I broke them into small sub-skills with a single responsibility. The **Tech Lead** clarifies the request, reads the repository and publishes the Epic and Issues to GitHub. The **Epic Implementer** orchestrates the work: it reads the Epic, creates a worktree, implements each Issue, writes tests, reviews, commits, opens the pull request and merges it. Shared skills define the architecture: `command-bus-architecture` (all state and derived values in MobX stores, all logic in Handles, components only read and present), `setup-command-system`, `command-handle-implementation` and `fragiola-ui`.
 
-The result was very good. The implementation took about 34 minutes and used around 2% of my Claude Max quota, so it was fast and very cheap.
+The result was very good. The implementation took about 34 minutes and used around 1% of my Claude Max quota, so it was fast and very cheap.
 
 Code quality was the best part of this run. It is much closer to how I would write it: stores only hold state and `$` derived values, Handles hold the logic, and the Kanban is built from headless parts assembled explicitly in the route. I did not find any bugs.
 
@@ -404,7 +404,7 @@ The workflow is approved. There are still some improvements to make, but overall
 * The code follows the architecture closely and is close to how I would write it
 * No bugs found
 * The layout is fine but not as good as some previous labs; another 10–30 minutes would polish it
-* Fast (~34 min) and very cheap (~2% of the Claude Max quota)
+* Fast (~34 min) and very cheap (~1% of the Claude Max quota)
 * The new workflow is approved, with some improvements still to make
 
 </details>
@@ -418,7 +418,7 @@ The workflow is approved. There are still some improvements to make, but overall
 About 35 minutes (~15 min planning, including one clarification question, and ~20 min implementation)
 
 **Model used:** <br/>
-Opus 5.5 for both planning and implementation
+Opus 5.5 (Medium effort) for both planning and implementation, using around 1% of my Claude Max quota
 
 ## Process & Result
 
