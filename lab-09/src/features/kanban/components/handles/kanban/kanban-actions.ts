@@ -4,6 +4,7 @@ import type {
     TaskInput,
     TaskMutationResult,
 } from "#/features/kanban/types";
+import type { PriorityFilter } from "#/features/kanban/utils/filter";
 import type { Action } from "#/lib/command";
 
 export type TaskCreatePayload = Pick<TaskInput, "title"> &
@@ -38,6 +39,12 @@ declare module "#/lib/command/global" {
                 dragEnter: Action<{ columnId: string }>;
                 dragEnd: Action;
                 drop: Action<{ columnId: string }>;
+            };
+            filter: {
+                search: Action<{ value: string }>;
+                dateRange: Action<{ from: string; to: string }>;
+                priority: Action<{ priority: PriorityFilter }>;
+                clear: Action;
             };
         };
     }

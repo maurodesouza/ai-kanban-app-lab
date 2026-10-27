@@ -1,5 +1,6 @@
 import * as Board from "./components/board";
 import * as Column from "./components/column";
+import * as Filter from "./components/filter";
 import * as Task from "./components/task";
 
 export const Kanban = {
@@ -12,6 +13,13 @@ export const Kanban = {
     GhostColumn: Board.GhostColumn,
     AddTaskAction: Board.AddTaskAction,
     Tasks: Task.Tasks,
+    Filter: {
+        Container: Filter.Container,
+        Search: Filter.Search,
+        DateRange: Filter.DateRange,
+        Priority: Filter.Priority,
+        Clear: Filter.Clear,
+    },
     ColumnDeleteDialog: Board.ColumnDeleteDialog,
     Column: {
         Container: Column.Container,

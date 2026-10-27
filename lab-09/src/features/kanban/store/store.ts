@@ -1,6 +1,11 @@
 import { makeAutoObservable, toJS } from "mobx";
 import type { Board, Column, Priority, Task } from "../types";
 import { formatDate, formatDateRange } from "../utils/date";
+import {
+    type Filters,
+    matchesFilters,
+    type PriorityFilter,
+} from "../utils/filter";
 import { PRIORITIES, PRIORITY_META } from "../utils/priority";
 import { pluralize } from "../utils/text";
 
@@ -58,6 +63,11 @@ export class KanbanStore {
     draggingTaskId: string | null = null;
     dropTargetColumnId: string | null = null;
     priorityMenuTaskId: string | null = null;
+    search = "";
+    dateFrom = "";
+    dateTo = "";
+    priorityFilter: PriorityFilter = "all";
+    dateRangeError: string | null = null;
     // #endregion
 
     constructor() {
@@ -148,6 +158,30 @@ export class KanbanStore {
     setPriorityMenuTaskId(taskId: string | null) {
         this.priorityMenuTaskId = taskId;
     }
+
+    setFilters(filters: Filters) {
+        this.search = filters.search;
+        this.dateFrom = filters.dateFrom;
+        this.dateTo = filters.dateTo;
+        this.priorityFilter = filters.priority;
+    }
+
+    setSearch(search: string) {
+        this.search = search;
+    }
+
+    setDateRange(dateFrom: string, dateTo: string) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
+
+    setDateRangeError(error: string | null) {
+        this.dateRangeError = error;
+    }
+
+    setPriorityFilter(priority: PriorityFilter) {
+        this.priorityFilter = priority;
+    }
     // #endregion
 
     // #region Derived primitives
@@ -157,6 +191,24 @@ export class KanbanStore {
 
     get $firstColumnId(): string | undefined {
         return this.columnOrder[0];
+    }
+
+    get $filters(): Filters {
+        return {
+            search: this.search,
+            dateFrom: this.dateFrom,
+            dateTo: this.dateTo,
+            priority: this.priorityFilter,
+        };
+    }
+
+    get $hasActiveFilters() {
+        return (
+            this.search.trim() !== "" ||
+            this.dateFrom !== "" ||
+            this.dateTo !== "" ||
+            this.priorityFilter !== "all"
+        );
     }
     // #endregion
 
@@ -198,9 +250,18 @@ export class KanbanStore {
         return Object.keys(this.tasks).length;
     }
 
+    /** Visible task ids per column, after filters. */
     get $columnTaskIds() {
+        const filters = this.$filters;
+        const applyDateRange = this.dateRangeError === null;
+
         return Object.fromEntries(
-            this.$orderedColumns.map((column) => [column.id, column.taskIds]),
+            this.$orderedColumns.map((column) => [
+                column.id,
+                column.taskIds.filter((taskId) =>
+                    matchesFilters(this.tasks[taskId], filters, applyDateRange),
+                ),
+            ]),
         ) as Record<string, string[]>;
     }
 
@@ -235,8 +296,12 @@ export class KanbanStore {
                     column.id,
                     {
                         title: column.title,
-                        count: String(column.taskIds.length),
-                        countLabel: pluralize(column.taskIds.length, "task"),
+                        count: this.$hasActiveFilters
+                            ? `${visibleTaskIds.length}/${column.taskIds.length}`
+                            : String(column.taskIds.length),
+                        countLabel: this.$hasActiveFilters
+                            ? `${visibleTaskIds.length} of ${pluralize(column.taskIds.length, "task")}`
+                            : pluralize(column.taskIds.length, "task"),
                         isEditing,
                         draft: isEditing ? this.columnTitleDraft : column.title,
                         editLabel: `Rename column ${column.title}`,
@@ -248,7 +313,10 @@ export class KanbanStore {
                         deleteLabel: `Delete column ${column.title}`,
                         addTaskLabel: `Add task to ${column.title}`,
                         isEmpty: visibleTaskIds.length === 0,
-                        emptyLabel: "No tasks yet",
+                        emptyLabel:
+                            column.taskIds.length > 0
+                                ? "No matching tasks"
+                                : "No tasks yet",
                         isDropTarget: this.dropTargetColumnId === column.id,
                         contentLabel: `${column.title} tasks`,
                     },
@@ -302,6 +370,40 @@ export class KanbanStore {
                 ? "Create a column before adding tasks"
                 : "Add a task",
         };
+    }
+
+    get $searchFilterUI() {
+        return {
+            label: "Search tasks",
+            placeholder: "Search title or description",
+            value: this.search,
+        };
+    }
+
+    get $dateRangeFilterUI() {
+        return {
+            fromLabel: "From",
+            toLabel: "To",
+            from: this.dateFrom,
+            to: this.dateTo,
+            error: this.dateRangeError ?? "",
+            isInvalid: this.dateRangeError !== null,
+        };
+    }
+
+    get $priorityFilterUI() {
+        return {
+            label: "Priority",
+            value: this.priorityFilter,
+            options: [
+                { value: "all" as const, label: "All priorities" },
+                ...this.$priorityOptions,
+            ],
+        };
+    }
+
+    get $clearFiltersUI() {
+        return { label: "Clear filters", disabled: !this.$hasActiveFilters };
     }
 
     get $ghostColumnUI() {

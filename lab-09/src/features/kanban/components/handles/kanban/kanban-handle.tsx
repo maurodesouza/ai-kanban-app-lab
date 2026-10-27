@@ -13,7 +13,15 @@ import {
     createSeedBoard,
     parseStoredBoard,
 } from "#/features/kanban/utils/board";
-import { today } from "#/features/kanban/utils/date";
+import { isBefore, today } from "#/features/kanban/utils/date";
+import {
+    createEmptyFilters,
+    DATE_RANGE_ERROR,
+    FILTERS_STORAGE_KEY,
+    isPriorityFilter,
+    type PriorityFilter,
+    parseStoredFilters,
+} from "#/features/kanban/utils/filter";
 import { createId } from "#/features/kanban/utils/id";
 import { DEFAULT_PRIORITY, isPriority } from "#/features/kanban/utils/priority";
 import { hasErrors, validateTask } from "#/features/kanban/utils/task";
@@ -33,6 +41,11 @@ export function KanbanHandle() {
         );
 
         store.setBoard(stored ?? createSeedBoard());
+        store.setFilters(
+            parseStoredFilters(readJSON<unknown>(FILTERS_STORAGE_KEY, null)) ??
+                createEmptyFilters(),
+        );
+        validateDateRange();
         store.setIsHydrated(true);
     }
 
@@ -44,6 +57,13 @@ export function KanbanHandle() {
                     version: BOARD_STORAGE_VERSION,
                     board,
                 }),
+        );
+    }
+
+    function persistFilters() {
+        return reaction(
+            () => store.$filters,
+            (filters) => writeJSON(FILTERS_STORAGE_KEY, filters),
         );
     }
     // #endregion
@@ -262,6 +282,38 @@ export function KanbanHandle() {
     }
     // #endregion
 
+    // #region Filters
+    function validateDateRange() {
+        const { dateFrom, dateTo } = store;
+        const isInverted = dateFrom && dateTo && isBefore(dateTo, dateFrom);
+
+        store.setDateRangeError(isInverted ? DATE_RANGE_ERROR : null);
+    }
+
+    async function handleFilterSearch(payload: { value: string }) {
+        store.setSearch(payload.value);
+    }
+
+    async function handleFilterDateRange(payload: {
+        from: string;
+        to: string;
+    }) {
+        store.setDateRange(payload.from, payload.to);
+        validateDateRange();
+    }
+
+    async function handleFilterPriority(payload: { priority: PriorityFilter }) {
+        if (!isPriorityFilter(payload.priority)) return;
+
+        store.setPriorityFilter(payload.priority);
+    }
+
+    async function handleFilterClear() {
+        store.setFilters(createEmptyFilters());
+        store.setDateRangeError(null);
+    }
+    // #endregion
+
     // #region Drag and drop
     async function handleTaskDragStart(payload: { taskId: string }) {
         if (!store.tasks[payload.taskId]) return;
@@ -303,6 +355,7 @@ export function KanbanHandle() {
 
         const disposes = [
             persist(),
+            persistFilters(),
             command.handle("kanban.column.create", handleColumnCreate),
             command.handle("kanban.column.rename", handleColumnRename),
             command.handle("kanban.column.move", handleColumnMove),
@@ -333,6 +386,10 @@ export function KanbanHandle() {
             command.handle("kanban.task.dragEnter", handleTaskDragEnter),
             command.handle("kanban.task.dragEnd", handleTaskDragEnd),
             command.handle("kanban.task.drop", handleTaskDrop),
+            command.handle("kanban.filter.search", handleFilterSearch),
+            command.handle("kanban.filter.dateRange", handleFilterDateRange),
+            command.handle("kanban.filter.priority", handleFilterPriority),
+            command.handle("kanban.filter.clear", handleFilterClear),
         ];
 
         return () => {
