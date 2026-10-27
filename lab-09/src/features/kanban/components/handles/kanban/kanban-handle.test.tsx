@@ -66,6 +66,51 @@ describe("KanbanHandle", () => {
                     board: { ...makeBoard(), tasks: {} },
                 }),
             ],
+            ...(
+                [
+                    [
+                        "unknown priority",
+                        (b) => {
+                            b.tasks.t1.priority = "urgent" as never;
+                        },
+                    ],
+                    [
+                        "missing description",
+                        (b) => {
+                            delete (b.tasks.t1 as Partial<typeof b.tasks.t1>)
+                                .description;
+                        },
+                    ],
+                    [
+                        "invalid date",
+                        (b) => {
+                            b.tasks.t1.endDate = "soon";
+                        },
+                    ],
+                    [
+                        "duplicate column ids",
+                        (b) => {
+                            b.columnOrder.push("a");
+                        },
+                    ],
+                    [
+                        "non-string column title",
+                        (b) => {
+                            b.columns.a.title = 42 as never;
+                        },
+                    ],
+                    [
+                        "orphan task",
+                        (b) => {
+                            b.columns.a.taskIds = ["t1"];
+                        },
+                    ],
+                ] as [string, (board: ReturnType<typeof makeBoard>) => void][]
+            ).map(([name, corrupt]) => {
+                const board = makeBoard();
+                corrupt(board);
+                return [name, JSON.stringify({ version: 1, board })];
+            }),
         ])("falls back to the seed board on %s", (_, raw) => {
             localStorage.setItem(BOARD_STORAGE_KEY, raw);
 
@@ -81,6 +126,18 @@ describe("KanbanHandle", () => {
             await act(() => actions.kanban.task.delete({ taskId: "t1" }));
 
             expect(readStoredBoard().columns.a.taskIds).toEqual(["t2"]);
+        });
+
+        it("clears the drop target when the drag leaves the column", async () => {
+            mountWithBoard();
+
+            await act(() => actions.kanban.task.dragStart({ taskId: "t1" }));
+            await act(() => actions.kanban.task.dragEnter({ columnId: "b" }));
+            await act(() => actions.kanban.task.dragLeave({ columnId: "a" }));
+            expect(kanbanStore.dropTargetColumnId).toBe("b");
+
+            await act(() => actions.kanban.task.dragLeave({ columnId: "b" }));
+            expect(kanbanStore.dropTargetColumnId).toBeNull();
         });
 
         it("disposes every handler on unmount", async () => {

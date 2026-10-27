@@ -34,7 +34,7 @@ export function resetStores() {
     kanbanStore.setBoard({ columnOrder: [], columns: {}, tasks: {} });
     kanbanStore.setIsHydrated(false);
     kanbanStore.clearColumnEdit();
-    kanbanStore.setPendingDeleteColumnId(null);
+    kanbanStore.setPendingDeleteColumn(null);
     kanbanStore.setDraggingTaskId(null);
     kanbanStore.setDropTargetColumnId(null);
     kanbanStore.setPriorityMenuTaskId(null);

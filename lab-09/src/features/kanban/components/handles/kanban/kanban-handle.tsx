@@ -116,17 +116,23 @@ export function KanbanHandle() {
     async function handleColumnDeleteRequest(payload: { columnId: string }) {
         if (!store.columns[payload.columnId]) return;
 
-        store.setPendingDeleteColumnId(payload.columnId);
+        const column = store.columns[payload.columnId];
+
+        // A snapshot keeps the dialog text stable while it animates out.
+        store.setPendingDeleteColumn({
+            id: column.id,
+            title: column.title,
+            taskCount: column.taskIds.length,
+        });
         await actions.modal.open("column-delete-confirm");
     }
 
     async function handleColumnDeleteConfirm() {
-        const columnId = store.pendingDeleteColumnId;
+        const column = store.pendingDeleteColumn;
 
-        if (columnId) await actions.kanban.column.delete({ columnId });
-
-        store.setPendingDeleteColumnId(null);
         await actions.modal.close();
+
+        if (column) await actions.kanban.column.delete({ columnId: column.id });
     }
 
     async function handleColumnEditStart(payload: { columnId: string }) {
@@ -327,6 +333,11 @@ export function KanbanHandle() {
         store.setDropTargetColumnId(payload.columnId);
     }
 
+    async function handleTaskDragLeave(payload: { columnId: string }) {
+        if (store.dropTargetColumnId === payload.columnId)
+            store.setDropTargetColumnId(null);
+    }
+
     function clearDrag() {
         store.setDraggingTaskId(null);
         store.setDropTargetColumnId(null);
@@ -384,6 +395,7 @@ export function KanbanHandle() {
             ),
             command.handle("kanban.task.dragStart", handleTaskDragStart),
             command.handle("kanban.task.dragEnter", handleTaskDragEnter),
+            command.handle("kanban.task.dragLeave", handleTaskDragLeave),
             command.handle("kanban.task.dragEnd", handleTaskDragEnd),
             command.handle("kanban.task.drop", handleTaskDrop),
             command.handle("kanban.filter.search", handleFilterSearch),

@@ -213,6 +213,11 @@ export const Content = observer(function Content({
             data-drop-target={isDropTarget || undefined}
             onDragOver={(event) => event.preventDefault()}
             onDragEnter={() => actions.kanban.task.dragEnter({ columnId })}
+            onDragLeave={(event) => {
+                // Moving onto a child also fires dragleave; only leaving the zone counts.
+                if (!event.currentTarget.contains(event.relatedTarget as Node))
+                    actions.kanban.task.dragLeave({ columnId });
+            }}
             onDrop={(event) => {
                 event.preventDefault();
                 actions.kanban.task.drop({ columnId });

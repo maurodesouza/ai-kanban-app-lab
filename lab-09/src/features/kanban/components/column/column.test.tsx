@@ -65,6 +65,20 @@ describe("Board and columns", () => {
         expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     });
 
+    it("renames a column with Enter", async () => {
+        const { user } = renderApp(makeBoard());
+
+        await user.click(
+            screen.getByRole("button", { name: "Rename column Done" }),
+        );
+        const input = screen.getByRole("textbox", { name: "Column name" });
+        await user.clear(input);
+        await user.type(input, "Shipped{Enter}");
+
+        expect(columnTitles()[2]).toBe("Shipped");
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    });
+
     it("keeps the previous title when the new one is empty", async () => {
         const { user } = renderApp(makeBoard());
 
@@ -116,6 +130,7 @@ describe("Board and columns", () => {
         expect(columnTitles()).toEqual(["Doing", "Done"]);
         expect(Object.keys(kanbanStore.tasks)).toEqual(["t3"]);
         expect(modalStore.current).toBeNull();
+        expect(kanbanStore.$columnDeleteDialogUI.title).toBe('Delete "To Do"?');
     });
 
     it("keeps the column when the deletion is cancelled", async () => {

@@ -59,7 +59,13 @@ export function Toolbar({ children, className }: PartProps) {
     );
 }
 
-export function Content({ children, className }: PartProps) {
+export const Content = observer(function Content({
+    children,
+    className,
+}: PartProps) {
+    const store = useKanban();
+    const { isReady } = store.$boardContentUI;
+
     return (
         <main
             className={cn(
@@ -67,10 +73,10 @@ export function Content({ children, className }: PartProps) {
                 className,
             )}
         >
-            {children}
+            {isReady && children}
         </main>
     );
-}
+});
 
 export type ColumnView = { id: string };
 

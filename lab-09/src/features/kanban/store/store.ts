@@ -57,7 +57,11 @@ export class KanbanStore {
     columns: Record<string, Column> = {};
     tasks: Record<string, Task> = {};
     isHydrated = false;
-    pendingDeleteColumnId: string | null = null;
+    pendingDeleteColumn: {
+        id: string;
+        title: string;
+        taskCount: number;
+    } | null = null;
     editingColumnId: string | null = null;
     columnTitleDraft = "";
     draggingTaskId: string | null = null;
@@ -129,8 +133,10 @@ export class KanbanStore {
         task.updatedAt = updatedAt;
     }
 
-    setPendingDeleteColumnId(columnId: string | null) {
-        this.pendingDeleteColumnId = columnId;
+    setPendingDeleteColumn(
+        column: { id: string; title: string; taskCount: number } | null,
+    ) {
+        this.pendingDeleteColumn = column;
     }
 
     startColumnEdit(columnId: string, draft: string) {
@@ -406,15 +412,17 @@ export class KanbanStore {
         return { label: "Clear filters", disabled: !this.$hasActiveFilters };
     }
 
+    get $boardContentUI() {
+        return { isReady: this.isHydrated };
+    }
+
     get $ghostColumnUI() {
         return { label: "Add column" };
     }
 
     get $columnDeleteDialogUI() {
-        const column = this.pendingDeleteColumnId
-            ? this.columns[this.pendingDeleteColumnId]
-            : undefined;
-        const taskCount = column?.taskIds.length ?? 0;
+        const column = this.pendingDeleteColumn;
+        const taskCount = column?.taskCount ?? 0;
 
         return {
             title: `Delete "${column?.title ?? "column"}"?`,

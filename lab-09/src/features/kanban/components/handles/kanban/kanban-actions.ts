@@ -37,6 +37,7 @@ declare module "#/lib/command/global" {
                 priorityMenuChange: Action<{ taskId: string; open: boolean }>;
                 dragStart: Action<{ taskId: string }>;
                 dragEnter: Action<{ columnId: string }>;
+                dragLeave: Action<{ columnId: string }>;
                 dragEnd: Action;
                 drop: Action<{ columnId: string }>;
             };
