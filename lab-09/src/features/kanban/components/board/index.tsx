@@ -102,6 +102,23 @@ export const GhostColumn = observer(function GhostColumn() {
     );
 });
 
+export const AddTaskAction = observer(function AddTaskAction() {
+    const store = useKanban();
+    const { label, disabled, hint } = store.$addTaskUI;
+
+    return (
+        <Clickable.Button
+            className="palette-blue"
+            disabled={disabled}
+            title={hint}
+            onClick={() => actions.taskForm.open({ mode: "create" })}
+        >
+            <PlusIcon />
+            {label}
+        </Clickable.Button>
+    );
+});
+
 export const ColumnDeleteDialog = observer(function ColumnDeleteDialog() {
     const store = useKanban();
     const modal = useModal();

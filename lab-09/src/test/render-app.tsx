@@ -4,6 +4,7 @@ import { ModalHandle } from "#/components/handles/modal/modal-handle";
 import { kanbanStore } from "#/features/kanban/store/store";
 import type { Board } from "#/features/kanban/types";
 import { BOARD_STORAGE_KEY } from "#/features/kanban/utils/board";
+import { taskFormStore } from "#/features/task-form/store/store";
 import { Route } from "#/routes/index";
 import { modalStore } from "#/store/modal/store";
 
@@ -33,5 +34,9 @@ export function resetStores() {
     kanbanStore.setIsHydrated(false);
     kanbanStore.clearColumnEdit();
     kanbanStore.setPendingDeleteColumnId(null);
+    kanbanStore.setDraggingTaskId(null);
+    kanbanStore.setDropTargetColumnId(null);
+    kanbanStore.setPriorityMenuTaskId(null);
+    taskFormStore.setErrors({});
     modalStore.setCurrent(null);
 }

@@ -1,9 +1,15 @@
-import { ChevronLeftIcon, ChevronRightIcon, Trash2Icon } from "lucide-react";
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    PlusIcon,
+    Trash2Icon,
+} from "lucide-react";
 import { observer } from "mobx-react-lite";
 import type { ReactNode } from "react";
 import { Badge } from "#/components/atoms/badge";
 import { Clickable } from "#/components/atoms/clickable";
 import { Input } from "#/components/atoms/fields";
+import { Text } from "#/components/atoms/text";
 import { Field } from "#/components/ui/field";
 import { useKanban } from "#/features/kanban/hooks/use-kanban";
 import { cn } from "#/lib/cn";
@@ -173,15 +179,65 @@ export const DeleteAction = observer(function DeleteAction({
     );
 });
 
-export function Content({ children, className }: PartProps & ColumnPartProps) {
+export const AddTaskAction = observer(function AddTaskAction({
+    columnId,
+}: ColumnPartProps) {
+    const store = useKanban();
+    const { addTaskLabel } = store.$columnsUI[columnId];
+
     return (
-        <div
+        <Clickable.Button
+            variant="icon"
+            shape="square"
+            size="sm"
+            aria-label={addTaskLabel}
+            title={addTaskLabel}
+            onClick={() => actions.taskForm.open({ mode: "create", columnId })}
+        >
+            <PlusIcon />
+        </Clickable.Button>
+    );
+});
+
+export const Content = observer(function Content({
+    columnId,
+    children,
+    className,
+}: PartProps & ColumnPartProps) {
+    const store = useKanban();
+    const { isDropTarget, contentLabel } = store.$columnsUI[columnId];
+
+    return (
+        <section
+            aria-label={contentLabel}
+            data-drop-target={isDropTarget || undefined}
+            onDragOver={(event) => event.preventDefault()}
+            onDragEnter={() => actions.kanban.task.dragEnter({ columnId })}
+            onDrop={(event) => {
+                event.preventDefault();
+                actions.kanban.task.drop({ columnId });
+            }}
             className={cn(
-                "flex min-h-24 flex-1 flex-col gap-2 overflow-y-auto p-3",
+                "flex min-h-24 flex-1 flex-col gap-2 overflow-y-auto rounded-b-lg p-3 transition-colors data-drop-target:bg-palette-soft",
                 className,
             )}
         >
             {children}
-        </div>
+        </section>
     );
-}
+});
+
+export const EmptyState = observer(function EmptyState({
+    columnId,
+}: ColumnPartProps) {
+    const store = useKanban();
+    const { isEmpty, emptyLabel } = store.$columnsUI[columnId];
+
+    if (!isEmpty) return null;
+
+    return (
+        <Text.Paragraph className="rounded-md border border-dashed border-palette-line p-4 text-center text-xs text-palette-accent/85">
+            {emptyLabel}
+        </Text.Paragraph>
+    );
+});

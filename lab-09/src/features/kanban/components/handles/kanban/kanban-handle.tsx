@@ -251,6 +251,50 @@ export function KanbanHandle() {
             updatedAt: new Date().toISOString(),
         });
     }
+
+    async function handleTaskPriorityMenuChange(payload: {
+        taskId: string;
+        open: boolean;
+    }) {
+        if (payload.open) return store.setPriorityMenuTaskId(payload.taskId);
+        if (store.priorityMenuTaskId === payload.taskId)
+            store.setPriorityMenuTaskId(null);
+    }
+    // #endregion
+
+    // #region Drag and drop
+    async function handleTaskDragStart(payload: { taskId: string }) {
+        if (!store.tasks[payload.taskId]) return;
+
+        store.setDraggingTaskId(payload.taskId);
+    }
+
+    async function handleTaskDragEnter(payload: { columnId: string }) {
+        if (!store.draggingTaskId) return;
+
+        store.setDropTargetColumnId(payload.columnId);
+    }
+
+    function clearDrag() {
+        store.setDraggingTaskId(null);
+        store.setDropTargetColumnId(null);
+    }
+
+    async function handleTaskDragEnd() {
+        clearDrag();
+    }
+
+    async function handleTaskDrop(payload: { columnId: string }) {
+        const taskId = store.draggingTaskId;
+
+        clearDrag();
+
+        if (taskId)
+            await actions.kanban.task.move({
+                taskId,
+                columnId: payload.columnId,
+            });
+    }
     // #endregion
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: handlers close over the stable store reference
@@ -281,6 +325,14 @@ export function KanbanHandle() {
             command.handle("kanban.task.move", handleTaskMove),
             command.handle("kanban.task.moveAdjacent", handleTaskMoveAdjacent),
             command.handle("kanban.task.setPriority", handleTaskSetPriority),
+            command.handle(
+                "kanban.task.priorityMenuChange",
+                handleTaskPriorityMenuChange,
+            ),
+            command.handle("kanban.task.dragStart", handleTaskDragStart),
+            command.handle("kanban.task.dragEnter", handleTaskDragEnter),
+            command.handle("kanban.task.dragEnd", handleTaskDragEnd),
+            command.handle("kanban.task.drop", handleTaskDrop),
         ];
 
         return () => {

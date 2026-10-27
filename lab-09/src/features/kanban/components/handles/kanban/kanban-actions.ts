@@ -33,6 +33,11 @@ declare module "#/lib/command/global" {
                 move: Action<{ taskId: string; columnId: string }>;
                 moveAdjacent: Action<{ taskId: string; direction: Direction }>;
                 setPriority: Action<{ taskId: string; priority: Priority }>;
+                priorityMenuChange: Action<{ taskId: string; open: boolean }>;
+                dragStart: Action<{ taskId: string }>;
+                dragEnter: Action<{ columnId: string }>;
+                dragEnd: Action;
+                drop: Action<{ columnId: string }>;
             };
         };
     }

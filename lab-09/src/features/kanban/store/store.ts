@@ -1,5 +1,7 @@
 import { makeAutoObservable, toJS } from "mobx";
-import type { Board, Column, Task } from "../types";
+import type { Board, Column, Priority, Task } from "../types";
+import { formatDate, formatDateRange } from "../utils/date";
+import { PRIORITIES, PRIORITY_META } from "../utils/priority";
 import { pluralize } from "../utils/text";
 
 type Neighbours = { left?: string; right?: string };
@@ -17,6 +19,31 @@ export type ColumnUI = {
     moveLeftLabel: string;
     moveRightLabel: string;
     deleteLabel: string;
+    addTaskLabel: string;
+    isEmpty: boolean;
+    emptyLabel: string;
+    isDropTarget: boolean;
+    contentLabel: string;
+};
+
+export type TaskUI = {
+    title: string;
+    description: string;
+    hasDescription: boolean;
+    priority: Priority;
+    priorityLabel: string;
+    priorityPalette: string;
+    priorityMenuLabel: string;
+    isPriorityMenuOpen: boolean;
+    datesLabel: string;
+    datesTitle: string;
+    canMoveLeft: boolean;
+    canMoveRight: boolean;
+    moveLeftLabel: string;
+    moveRightLabel: string;
+    editLabel: string;
+    deleteLabel: string;
+    isDragging: boolean;
 };
 
 export class KanbanStore {
@@ -28,6 +55,9 @@ export class KanbanStore {
     pendingDeleteColumnId: string | null = null;
     editingColumnId: string | null = null;
     columnTitleDraft = "";
+    draggingTaskId: string | null = null;
+    dropTargetColumnId: string | null = null;
+    priorityMenuTaskId: string | null = null;
     // #endregion
 
     constructor() {
@@ -106,6 +136,18 @@ export class KanbanStore {
         this.editingColumnId = null;
         this.columnTitleDraft = "";
     }
+
+    setDraggingTaskId(taskId: string | null) {
+        this.draggingTaskId = taskId;
+    }
+
+    setDropTargetColumnId(columnId: string | null) {
+        this.dropTargetColumnId = columnId;
+    }
+
+    setPriorityMenuTaskId(taskId: string | null) {
+        this.priorityMenuTaskId = taskId;
+    }
     // #endregion
 
     // #region Derived primitives
@@ -155,6 +197,19 @@ export class KanbanStore {
     get $taskCount() {
         return Object.keys(this.tasks).length;
     }
+
+    get $columnTaskIds() {
+        return Object.fromEntries(
+            this.$orderedColumns.map((column) => [column.id, column.taskIds]),
+        ) as Record<string, string[]>;
+    }
+
+    get $priorityOptions() {
+        return PRIORITIES.map((priority) => ({
+            value: priority,
+            label: PRIORITY_META[priority].label,
+        }));
+    }
     // #endregion
 
     // #region UI
@@ -174,6 +229,7 @@ export class KanbanStore {
             this.$orderedColumns.map((column) => {
                 const neighbours = this.$columnNeighbours[column.id];
                 const isEditing = this.editingColumnId === column.id;
+                const visibleTaskIds = this.$columnTaskIds[column.id];
 
                 return [
                     column.id,
@@ -190,10 +246,62 @@ export class KanbanStore {
                         moveLeftLabel: `Move column ${column.title} left`,
                         moveRightLabel: `Move column ${column.title} right`,
                         deleteLabel: `Delete column ${column.title}`,
+                        addTaskLabel: `Add task to ${column.title}`,
+                        isEmpty: visibleTaskIds.length === 0,
+                        emptyLabel: "No tasks yet",
+                        isDropTarget: this.dropTargetColumnId === column.id,
+                        contentLabel: `${column.title} tasks`,
                     },
                 ];
             }),
         ) as Record<string, ColumnUI>;
+    }
+
+    get $tasksUI() {
+        return Object.fromEntries(
+            Object.values(this.tasks).map((task) => {
+                const neighbours = this.$columnNeighbours[task.columnId] ?? {};
+                const priority = PRIORITY_META[task.priority];
+
+                return [
+                    task.id,
+                    {
+                        title: task.title,
+                        description: task.description,
+                        hasDescription: task.description.length > 0,
+                        priority: task.priority,
+                        priorityLabel: priority.label,
+                        priorityPalette: priority.palette,
+                        priorityMenuLabel: `Change priority of ${task.title} (${priority.label})`,
+                        isPriorityMenuOpen: this.priorityMenuTaskId === task.id,
+                        datesLabel: formatDateRange(
+                            task.startDate,
+                            task.endDate,
+                        ),
+                        datesTitle: `Start ${formatDate(task.startDate)} · End ${formatDate(task.endDate)}`,
+                        canMoveLeft: Boolean(neighbours.left),
+                        canMoveRight: Boolean(neighbours.right),
+                        moveLeftLabel: `Move ${task.title} to the previous column`,
+                        moveRightLabel: `Move ${task.title} to the next column`,
+                        editLabel: `Edit ${task.title}`,
+                        deleteLabel: `Delete ${task.title}`,
+                        isDragging: this.draggingTaskId === task.id,
+                    },
+                ];
+            }),
+        ) as Record<string, TaskUI>;
+    }
+
+    get $addTaskUI() {
+        const disabled = !this.$hasColumns;
+
+        return {
+            label: "Add task",
+            disabled,
+            hint: disabled
+                ? "Create a column before adding tasks"
+                : "Add a task",
+        };
     }
 
     get $ghostColumnUI() {
