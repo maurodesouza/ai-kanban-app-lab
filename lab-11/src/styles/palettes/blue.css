@@ -1,0 +1,22 @@
+/* Blue — a chromatic palette, hue ~250. The colour IS the element: CTA,
+   badge, marked control. Inherits brand.css's values verbatim; renamed so
+   the palette set is colour-named, not semantic-named. Both themes declare
+   all six roles. */
+
+:root[data-theme="light"] .palette-blue {
+    --palette-base: oklch(0.55 0.2 250);
+    --palette-soft: oklch(0.94 0.06 250);
+    --palette-line: oklch(0.85 0.08 250);
+    --palette-contrast: oklch(1 0 0);
+    --palette-accent: oklch(0.45 0.18 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-blue {
+    --palette-base: oklch(0.7 0.18 250);
+    --palette-soft: oklch(0.3 0.08 250);
+    --palette-line: oklch(0.4 0.1 250);
+    --palette-contrast: oklch(0.12 0.02 250);
+    --palette-accent: oklch(0.78 0.15 250);
+    --palette-ring: var(--palette-accent);
+}

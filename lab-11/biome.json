@@ -1,0 +1,41 @@
+{
+    "files": {
+        "includes": [
+            "**",
+            "!**/routeTree.gen.ts",
+            "!**/package-lock.json",
+            "!**/components/atoms",
+            "!**/components/families",
+            "!**/components/ui",
+            "!**/components/templates",
+            "!**/styles/fragiola",
+            "!**/styles/global.css",
+            "!**/dist",
+            "!**/.tanstack",
+            "!**/styles/palettes"
+        ]
+    },
+    "formatter": {
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "useEditorconfig": true,
+        "trailingNewline": true
+    },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        }
+    },
+    "overrides": [
+        {
+            "includes": ["src/lib/command/**", "src/types/helpers.ts"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noExplicitAny": "off"
+                    }
+                }
+            }
+        }
+    ]
+}
