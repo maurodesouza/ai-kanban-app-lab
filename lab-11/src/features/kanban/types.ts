@@ -38,3 +38,9 @@ export interface Snapshot {
 }
 
 export type Direction = "previous" | "next";
+
+export interface ColumnRenameDraft {
+    columnId: string;
+    title: string;
+    error: string;
+}
