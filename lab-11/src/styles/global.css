@@ -1,0 +1,597 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* State normalization (architecture.md §2 — "Normalize state before sharing").
+   "highlighted item" unifies the three state vocabularies of the libraries
+   (:focus from the menu, [data-highlighted] from combobox, [data-selected]
+   from command). One line covers all of them; a new library joins by adding a
+   selector here, not a React translation layer. Do NOT use data-active for
+   this — data-active already means "current item". */
+@custom-variant highlighted (&:is(:focus, [data-highlighted], [data-selected]));
+
+/* Set-state normalization (docs/visual-language.md). Two ideas, each
+   spelled several ways by the libraries:
+   - "current": the one item of a set that is where you are — the active tab
+     (Base UI `data-active`), the current page (`aria-current`), the active
+     sidebar or navigation link (`data-active`);
+   - "selected": items the user chose, any number of them — a tree row, a
+     grid or table row (`data-selected`, `data-state="selected"`), the shown
+     tab of a dockable tabset (`data-selected`).
+   The foundation's `current` and `selected` members read these variants, so
+   every set marks its item the same way whatever the library calls it. */
+@custom-variant current (
+    &:is([data-active], [aria-current="page"], [aria-current="true"])
+);
+@custom-variant selected (&:is([data-selected], [data-state="selected"]));
+
+/* Field-focus normalization. The row's outline must fire only when the
+   CONTROL is focused — not any button inside it (addon, inset). That is why
+   this variant matches the `.field-control` marker (present on field.control,
+   SelectTrigger and on checkbox/radio/switch), and not bare `:focus-within`,
+   which would match any focused descendant.
+   `:is(.field-control:focus-within)` covers the case where the element itself
+   is the control (checkbox/radio/switch); `:has(.field-control:focus-within)`
+   covers the case where the control is a descendant (row > body > input,
+   row > select-trigger). `field-focus:` is consumed by the field family. */
+@custom-variant field-focus (
+    &:is(.field-control:focus-within),
+    &:has(.field-control:focus-within)
+);
+
+/* Handle orientation (families/handle.ts). A resize handle's mark lines up
+   with the bar it sits on, and the libraries spell that bar's direction
+   differently: Splitter and Dockable carry `data-orientation` (`vertical`
+   between side-by-side panels), a Grid Layout resize handle `data-side`
+   (`start`/`end` are vertical edges). The variants read the mark's DIRECT
+   parent — a nested Splitter group carries an orientation too. */
+@custom-variant handle-vertical (
+    :where(
+            [data-orientation="vertical"],
+            [data-side="start"],
+            [data-side="end"]
+        )
+        > &
+);
+@custom-variant handle-horizontal (
+    :where(
+            [data-orientation="horizontal"],
+            [data-side="top"],
+            [data-side="bottom"]
+        )
+        > &
+);
+
+@theme inline {
+    /* Motion (the `data-motion` axis). Every duration is Tailwind's times
+       `--motion-scale`, inlined into the utility so a subtree's level reaches
+       it: `transition-*` without a duration, every `duration-*` the scale
+       names, and the animations the registry runs. tw-animate-css's
+       `animate-in`/`animate-out` read `--tw-duration`, so a `duration-*` on
+       the same element scales them too. At `--motion-scale: 1` every value is
+       the one it replaces. */
+    --default-transition-duration: calc(300ms * var(--motion-scale, 1));
+    --transition-duration-75: calc(75ms * var(--motion-scale, 1));
+    --transition-duration-100: calc(100ms * var(--motion-scale, 1));
+    --transition-duration-150: calc(150ms * var(--motion-scale, 1));
+    --transition-duration-200: calc(200ms * var(--motion-scale, 1));
+    --transition-duration-300: calc(300ms * var(--motion-scale, 1));
+    --transition-duration-500: calc(500ms * var(--motion-scale, 1));
+    --transition-duration-700: calc(700ms * var(--motion-scale, 1));
+    --transition-duration-1000: calc(1000ms * var(--motion-scale, 1));
+    --animate-pulse: pulse calc(2s * var(--motion-scale, 1))
+        cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    /* Elevation (the `data-elevation` axis). Tailwind INLINES a shadow's
+       value into its utility (it rewrites the colours to inject
+       `--tw-shadow-color`), so `--shadow-*` cannot be overridden per subtree
+       as is. Each one points to an `--elevation-*` variable instead, set by
+       the levels below. The cost: `shadow-<color>` no longer tints these
+       shadows — the registry uses none. */
+    --shadow-2xs: var(--elevation-2xs);
+    --shadow-xs: var(--elevation-xs);
+    --shadow-sm: var(--elevation-sm);
+    --shadow-md: var(--elevation-md);
+    --shadow-lg: var(--elevation-lg);
+    --shadow-xl: var(--elevation-xl);
+    --shadow-2xl: var(--elevation-2xl);
+
+    --color-*: initial;
+
+    /* The 6 roles (architecture.md §1). base = the color of this palette;
+       soft = a subtle background; line = stroke; contrast = content on
+       base/shade; accent = content on a foreign background or on soft. */
+    --color-palette-base: var(--palette-base);
+    --color-palette-soft: var(--palette-soft);
+    --color-palette-line: var(--palette-line);
+    --color-palette-contrast: var(--palette-contrast);
+    --color-palette-accent: var(--palette-accent);
+
+    /* The 6th role — INTERACTION highlight: focus outline, ring, active
+       indicator. It is the only role drawn OUTSIDE the element: it contrasts
+       with what is BEHIND it, not with what it contains. That is why it never
+       fit into any of the other five.
+
+       EVERY palette declares `--palette-ring`, no exceptions. A palette that
+       does not theme focus uses `var(--palette-accent)`. It is NOT optional:
+       custom properties inherit, and a palette that omits a role inherits it
+       from an ancestor — that is how an invalid field inside a feature ended
+       up with a red border and a purple focus ring. In an inheritance-based
+       system, "optional token" leaks from the outer scope. */
+    --color-palette-ring: var(--palette-ring, var(--palette-accent));
+
+    /* Hover of a painted background — DERIVATION, not a contract role.
+       This was the `shade` token, removed: it had a single use (solid button
+       hover) and no palette ever overrode it — always the same formula. A
+       token that is always derived and never customized is a derivation, not
+       a role. `soft` does not replace it: on brand, base is 0.55 and soft
+       0.95 — it would lighten too much. Need two distinct backgrounds? Create
+       another surface palette (surface/raised already are that). The
+       `--palette-base-hover` escape hatch exists for when the derivation does
+       not fit; the fallback here is safe because it is read from no palette,
+       so there is no inheritance to leak. */
+    --color-palette-base-hover: var(
+        --palette-base-hover,
+        oklch(from var(--palette-base) calc(l + var(--palette-state-shift)) c h)
+    );
+
+    /* Outside the palette contract */
+    --color-scrim: oklch(0 0 0 / 0.4);
+
+    /* Chart series — their own axis, see the categorical derivation block
+       below. Outside the palette contract by design: no role describes "the
+       third series", and reusing `danger` as series 4 breaks its meaning. */
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-chart-6: var(--chart-6);
+    --color-chart-7: var(--chart-7);
+    --color-chart-8: var(--chart-8);
+
+    /* Ordinal ramp — derived from the active palette, see below. */
+    --color-chart-ramp-1: var(--chart-ramp-1);
+    --color-chart-ramp-2: var(--chart-ramp-2);
+    --color-chart-ramp-3: var(--chart-ramp-3);
+    --color-chart-ramp-4: var(--chart-ramp-4);
+    --color-chart-ramp-5: var(--chart-ramp-5);
+
+    --font-sans:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+        sans-serif;
+
+    /* Typography and breakpoints use Tailwind's scale, with no tokens of their
+       own. Same reason as spacing (architecture.md §4): they are continuous
+       scales without semantics — `sm` says nothing that Tailwind's `sm` does
+       not, and keeping a parallel scale created two living systems at once.
+
+       Breakpoints, beyond that, are a layout decision of the APPLICATION, not
+       of the design system. The four device-named breakpoints (mobile/tablet/
+       laptop/desktop) had ZERO uses, and a device name on a min-width lies:
+       `tablet:` fires on desktop too.
+
+       Whoever wants another scale overrides Tailwind's defaults.
+
+       The type scale is Tailwind's, times `--text-scale` (the typography
+       axis, `data-text`). Each size is an expression INLINED into its
+       utility, so it is computed where `text-*` is used and a subtree's
+       `data-text` reaches it. Line heights stay Tailwind's ratios, so they
+       follow the size. At `--text-scale: 1` every size is Tailwind's. */
+    --text-xs: calc(0.75rem * var(--text-scale, 1));
+    --text-sm: calc(0.875rem * var(--text-scale, 1));
+    --text-base: calc(1rem * var(--text-scale, 1));
+    --text-lg: calc(1.125rem * var(--text-scale, 1));
+    --text-xl: calc(1.25rem * var(--text-scale, 1));
+    --text-2xl: calc(1.5rem * var(--text-scale, 1));
+    --text-3xl: calc(1.875rem * var(--text-scale, 1));
+    --text-4xl: calc(2.25rem * var(--text-scale, 1));
+    --text-5xl: calc(3rem * var(--text-scale, 1));
+    --text-6xl: calc(3.75rem * var(--text-scale, 1));
+    --text-7xl: calc(4.5rem * var(--text-scale, 1));
+    --text-8xl: calc(6rem * var(--text-scale, 1));
+    --text-9xl: calc(8rem * var(--text-scale, 1));
+
+    /* Icon sizes. Icons follow the TEXT axis, not spacing: an icon sits
+       beside a label, so it keeps its proportion to the text whatever the
+       density. A `size-4` would be `--spacing`-based and shrink in a compact
+       subtree next to text that did not. The `--size-*` namespace generates
+       only `size-*` utilities (never p-/gap-/w-), and the names keep the
+       `size-` prefix the `[&_svg:not([class*='size-'])]` defaults look for.
+       At `--text-scale: 1` they equal size-3, size-3.5, size-4 and size-6. */
+    --size-icon-xs: calc(0.75rem * var(--text-scale, 1));
+    --size-icon-sm: calc(0.875rem * var(--text-scale, 1));
+    --size-icon: calc(1rem * var(--text-scale, 1));
+    --size-icon-lg: calc(1.5rem * var(--text-scale, 1));
+
+    /* Control height. Was --spacing-control-height, removed for living in the
+       spacing namespace (it generated p-control-height, gap-control-height).
+       It now lives in the --height-* namespace, which only generates
+       h-/min-h-/max-h-control — never p-/gap-/w-.
+
+       It follows the spacing axis: 9 steps of `--spacing` (2.25rem at the
+       default). The expression is INLINED into the utility on purpose, so it
+       is computed where `h-control` is used. A custom property declared on
+       :root as `calc(var(--spacing) * 9)` would be computed once, on :root,
+       and inherited as a fixed length: a subtree's `data-density` would not
+       reach it. */
+    --height-control: calc(var(--spacing) * 9);
+
+    /* Progress indeterminate animation. The segment (1/3 width) slides across
+       the rail. `inset-inline-start` is a logical property, so the slide
+       direction inverts under RTL automatically — no separate keyframe, no
+       `rtl:` variant. `motion-reduce:` on the indicator disables it. It
+       follows the motion axis: slower when expressive, and a zero duration
+       at `none`, which shows the static segment as `animate-none` does. */
+    --animate-progress-indeterminate: progress-indeterminate
+        calc(1.5s * var(--motion-scale, 1)) ease-in-out infinite;
+}
+
+@keyframes progress-indeterminate {
+    from {
+        inset-inline-start: -33%;
+    }
+    to {
+        inset-inline-start: 100%;
+    }
+}
+
+/* ─── Design axes (architecture.md §4) ──────────────────────────────────────
+   Each axis is a `data-*` attribute on any element, inherited by its subtree.
+   An axis only changes tokens; no component has a variant for it. The default
+   level is the absence of the attribute, and keeps the values above.
+
+   Rule: a token an axis changes must reach the utilities as `var()`, never as
+   an inlined value — otherwise overriding it in a subtree does nothing. Two
+   ways keep that true here:
+   - a plain `@theme` (not `inline`) token, which Tailwind emits on :root and
+     reads through `var()` (radius below);
+   - an `@theme inline` token whose value is an expression over an axis
+     variable (`--height-control`), computed where the utility is used.
+   The guard in tests/design-axes.test.ts compiles the CSS and checks both. */
+
+/* Radius. Not `inline`: `rounded-*` compiles to `var(--radius-*)`.
+   Roles (a usage picks the member for its role, never a variant):
+   - `rounded-sm` / `rounded-md` / `rounded-lg` — the scale: small marks
+     (checkbox, close button), items and blocks, containers (popup, dialog);
+   - `rounded-control` — a standalone control: button, field frame, a nav
+     trigger. It becomes a pill at `full`;
+   - `rounded-pill` — a shape that is a pill by style (badge, switch, drawer
+     handle). It follows the axis: square at `flat`;
+   - `rounded-full` — an intrinsic circle (avatar, radio, slider thumb, track).
+     It never changes. */
+@theme {
+    --radius-*: initial;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-control: 8px;
+    --radius-pill: 9999px;
+    --radius-full: 9999px;
+}
+
+/* The axes' own variables, at their default. An axis variable is read by
+   the expressions above, so a level only sets it. */
+:root {
+    --text-scale: 1;
+    --motion-scale: 1;
+    --handle-rest: 0;
+    --handle-mask: none;
+    --handle-seam: 0;
+    --elevation-2xs: 0 1px rgb(0 0 0 / 0.05);
+    --elevation-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-sm:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-xl:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --elevation-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+/* Spacing — `data-density`. `--spacing` drives every numeric spacing utility
+   and `h-control`. */
+[data-density="compact"] {
+    --spacing: 0.2rem;
+}
+
+[data-density="snug"] {
+    --spacing: 0.225rem;
+}
+
+[data-density="comfortable"] {
+    --spacing: 0.275rem;
+}
+
+[data-density="spacious"] {
+    --spacing: 0.3rem;
+}
+
+/* Radius — `data-radius`. Literal values per level, not derivations of one
+   base: a `calc()` over another custom property, declared here, would be
+   computed on this element and inherited as a fixed length, so a nested
+   `data-radius` could not re-derive it. And `full` is not proportional
+   anyway: controls become pills while containers stay capped. */
+[data-radius="flat"] {
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-control: 0px;
+    --radius-pill: 0px;
+}
+
+[data-radius="subtle"] {
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-control: 4px;
+    --radius-pill: 4px;
+}
+
+[data-radius="rounded"] {
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-control: 12px;
+    --radius-pill: 9999px;
+}
+
+[data-radius="full"] {
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-control: 9999px;
+    --radius-pill: 9999px;
+}
+
+/* Typography — `data-text`. Scales every `text-*` size and the icon sizes. */
+[data-text="small"] {
+    --text-scale: 0.875;
+}
+
+[data-text="large"] {
+    --text-scale: 1.125;
+}
+
+/* Elevation — `data-elevation`. `flat` drops every shadow: a layer is told
+   apart by its `line` border, which every popup, dialog and tabset has.
+   `subtle` and `raised` move each shadow one step down or up Tailwind's
+   scale. */
+[data-elevation="flat"] {
+    --elevation-2xs: 0 0 #0000;
+    --elevation-xs: 0 0 #0000;
+    --elevation-sm: 0 0 #0000;
+    --elevation-md: 0 0 #0000;
+    --elevation-lg: 0 0 #0000;
+    --elevation-xl: 0 0 #0000;
+    --elevation-2xl: 0 0 #0000;
+}
+
+[data-elevation="subtle"] {
+    --elevation-2xs: 0 0 #0000;
+    --elevation-xs: 0 1px rgb(0 0 0 / 0.05);
+    --elevation-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-md:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-xl:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-2xl:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+[data-elevation="raised"] {
+    --elevation-2xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --elevation-xs:
+        0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --elevation-sm:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --elevation-md:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-lg:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --elevation-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --elevation-2xl: 0 35px 60px -15px rgb(0 0 0 / 0.3);
+}
+
+/* Motion — `data-motion`. A multiplier on every duration: `none` makes
+   transitions and enter/exit animations instant (Base UI still unmounts on
+   the next frame: no animation is left to wait for). */
+[data-motion="none"] {
+    --motion-scale: 0;
+}
+
+[data-motion="fast"] {
+    --motion-scale: 0.5;
+}
+
+[data-motion="expressive"] {
+    --motion-scale: 1.5;
+}
+
+/* Handle — `data-handle` (families/handle.ts). The mark on a resize handle:
+   its opacity at rest, and a mask that cuts the pill into three dots; and
+   the seam: 1 under `ide`, where panels meet and the handle is the 1px
+   edge between them (no gap, no mark, a rule that brightens on hover and
+   thickens while dragged — expressions over it in families/handle.ts and
+   families/dock.ts). The one axis whose default level has a name: `line`
+   is also written out so a subtree can return to it under another level. */
+[data-handle="line"] {
+    --handle-rest: 0;
+    --handle-mask: none;
+    --handle-seam: 0;
+}
+
+[data-handle="grip"] {
+    --handle-rest: 0.5;
+    --handle-mask: none;
+    --handle-seam: 0;
+}
+
+[data-handle="dots"] {
+    --handle-rest: 0.7;
+    --handle-mask: radial-gradient(circle closest-side, #000 62%, #0000 74%);
+    --handle-seam: 0;
+}
+
+[data-handle="ide"] {
+    --handle-rest: 0;
+    --handle-mask: none;
+    --handle-seam: 1;
+}
+
+/* Reduced motion always wins: `none` whatever `data-motion` says. Same
+   specificity as the levels, and later, so it overrides them. The
+   `motion-reduce:` variants on the components still apply as well. */
+@media (prefers-reduced-motion: reduce) {
+    :root,
+    [data-motion] {
+        --motion-scale: 0;
+    }
+}
+
+/* Hover direction per theme: hover darkens in light, lightens in dark.
+   Consumed by the --color-palette-base-hover derivation above. This is theme
+   machinery, not a palette, so it lives here rather than being duplicated
+   into every palette file. */
+:root[data-theme="light"] {
+    --palette-state-shift: -0.1;
+}
+
+:root[data-theme="dark"] {
+    --palette-state-shift: 0.1;
+}
+
+/* Categorical chart series — DERIVED from the active palette.
+   Slot 1 IS the palette's color; the rest rotate hue from it. This is not a
+   monochromatic ramp — each slot is a distinct hue, which preserves identity.
+
+   The offsets (+180, -70, +60, -150) and the lightness of each slot came
+   from search, maximizing colourblind separation in the WORST case across
+   the project's palettes. Worst case measured (ΔE OKLab ×100, protan/deutan
+   @ 1.0): light 11.5 · dark 9.4  (target >= 8).
+
+   Uniform hue rotation would NOT guarantee that: protanopia and deuteranopia
+   collapse the green–red axis, so equidistant hues can become the same color.
+   That is why these offsets are measured, not chosen for aesthetics.
+
+   Chroma drops on the light slots: keeping it high blows the gamut and the
+   real lightness escapes the band.
+
+   This block lives in global.css, not in a palette file: it is theme
+   machinery (it reads --palette-base), declared once and inherited by every
+   palette. Putting it per-palette would duplicate identical rules; it is not
+   a palette, it is a derivation over one. */
+:root[data-theme="light"] [class*="palette-"] {
+    /* clamp + chroma minimum: a too-light base (surface = oklch(1 0 0))
+       would come out white and colorless. Slots 2..5 already use absolute
+       L and C. */
+    --chart-1: oklch(
+        from var(--palette-base) clamp(0.43, l, 0.68) max(c, 0.14) h
+    );
+    --chart-2: oklch(from var(--palette-base) 0.68 0.13 calc(h + 180));
+    --chart-3: oklch(from var(--palette-base) 0.5 0.19 calc(h - 70));
+    --chart-4: oklch(from var(--palette-base) 0.72 0.13 calc(h + 60));
+    --chart-5: oklch(from var(--palette-base) 0.56 0.19 calc(h - 150));
+    --chart-ramp-1: oklch(from var(--palette-base) 0.78 0.16 h);
+    --chart-ramp-2: oklch(from var(--palette-base) 0.68 0.16 h);
+    --chart-ramp-3: oklch(from var(--palette-base) 0.58 0.16 h);
+    --chart-ramp-4: oklch(from var(--palette-base) 0.48 0.16 h);
+    --chart-ramp-5: oklch(from var(--palette-base) 0.38 0.16 h);
+}
+
+:root[data-theme="dark"] [class*="palette-"] {
+    /* In dark the anchor inverts (dark → light), otherwise the light tip
+       disappears into the background. */
+    --chart-1: oklch(
+        from var(--palette-base) clamp(0.52, l, 0.72) max(c, 0.13) h
+    );
+    --chart-2: oklch(from var(--palette-base) 0.62 0.13 calc(h + 180));
+    --chart-3: oklch(from var(--palette-base) 0.52 0.18 calc(h - 70));
+    --chart-4: oklch(from var(--palette-base) 0.66 0.13 calc(h + 60));
+    --chart-5: oklch(from var(--palette-base) 0.56 0.18 calc(h - 150));
+    --chart-ramp-1: oklch(from var(--palette-base) 0.48 0.15 h);
+    --chart-ramp-2: oklch(from var(--palette-base) 0.56 0.15 h);
+    --chart-ramp-3: oklch(from var(--palette-base) 0.64 0.15 h);
+    --chart-ramp-4: oklch(from var(--palette-base) 0.72 0.15 h);
+    --chart-ramp-5: oklch(from var(--palette-base) 0.8 0.15 h);
+}
+
+/* Achromatic palettes derive ACHROMATIC series. The derivation above
+   rotates hue from the palette's base and lifts its chroma to at least
+   0.14 — right for a colour, wrong for a neutral: on `palette-neutral`,
+   `palette-surface` and `palette-raised` (base chroma ~0.01, hue 250) it drew
+   every chart a pale blue. These palettes step lightness instead, with no
+   chroma: the series stay apart by contrast, as a neutral design's should.
+   Same specificity as the blocks above and declared after them, so they win
+   for exactly these classes; every other palette keeps its derivation. */
+:root[data-theme="light"]
+:is(.palette-neutral, .palette-surface, .palette-raised) {
+    --chart-1: oklch(0.25 0 0);
+    --chart-2: oklch(0.55 0 0);
+    --chart-3: oklch(0.4 0 0);
+    --chart-4: oklch(0.7 0 0);
+    --chart-5: oklch(0.82 0 0);
+    --chart-ramp-1: oklch(0.85 0 0);
+    --chart-ramp-2: oklch(0.7 0 0);
+    --chart-ramp-3: oklch(0.55 0 0);
+    --chart-ramp-4: oklch(0.4 0 0);
+    --chart-ramp-5: oklch(0.25 0 0);
+}
+
+:root[data-theme="dark"]
+    :is(.palette-neutral, .palette-surface, .palette-raised) {
+    --chart-1: oklch(0.92 0 0);
+    --chart-2: oklch(0.62 0 0);
+    --chart-3: oklch(0.78 0 0);
+    --chart-4: oklch(0.48 0 0);
+    --chart-5: oklch(0.36 0 0);
+    --chart-ramp-1: oklch(0.36 0 0);
+    --chart-ramp-2: oklch(0.48 0 0);
+    --chart-ramp-3: oklch(0.62 0 0);
+    --chart-ramp-4: oklch(0.78 0 0);
+    --chart-ramp-5: oklch(0.92 0 0);
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* A palette does not paint (architecture.md §1) — the body applies roles
+   explicitly. palette-surface is a custom class (not a utility); it goes on
+   <body> via the root layout. */
+body {
+    @apply bg-palette-base text-palette-contrast font-sans text-sm antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply font-semibold;
+}
+
+a {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}

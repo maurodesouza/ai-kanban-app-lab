@@ -1,0 +1,22 @@
+/* Raised — an elevated surface (card, popover, dialog).
+   Like surface, fully neutral; the difference is a step up in lightness so a
+   raised element reads as sitting above the floor. Both themes declare all
+   six roles. */
+
+:root[data-theme="light"] .palette-raised {
+    --palette-base: oklch(0.98 0.003 250);
+    --palette-soft: oklch(0.94 0.005 250);
+    --palette-line: oklch(0.84 0.006 250);
+    --palette-contrast: oklch(0.15 0.01 250);
+    --palette-accent: oklch(0.28 0.01 250);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-raised {
+    --palette-base: oklch(0.2 0.01 250);
+    --palette-soft: oklch(0.3 0.012 250);
+    --palette-line: oklch(0.35 0.012 250);
+    --palette-contrast: oklch(0.95 0.005 250);
+    --palette-accent: oklch(0.88 0.005 250);
+    --palette-ring: var(--palette-accent);
+}

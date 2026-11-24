@@ -1,0 +1,21 @@
+/* Green — a chromatic palette, hue ~150. Inherits success.css's values
+   verbatim; renamed so the palette set is colour-named, not semantic-named.
+   Both themes declare all six roles. */
+
+:root[data-theme="light"] .palette-green {
+    --palette-base: oklch(0.52 0.16 150);
+    --palette-soft: oklch(0.94 0.07 150);
+    --palette-line: oklch(0.85 0.1 150);
+    --palette-contrast: oklch(1 0 0);
+    --palette-accent: oklch(0.42 0.14 150);
+    --palette-ring: var(--palette-accent);
+}
+
+:root[data-theme="dark"] .palette-green {
+    --palette-base: oklch(0.68 0.16 150);
+    --palette-soft: oklch(0.3 0.07 150);
+    --palette-line: oklch(0.4 0.09 150);
+    --palette-contrast: oklch(0.12 0.02 150);
+    --palette-accent: oklch(0.75 0.14 150);
+    --palette-ring: var(--palette-accent);
+}
