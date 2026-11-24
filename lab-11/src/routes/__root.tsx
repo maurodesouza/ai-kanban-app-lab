@@ -5,6 +5,7 @@ import {
     Scripts,
 } from "@tanstack/react-router";
 import type { PropsWithChildren } from "react";
+import { ThemeHandle } from "#/components/handles/theme/theme-handle";
 import { Kanban } from "#/features/kanban/components/kanban/kanban";
 import { ModalHandle } from "#/features/modal/components/handles/modal/modal-handle";
 import styles from "../styles.css?url";
@@ -28,6 +29,7 @@ export const Route = createRootRoute({
 function Root() {
     return (
         <Kanban.Provider>
+            <ThemeHandle />
             <Outlet />
             <ModalHandle />
         </Kanban.Provider>

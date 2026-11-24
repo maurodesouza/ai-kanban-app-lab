@@ -1,5 +1,12 @@
 import { action, computed, observable } from "mobx";
-import type { Board, ColumnRenameDraft, Filters, TaskDraft } from "../types";
+import type {
+    Board,
+    ColumnRenameDraft,
+    DateBounds,
+    Filters,
+    TaskDraft,
+} from "../types";
+import { filter } from "../utils/filter/filter";
 import { priority } from "../utils/priority/priority";
 import { snapshot } from "../utils/snapshot/snapshot";
 import { task } from "../utils/task/task";
@@ -14,6 +21,7 @@ export class KanbanStore {
     @observable accessor columnRename: ColumnRenameDraft | null = null;
     @observable accessor taskDraft: TaskDraft | null = null;
     @observable accessor draggedTaskId: string | null = null;
+    @observable accessor filterDateDraft: DateBounds | null = null;
 
     @action
     setBoard(value: Board) {
@@ -50,6 +58,32 @@ export class KanbanStore {
         this.draggedTaskId = value;
     }
 
+    @action
+    setFilterDateDraft(value: DateBounds | null) {
+        this.filterDateDraft = value;
+    }
+
+    @computed
+    get $filterUI() {
+        const { search, priority: selectedPriority } = this.filters;
+        const { dateFrom, dateTo } = this.filterDateDraft ?? this.filters;
+        return {
+            search,
+            dateFrom,
+            dateTo,
+            priority: selectedPriority,
+            priorityOptions: [
+                { value: "" as const, label: "All priorities" },
+                ...priority.options,
+            ],
+            rangeInvalid: this.filterDateDraft !== null,
+            rangeMessage: this.filterDateDraft
+                ? "End date must be on or after the start date."
+                : "",
+            clearDisabled: !search && !dateFrom && !dateTo && !selectedPriority,
+        };
+    }
+
     @computed
     get $taskUI() {
         const indexes = new Map(
@@ -70,7 +104,9 @@ export class KanbanStore {
     @computed
     get $tasksByColumnUI() {
         const tasksByColumn = new Map<string, TaskUI[]>();
-        for (const task of this.$taskUI.values()) {
+        for (const task of [...this.$taskUI.values()].filter(
+            filter.matches(this.filters),
+        )) {
             const tasks = tasksByColumn.get(task.columnId) ?? [];
             tasks.push(task);
             tasksByColumn.set(task.columnId, tasks);
@@ -98,7 +134,7 @@ export class KanbanStore {
 
     @computed
     get $globalAddTaskUI() {
-        return { disabled: this.board.columns.length === 0 };
+        return { disabled: !this.hydrated || this.board.columns.length === 0 };
     }
 
     @computed
@@ -106,10 +142,12 @@ export class KanbanStore {
         const draggedColumn = this.$taskUI.get(
             this.draggedTaskId ?? "",
         )?.columnId;
+        const totals = new Map<string, number>();
+        for (const task of this.board.tasks) {
+            totals.set(task.columnId, (totals.get(task.columnId) ?? 0) + 1);
+        }
         return this.board.columns.map((column, index, columns) => {
-            const total = this.board.tasks.filter(
-                (task) => task.columnId === column.id,
-            ).length;
+            const total = totals.get(column.id) ?? 0;
             const visible = this.$tasksByColumnUI.get(column.id)?.length ?? 0;
             const taskCount = `${total} ${total === 1 ? "task" : "tasks"}`;
             return {
@@ -118,7 +156,11 @@ export class KanbanStore {
                 count: visible,
                 dropEnabled:
                     draggedColumn !== undefined && draggedColumn !== column.id,
-                emptyMessage: visible === 0 ? "No tasks" : "",
+                emptyMessage: visible
+                    ? ""
+                    : total
+                      ? "No matching tasks"
+                      : "No tasks",
                 renameLabel: `Rename ${column.title}`,
                 deleteLabel: `Delete ${column.title}`,
                 addTaskLabel: `Add task to ${column.title}`,

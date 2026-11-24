@@ -9,9 +9,12 @@ import { type Direction, taskDragMime } from "../../types";
 
 type TaskProps = { taskId: string };
 
-function Container({ children }: PropsWithChildren<TaskProps>) {
+function Container({ children, taskId }: PropsWithChildren<TaskProps>) {
     return (
-        <article className="palette-raised rounded-lg border border-palette-line bg-palette-base p-3 text-palette-contrast shadow-xs">
+        <article
+            data-task-id={taskId}
+            className="palette-raised rounded-lg border border-palette-line bg-palette-base p-3 text-palette-contrast shadow-xs"
+        >
             {children}
         </article>
     );

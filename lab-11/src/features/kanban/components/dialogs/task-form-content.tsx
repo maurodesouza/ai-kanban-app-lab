@@ -32,7 +32,6 @@ export const TaskFormContent = observer(function TaskFormContent() {
                                 <Input
                                     id="task-title"
                                     required
-                                    maxLength={200}
                                     value={values.title}
                                     onChange={(event) =>
                                         void actions.task.changeField({

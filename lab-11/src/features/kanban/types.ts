@@ -60,3 +60,5 @@ export type TaskFieldChange = {
 }[keyof TaskInputs];
 
 export const taskDragMime = "application/x-lab-11-task";
+
+export type DateBounds = Pick<Filters, "dateFrom" | "dateTo">;

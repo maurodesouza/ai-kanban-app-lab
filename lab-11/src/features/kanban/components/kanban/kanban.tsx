@@ -7,6 +7,15 @@ import { useKanban } from "../../hooks/use-kanban";
 import type { KanbanStore, TaskUI } from "../../store/store";
 import { KanbanProvider } from "../kanban-provider";
 import { ColumnParts } from "./column";
+import {
+    ClearFiltersAction,
+    DateFilterMessage,
+    DateFromFilter,
+    DateToFilter,
+    Filter,
+    PriorityFilter,
+    SearchFilter,
+} from "./filter";
 import { TaskParts } from "./task";
 
 function Container({ children }: PropsWithChildren) {
@@ -58,7 +67,7 @@ function AddColumnAction() {
             data-board-focus
             type="button"
             variant="outline"
-            className="min-h-28 w-full rounded-lg border-dashed"
+            className="min-h-44 w-full rounded-lg border-dashed"
             onClick={() => void actions.column.create()}
         >
             <span aria-hidden="true">+</span> Add column
@@ -142,4 +151,11 @@ export const Kanban = {
     GhostColumn,
     AddColumnAction,
     AddTaskAction,
+    Filter,
+    SearchFilter,
+    DateFromFilter,
+    DateToFilter,
+    PriorityFilter,
+    ClearFiltersAction,
+    DateFilterMessage,
 };

@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ThemeAction } from "#/components/theme-action";
 import { ColumnHandle } from "#/features/kanban/components/handles/column/column-handle";
+import { FilterHandle } from "#/features/kanban/components/handles/filter/filter-handle";
 import { PersistenceHandle } from "#/features/kanban/components/handles/persistence/persistence-handle";
 import { TaskHandle } from "#/features/kanban/components/handles/task/task-handle";
 import { Kanban } from "#/features/kanban/components/kanban/kanban";
@@ -12,14 +14,26 @@ function Index() {
             <PersistenceHandle />
             <ColumnHandle />
             <TaskHandle />
+            <FilterHandle />
             <Kanban.Container>
-                <Kanban.Header>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <Kanban.Title>AI Todo App</Kanban.Title>
-                        <Kanban.AddTaskAction />
-                    </div>
-                </Kanban.Header>
                 <Kanban.Status>
+                    <Kanban.Header>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <Kanban.Title>AI Todo App</Kanban.Title>
+                            <div className="flex flex-wrap gap-2">
+                                <ThemeAction />
+                                <Kanban.AddTaskAction />
+                            </div>
+                        </div>
+                        <Kanban.Filter>
+                            <Kanban.SearchFilter />
+                            <Kanban.DateFromFilter />
+                            <Kanban.DateToFilter />
+                            <Kanban.PriorityFilter />
+                            <Kanban.ClearFiltersAction />
+                        </Kanban.Filter>
+                        <Kanban.DateFilterMessage />
+                    </Kanban.Header>
                     <Kanban.Content>
                         <Kanban.Columns
                             render={(column) => (
