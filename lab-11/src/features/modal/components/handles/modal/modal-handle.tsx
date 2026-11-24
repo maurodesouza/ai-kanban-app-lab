@@ -49,10 +49,12 @@ export function ModalHandle() {
                 if (!open) void actions.modal.close();
             }}
         >
-            <Dialog.Portal>
-                <Dialog.Backdrop />
-                {content && <FlexibleRender content={content} />}
-            </Dialog.Portal>
+            {content && (
+                <Dialog.Portal>
+                    <Dialog.Backdrop />
+                    <FlexibleRender content={content} />
+                </Dialog.Portal>
+            )}
         </Dialog.Root>
     );
 }

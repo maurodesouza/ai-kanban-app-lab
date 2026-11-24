@@ -44,3 +44,19 @@ export interface ColumnRenameDraft {
     title: string;
     error: string;
 }
+
+export type TaskInputs = Omit<Task, "id">;
+export type TaskErrors = Partial<Record<keyof TaskInputs, string>>;
+
+export interface TaskDraft {
+    taskId: string | null;
+    chooseColumn: boolean;
+    values: TaskInputs;
+    errors: TaskErrors;
+}
+
+export type TaskFieldChange = {
+    [Field in keyof TaskInputs]: { field: Field; value: TaskInputs[Field] };
+}[keyof TaskInputs];
+
+export const taskDragMime = "application/x-lab-11-task";

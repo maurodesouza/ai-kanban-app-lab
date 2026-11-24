@@ -36,7 +36,7 @@ function Root() {
 
 function Shell({ children }: PropsWithChildren) {
     return (
-        <html lang="en">
+        <html lang="en" data-theme="light">
             <head>
                 <HeadContent />
             </head>

@@ -4,8 +4,7 @@ import { Clickable } from "#/components/atoms/clickable";
 import { Text } from "#/components/atoms/text";
 import { actions } from "#/lib/command";
 import { useKanban } from "../../hooks/use-kanban";
-import type { KanbanStore } from "../../store/store";
-import type { Task } from "../../types";
+import type { KanbanStore, TaskUI } from "../../store/store";
 import { KanbanProvider } from "../kanban-provider";
 import { ColumnParts } from "./column";
 import { TaskParts } from "./task";
@@ -59,13 +58,27 @@ function AddColumnAction() {
             data-board-focus
             type="button"
             variant="outline"
-            className="min-h-28 w-full rounded-2xl border-dashed"
+            className="min-h-28 w-full rounded-lg border-dashed"
             onClick={() => void actions.column.create()}
         >
             <span aria-hidden="true">+</span> Add column
         </Clickable.Button>
     );
 }
+
+const AddTaskAction = observer(function AddTaskAction() {
+    const ui = useKanban().$globalAddTaskUI;
+    return (
+        <Clickable.Button
+            type="button"
+            className="palette-blue"
+            disabled={ui.disabled}
+            onClick={() => void actions.task.openCreate({})}
+        >
+            <span aria-hidden="true">+</span> Add task
+        </Clickable.Button>
+    );
+});
 
 const Status = observer(function Status({ children }: PropsWithChildren) {
     const ui = useKanban().$statusUI;
@@ -107,7 +120,7 @@ const Tasks = observer(function Tasks({
     render,
 }: {
     columnId: string;
-    render: (task: Task) => ReactNode;
+    render: (task: TaskUI) => ReactNode;
 }) {
     const tasks = useKanban().$tasksByColumnUI.get(columnId) ?? [];
     return tasks.map((task) => (
@@ -128,4 +141,5 @@ export const Kanban = {
     Task: TaskParts,
     GhostColumn,
     AddColumnAction,
+    AddTaskAction,
 };

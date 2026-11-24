@@ -18,7 +18,7 @@ import { cn } from "@/lib/cn";
 // If this file contains a class that does not come from a family, the
 // recombination claim is wrong. It does not.
 
-function SelectRoot({ ...props }: SelectPrimitive.Root.Props<unknown>) {
+function SelectRoot<Value>({ ...props }: SelectPrimitive.Root.Props<Value>) {
     return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 

@@ -1,6 +1,10 @@
 import { action, computed, observable } from "mobx";
-import type { Board, ColumnRenameDraft, Filters } from "../types";
+import type { Board, ColumnRenameDraft, Filters, TaskDraft } from "../types";
+import { priority } from "../utils/priority/priority";
 import { snapshot } from "../utils/snapshot/snapshot";
+import { task } from "../utils/task/task";
+
+export type TaskUI = ReturnType<typeof task.view>;
 
 export class KanbanStore {
     @observable accessor board = snapshot.initialBoard();
@@ -8,6 +12,8 @@ export class KanbanStore {
     @observable accessor hydrated = false;
     @observable accessor storageError = false;
     @observable accessor columnRename: ColumnRenameDraft | null = null;
+    @observable accessor taskDraft: TaskDraft | null = null;
+    @observable accessor draggedTaskId: string | null = null;
 
     @action
     setBoard(value: Board) {
@@ -34,10 +40,37 @@ export class KanbanStore {
         this.columnRename = value;
     }
 
+    @action
+    setTaskDraft(value: TaskDraft | null) {
+        this.taskDraft = value;
+    }
+
+    @action
+    setDraggedTaskId(value: string | null) {
+        this.draggedTaskId = value;
+    }
+
+    @computed
+    get $taskUI() {
+        const indexes = new Map(
+            this.board.columns.map((column, index) => [column.id, index]),
+        );
+        return new Map(
+            this.board.tasks.map((entry) => [
+                entry.id,
+                task.view(
+                    entry,
+                    indexes.get(entry.columnId) ?? 0,
+                    indexes.size,
+                ),
+            ]),
+        );
+    }
+
     @computed
     get $tasksByColumnUI() {
-        const tasksByColumn = new Map<string, Board["tasks"]>();
-        for (const task of this.board.tasks) {
+        const tasksByColumn = new Map<string, TaskUI[]>();
+        for (const task of this.$taskUI.values()) {
             const tasks = tasksByColumn.get(task.columnId) ?? [];
             tasks.push(task);
             tasksByColumn.set(task.columnId, tasks);
@@ -46,7 +79,33 @@ export class KanbanStore {
     }
 
     @computed
+    get $taskDraftUI() {
+        if (!this.taskDraft) return null;
+        const { values, errors, taskId, chooseColumn } = this.taskDraft;
+        return {
+            values,
+            errors,
+            chooseColumn,
+            heading: taskId ? "Edit task" : "Add task",
+            submitLabel: taskId ? "Save changes" : "Create task",
+            columns: this.board.columns.map((column) => ({
+                value: column.id,
+                label: column.title,
+            })),
+            priorities: priority.options,
+        };
+    }
+
+    @computed
+    get $globalAddTaskUI() {
+        return { disabled: this.board.columns.length === 0 };
+    }
+
+    @computed
     get $columnsUI() {
+        const draggedColumn = this.$taskUI.get(
+            this.draggedTaskId ?? "",
+        )?.columnId;
         return this.board.columns.map((column, index, columns) => {
             const total = this.board.tasks.filter(
                 (task) => task.columnId === column.id,
@@ -57,6 +116,8 @@ export class KanbanStore {
                 ...column,
                 titleId: `column-${column.id}-title`,
                 count: visible,
+                dropEnabled:
+                    draggedColumn !== undefined && draggedColumn !== column.id,
                 emptyMessage: visible === 0 ? "No tasks" : "",
                 renameLabel: `Rename ${column.title}`,
                 deleteLabel: `Delete ${column.title}`,

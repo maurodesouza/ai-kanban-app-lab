@@ -4,7 +4,7 @@ import { Clickable } from "#/components/atoms/clickable";
 import { Text } from "#/components/atoms/text";
 import { actions } from "#/lib/command";
 import { useKanban } from "../../hooks/use-kanban";
-import type { Direction } from "../../types";
+import { type Direction, taskDragMime } from "../../types";
 
 type ColumnProps = { columnId: string };
 
@@ -14,7 +14,7 @@ function Container({
 }: ComponentPropsWithoutRef<"section">) {
     return (
         <section
-            className="palette-surface flex w-72 max-w-[calc(100vw-3rem)] shrink-0 flex-col rounded-2xl border border-palette-line bg-palette-soft text-palette-contrast sm:w-80"
+            className="palette-surface flex w-72 max-w-[calc(100vw-3rem)] shrink-0 flex-col rounded-lg border border-palette-line bg-palette-soft text-palette-contrast sm:w-80"
             {...props}
         >
             {children}
@@ -42,13 +42,56 @@ function Title({ children, id }: PropsWithChildren<{ id: string }>) {
     );
 }
 
-function Content({ children }: PropsWithChildren<ColumnProps>) {
+const Content = observer(function Content({
+    children,
+    columnId,
+}: PropsWithChildren<ColumnProps>) {
+    const ui = useKanban().$columnUI.get(columnId);
+    if (!ui) return null;
+
     return (
-        <div className="flex min-h-44 flex-1 flex-col gap-3 p-3">
+        // biome-ignore lint/a11y/noStaticElementInteractions: adjacent buttons provide the keyboard and touch interaction
+        <div
+            data-drop-enabled={ui.dropEnabled}
+            className="flex min-h-44 flex-1 flex-col gap-3 rounded-lg p-3 data-[drop-enabled=true]:outline-2 data-[drop-enabled=true]:-outline-offset-2 data-[drop-enabled=true]:outline-palette-ring"
+            onDragOver={(event) => {
+                if (
+                    ui.dropEnabled &&
+                    event.dataTransfer.types.includes(taskDragMime)
+                ) {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                }
+            }}
+            onDrop={(event) => {
+                if (event.dataTransfer.types.includes(taskDragMime)) {
+                    event.preventDefault();
+                    void actions.task.drop({ columnId });
+                }
+            }}
+        >
             {children}
         </div>
     );
-}
+});
+
+const AddTaskAction = observer(function AddTaskAction({
+    columnId,
+}: ColumnProps) {
+    const ui = useKanban().$columnUI.get(columnId);
+    if (!ui) return null;
+    return (
+        <Clickable.Button
+            type="button"
+            variant="ghost"
+            className="w-full justify-start"
+            aria-label={ui.addTaskLabel}
+            onClick={() => void actions.task.openCreate({ columnId })}
+        >
+            <span aria-hidden="true">+</span> Add task
+        </Clickable.Button>
+    );
+});
 
 const Count = observer(function Count({ columnId }: ColumnProps) {
     const ui = useKanban().$columnUI.get(columnId);
@@ -131,6 +174,7 @@ export const ColumnParts = {
     Title,
     Content,
     Count,
+    AddTaskAction,
     Empty,
     RenameAction,
     MoveAction,

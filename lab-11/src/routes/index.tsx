@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ColumnHandle } from "#/features/kanban/components/handles/column/column-handle";
 import { PersistenceHandle } from "#/features/kanban/components/handles/persistence/persistence-handle";
+import { TaskHandle } from "#/features/kanban/components/handles/task/task-handle";
 import { Kanban } from "#/features/kanban/components/kanban/kanban";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -10,9 +11,13 @@ function Index() {
         <>
             <PersistenceHandle />
             <ColumnHandle />
+            <TaskHandle />
             <Kanban.Container>
                 <Kanban.Header>
-                    <Kanban.Title>AI Todo App</Kanban.Title>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <Kanban.Title>AI Todo App</Kanban.Title>
+                        <Kanban.AddTaskAction />
+                    </div>
                 </Kanban.Header>
                 <Kanban.Status>
                     <Kanban.Content>
@@ -46,18 +51,55 @@ function Index() {
                                         />
                                     </Kanban.Column.Header>
                                     <Kanban.Column.Content columnId={column.id}>
+                                        <Kanban.Column.AddTaskAction
+                                            columnId={column.id}
+                                        />
                                         <Kanban.Column.Empty
                                             columnId={column.id}
                                         />
                                         <Kanban.Tasks
                                             columnId={column.id}
                                             render={(task) => (
-                                                <Kanban.Task.Container>
+                                                <Kanban.Task.Container
+                                                    taskId={task.id}
+                                                >
                                                     <Kanban.Task.Header>
                                                         <Kanban.Task.Title>
                                                             {task.title}
                                                         </Kanban.Task.Title>
+                                                        <Kanban.Task.DragHandle
+                                                            taskId={task.id}
+                                                        />
+                                                        <Kanban.Task.PriorityControl
+                                                            taskId={task.id}
+                                                        />
                                                     </Kanban.Task.Header>
+                                                    <Kanban.Task.Content>
+                                                        <Kanban.Task.Description>
+                                                            {task.description}
+                                                        </Kanban.Task.Description>
+                                                        <Kanban.Task.DateRange>
+                                                            {
+                                                                task.dateRangeLabel
+                                                            }
+                                                        </Kanban.Task.DateRange>
+                                                    </Kanban.Task.Content>
+                                                    <Kanban.Task.Footer>
+                                                        <Kanban.Task.EditAction
+                                                            taskId={task.id}
+                                                        />
+                                                        <Kanban.Task.DeleteAction
+                                                            taskId={task.id}
+                                                        />
+                                                        <Kanban.Task.MoveAction
+                                                            taskId={task.id}
+                                                            direction="previous"
+                                                        />
+                                                        <Kanban.Task.MoveAction
+                                                            taskId={task.id}
+                                                            direction="next"
+                                                        />
+                                                    </Kanban.Task.Footer>
                                                 </Kanban.Task.Container>
                                             )}
                                         />
